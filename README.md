@@ -1,1 +1,1 @@
-# MHS-League
+# MHS-League.
