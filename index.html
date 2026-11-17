@@ -1,0 +1,834 @@
+<!doctype html><html><head><meta charset=utf8><title>MHS League Hub</title><meta name="description" content="Live standings, playoff odds, scoring profiles and player analytics for the MHS fantasy football league, straight from ESPN."><meta property="og:title" content="MHS League Hub"><meta property="og:description" content="Live standings, playoff odds and league activity, updated from ESPN every minute."><meta name="theme-color" content="#141B24"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>MHS League Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: league scoreboard — a header band, a tab rail, then tables and charts that treat every team the same. */
+:root{
+  --paper:#EEF1F4; --panel:#FFFFFF; --ink:#141B24; --muted:#5A6573; --line:#D3DAE2; --accent:#22508F; --accent-ink:#FFFFFF;
+  --good:#1C7443; --bad:#B0281F; --warn:#9A5B00; --hl:#E4ECF6; --chip:#F3F5F8;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#6250d6;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E1218; --panel:#151B23; --ink:#E3E9F0; --muted:#94A0AE; --line:#263040; --accent:#7FA9E8; --accent-ink:#0B1220;
+  --good:#4BBF88; --bad:#F07A6E; --warn:#E2A54A; --hl:#1B2533; --chip:#1A212B; color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#9085e9}}
+:root[data-theme="dark"]{
+  --paper:#0E1218; --panel:#151B23; --ink:#E3E9F0; --muted:#94A0AE; --line:#263040; --accent:#7FA9E8; --accent-ink:#0B1220;
+  --good:#4BBF88; --bad:#F07A6E; --warn:#E2A54A; --hl:#1B2533; --chip:#1A212B; color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#9085e9}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:10px}
+h1{font-family:var(--display);font-weight:700;font-size:2.4rem;line-height:1;letter-spacing:.01em;margin:0;text-transform:uppercase;text-wrap:balance}
+.sub{color:var(--muted);font-size:.9rem;margin-top:4px}
+.stamp{font-family:var(--mono);font-size:.78rem;color:var(--muted);text-align:right}
+nav.tabs{display:flex;flex-wrap:wrap;gap:4px}
+nav.tabs button{font-family:var(--display);font-weight:600;font-size:1.02rem;letter-spacing:.04em;text-transform:uppercase;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:6px;padding:4px 10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+nav.tabs button:hover{border-color:var(--line)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;padding:6px 12px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+h2{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+h3{font-size:1rem;margin:0;font-weight:600}
+.note{color:var(--muted);font-size:.86rem;margin:0;max-width:80ch}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr))}
+.tiles{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr))}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .k{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.tile .v{font-family:var(--display);font-weight:700;font-size:1.6rem;line-height:1.1;overflow-wrap:anywhere}
+.tile .s{font-size:.8rem;color:var(--muted)}
+.tw{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th{text-align:left;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.cut td{border-bottom:2px dashed var(--accent)}
+.pos{color:var(--good)} .neg{color:var(--bad)} .mut{color:var(--muted)}
+.chip{display:inline-block;font-size:.72rem;font-family:var(--mono);padding:0 6px;border-radius:999px;border:1px solid var(--line);background:var(--chip);white-space:nowrap}
+.chip.bad{color:var(--bad);border-color:currentColor} .chip.good{color:var(--good);border-color:currentColor}
+.rk{font-family:var(--display);font-weight:700;font-size:1.15rem;width:2rem}
+.bar{height:8px;border-radius:4px;background:var(--chip);overflow:hidden;min-width:60px}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.result{background:var(--hl);border-radius:8px;padding:10px 12px;font-size:.9rem}
+.wkgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))}
+.game{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.87rem}
+.game .w{font-weight:600}
+.game .sc{font-family:var(--mono);text-align:right}
+.hidden{display:none}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+input[type=text]{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:3px 6px;min-width:12rem;width:100%}
+svg text{font-family:var(--body)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.stack{display:flex;gap:2px;height:16px;min-width:140px}
+.stack>i{display:block;height:100%}
+.stack>i:first-child{border-radius:4px 0 0 4px}.stack>i:last-child{border-radius:0 4px 4px 0}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--paper);font-size:.78rem;padding:5px 8px;border-radius:6px;z-index:9;max-width:260px;display:none}
+</style>
+<div class="wrap">
+  <header class="top">
+    <div><h1 id="title">League Hub</h1><div class="sub" id="sub">Loading…</div></div>
+    <div class="stamp" id="stamp"></div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-tab="standings" aria-selected="true">Standings</button>
+    <button role="tab" data-tab="power">Power rankings</button>
+    <button role="tab" data-tab="profile">Scoring profile</button>
+    <button role="tab" data-tab="playoffs">Playoff odds</button>
+    <button role="tab" data-tab="path">Path to playoffs</button>
+    <button role="tab" data-tab="players">Players</button>
+    <button role="tab" data-tab="activity">Activity</button>
+    <button role="tab" data-tab="luck">Luck index</button>
+    <button role="tab" data-tab="whatif">What-if records</button>
+    <button role="tab" data-tab="weeks">Weekly results</button>
+    <button role="tab" data-tab="schedule">Schedule</button>
+    <button role="tab" data-tab="how">How it works</button>
+  </nav>
+  <div id="app">
+
+  <section data-panel="standings">
+    <div class="panel hidden" id="livePanel" style="margin-bottom:14px"><h2 id="liveTitle">This week</h2>
+      <p class="note">Live from ESPN. Proj uses actual points for players who have played and ESPN's projection for everyone else.</p>
+      <div class="tw"><table id="liveGames"></table></div></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="panel" style="margin-top:14px"><h2>Standings</h2>
+      <p class="note">Sorted by record, then points for. The dashed line is the playoff cut (top 6). All-play is each team's record if it had played every other team every week.</p>
+      <div class="tw"><table id="stand"></table></div></div>
+  </section>
+
+  <section data-panel="power" class="hidden">
+    <div class="panel"><h2>Power rankings</h2>
+      <p class="note">Power score = 60% season all-play win rate + 40% all-play win rate over the last 3 weeks. It measures how well a team scores compared with the whole league, so the schedule doesn't affect it. Arrows show the move from last week's ranking.</p>
+      <div class="tw"><table id="power"></table></div></div>
+  </section>
+
+  <section data-panel="profile" class="hidden">
+    <div class="panel"><h2>Scoring profile</h2>
+      <p class="note">Recent weeks, then season stats. <b>EDWA</b> is an exponential-decay weighted average: the latest week counts fully and each earlier week counts 0.8 times the week after it, so recent form matters most. <b>SDFM</b> (standard deviations from mean) is EDWA minus the season average, divided by the team's standard deviation: positive means trending up. <b>Std dev</b> is how much a team's score swings week to week. Cells are shaded by rank in the league for that column.</p>
+      <div class="tw"><table id="prof"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Dispersion</h2>
+      <p class="note">Box and whisker plot of every weekly score. The box runs from the 25th to the 75th percentile, the line inside it is the median, the whiskers reach the ceiling (best week) and floor (worst week), and the dot is EDWA. Sorted by median.</p>
+      <div class="legend" id="boxLegend"></div>
+      <div id="boxChart" style="min-height:320px"></div></div>
+  </section>
+
+  <section data-panel="playoffs" class="hidden">
+    <div class="panel"><h2>Playoff odds</h2>
+      <p class="note">From 10,000 simulations of the rest of the season against the real schedule. Each team's expected weekly score is its season average pulled part of the way toward the league average, which matters most early in the season. Top 6 make the playoffs and the top 2 get a bye.</p>
+      <div class="tw"><table id="odds"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Where each team finishes</h2>
+      <p class="note">The chance of finishing at each seed. Darker cells are more likely.</p>
+      <div class="tw" id="seeds"></div></div>
+  </section>
+
+  <section data-panel="path" class="hidden">
+    <div class="panel"><h2>Path to the playoffs</h2>
+      <p class="note">Built from the same kind of simulation as the playoff odds. Status counts wins only: clinched means not enough teams can reach the team's current win total to push it out, and eliminated means six teams already have more wins than it can reach. "Likely in at" is the worst final record that still makes the playoffs in at least 80% of simulations. Biggest game is the remaining game that changes the team's odds most between a win and a loss. Swings are in percentage points of playoff odds, not fantasy points.</p>
+      <div class="tw"><table id="pathSum"></table></div></div>
+    <div class="panel" style="margin-top:14px"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><h2 id="pathTitle">Team path</h2><select id="pathTeam" aria-label="Team"></select></div>
+      <div class="result" id="pathLine"></div>
+      <h3>What each finish is worth</h3>
+      <p class="note">Playoff and bye chances for each number of wins over the remaining games. Blank cells are finishes that almost never happen.</p>
+      <div class="tw"><table id="pathWins"></table></div>
+      <h3>Remaining games</h3>
+      <div class="tw"><table id="pathGames"></table></div>
+      <h3>Root for</h3>
+      <p class="note">Other teams' games that move this team's playoff odds the most.</p>
+      <div class="tw"><table id="pathRoot"></table></div></div>
+  </section>
+
+  <section data-panel="players" class="hidden">
+    <div class="panel"><h2>Where the points come from</h2>
+      <p class="note">Share of each team's starting-lineup points by position this season, flex included under the player's own position. Bench points never count.</p>
+      <div class="legend" id="shareLegend"></div>
+      <div class="tw"><table id="shareTable"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Depth and injury risk</h2>
+      <p class="note">Built from current rosters, valuing each player at his season points per game. <b>Full strength</b> is the best legal lineup from available players: anyone in an IR slot or listed as out or suspended is left out. <b>If top starter is out</b> is the weekly drop from losing the most valuable starter, after the best bench player steps in. <b>Avg loss per injury</b> is that drop averaged over every starter. <b>Bench VORP</b> adds up how far each bench player sits above replacement level, which is the best player at his position who wouldn't start on any team in this league.</p>
+      <div class="tw"><table id="depthTable"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Bye weeks</h2>
+      <p class="note">The best lineup each team can field in each remaining week from its current roster, with players on bye, in an IR slot, or listed as out or suspended left out. Shaded cells fall short of full strength.</p>
+      <div class="tw"><table id="byeTable"></table></div></div>
+    <div class="panel" style="margin-top:14px"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><h2 id="plTitle">Team detail</h2><select id="plTeam" aria-label="Team"></select></div>
+      <h3>Point share by player</h3>
+      <p class="note">Points each player scored while in the starting lineup, as a share of the team's season total. Vs projection compares those points with ESPN's projections for the same weeks.</p>
+      <div class="tw"><table id="plShare"></table></div>
+      <h3>Lineup and next man up</h3>
+      <p class="note">The full-strength lineup. If out shows who would step in and how many points per week the team would lose.</p>
+      <div class="tw"><table id="plDepth"></table></div>
+      <div class="note" id="plOut"></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Beating and missing projections</h2>
+      <p class="note">Players' actual points minus ESPN's projections, counting only weeks they were in a starting lineup (at least 2 starts). The team listed is the one that started them most.</p>
+      <div class="grid"><div><h3>Most above projection</h3><div class="tw"><table id="projUp"></table></div></div><div><h3>Most below projection</h3><div class="tw"><table id="projDown"></table></div></div></div></div>
+  </section>
+
+  <section data-panel="activity" class="hidden">
+    <div class="panel"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><h2>League activity</h2>
+      <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="actLineup"> Show lineup changes</label></div>
+      <p class="note">Trades, waiver claims, free-agent pickups and drops from this week and last, straight from ESPN and checked every minute.</p>
+      <div class="tw"><table id="actList"></table></div></div>
+  </section>
+
+  <section data-panel="whatif" class="hidden">
+    <div class="panel"><h2>What-if records</h2>
+      <p class="note"><b>Vs median</b> counts a win for every week a team scored above the league median (the middle of all 10 scores) and a loss below it. <b>With median game</b> adds that to the real record, as if every week also had a game against the median, the way many leagues score it. <b>All-play</b> is the record from playing all 9 other teams every week, and <b>all-play pace</b> scales that to one game a week. <b>Median vs actual</b> is median wins minus real wins: positive means the real record is worse than the scoring deserved. Sorted by the with-median record.</p>
+      <div class="tw"><table id="wiTable"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Schedule swap</h2>
+      <p class="note">Each row is a team's real weekly scores played against another team's schedule (columns, by owner). The outlined cell is the real record. When a schedule has a team playing itself, it plays that schedule's owner instead.</p>
+      <div class="tw" id="wiSwap"></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Week by week vs the median</h2>
+      <p class="note">Each cell shows the result against the median, then the real result. Green beat the median and red fell below it.</p>
+      <div class="tw" id="wiWeeks"></div></div>
+  </section>
+
+  <section data-panel="luck" class="hidden">
+    <div class="panel"><h2>Luck index</h2>
+      <p class="note">Luck index = actual wins − expected wins. Expected wins averages three ways of judging a week that ignore who you happened to play. A positive index means a team has won more often than its scores deserved.</p>
+      <div class="grid" style="gap:10px">
+        <div class="result"><b>All-play</b><br>The share of the other 9 teams you outscored each week. Beating 6 of 9 counts as 0.67 of a win.</div>
+        <div class="result"><b>Median</b><br>A win for every week you scored above the league median (the middle of all 10 scores) and a loss below it.</div>
+        <div class="result"><b>Average</b><br>A win for every week you scored above the league's mean score. One huge score can pull the mean up, so it sits beside the median.</div>
+      </div>
+      <div id="luckChart" style="min-height:300px"></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Actual vs expected wins</h2><div class="tw"><table id="luckTable"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Week by week</h2>
+      <p class="note">Each cell is colored by the share of the league the team outscored that week: green beat most teams, red beat few. A green ring marks a lucky win (scored in the bottom half and still won). A red ring marks an unlucky loss (scored in the top half and still lost).</p>
+      <div class="tw" id="luckHeat"></div></div>
+    <div class="panel" style="margin-top:14px"><div class="row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><h2>How a team's index adds up</h2><select id="luckTeam" aria-label="Team"></select></div>
+      <div class="tw"><table id="luckWeeks"></table></div><div id="luckSum" class="result"></div></div>
+  </section>
+
+  <section data-panel="weeks" class="hidden">
+    <div class="panel"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><h2 id="wkTitle">Week</h2><select id="wkSel" aria-label="Week"></select></div>
+      <div class="tiles" id="wkTiles"></div>
+      <div class="tw"><table id="wkGames"></table></div></div>
+    <div class="panel" style="margin-top:14px"><h2>Scores by week</h2>
+      <p class="note">Every team's score each week, shaded by how it ranked that week.</p>
+      <div class="tw" id="scoreHeat"></div></div>
+  </section>
+
+  <section data-panel="schedule" class="hidden">
+    <div class="panel"><h2>Remaining schedule</h2>
+      <p class="note">Win chances use the same expected scores as the playoff odds. Strength of schedule is the average expected score of a team's remaining opponents.</p>
+      <div class="tw"><table id="sos"></table></div></div>
+    <div class="wkgrid" id="sched" style="margin-top:14px"></div>
+  </section>
+
+  <section data-panel="how" class="hidden">
+    <div class="panel"><h2>How it works</h2>
+      <p class="note">Every number here comes from the league's game scores and schedule on ESPN. The standings, odds, luck and scoring tabs use scores and the schedule only. The Players tab also uses each team's weekly lineups, current rosters, player injury status, NFL bye weeks and ESPN's weekly projections.</p>
+      <p class="note"><b>Updates:</b> the page loads the league straight from ESPN when it opens and checks again every minute while it's on screen, so scores, trades, pickups, drops, lineups and injuries show up within about a minute. Each time, it rebuilds every team's record and points from the game scores and only uses the data if they match ESPN's standings exactly. If ESPN can't be reached, the page shows its last saved snapshot and says so in the top right.</p>
+      <p class="note"><b>Expected weekly score:</b> league average + (team average − league average) × games ÷ (games + 3). That pulls early-season averages toward the middle, and the effect fades as weeks pass. The week-to-week spread is the league's observed scoring variation.</p>
+      <p class="note"><b>Playoff format:</b> top 6 by record, ties broken by points for. Seeds 1–2 get a bye; 3 plays 6 and 4 plays 5.</p>
+    </div>
+    <div class="panel hidden" id="commish" style="margin-top:14px"><h2>Commissioner: team names</h2>
+      <p class="note">Only league editors see this. Names update from ESPN every week. Anything set here replaces the ESPN name: signed-in viewers see it right away and everyone else after the next weekly refresh. Clear a box to go back to the ESPN name.</p>
+      <div class="tw"><table id="names"></table></div><div class="note" id="namesMsg"></div></div>
+  </section>
+  </div>
+</div>
+<script type="application/json" id="league-data">{"leagueName":"MHS League","season":2026,"leagueId":45411903,"teams":{"1":{"name":"Murder c.little","owner":"Jared Simons"},"2":{"name":"Maserati Marvins","owner":"Andrew Gyongyosi"},"3":{"name":"The Dark Horse","owner":"Tyler Adelman"},"4":{"name":"Panzers left hampton string","owner":"Matt Lupe"},"5":{"name":"Meet the Robinsons","owner":"Jeremy Dranikoff"},"6":{"name":"The Corum Caliphate","owner":"Ryan Rosenberg"},"7":{"name":"The Implication","owner":"Ethan Ostroff"},"8":{"name":"Potentially Frauds","owner":"Alex Rievman"},"9":{"name":"Lord Purdy Flacko Jodye","owner":"Jake Panzer"},"10":{"name":"The Vengeance Fund, LLC","owner":"Miles Ostroff"}},"settings":{"regWeeks":14,"playoffTeams":6,"byes":2,"scoring":"Full PPR","tiebreak":"pf"},"games":[{"w":1,"a":5,"h":2,"as":132.76,"hs":173.96},{"w":1,"a":9,"h":7,"as":192.26,"hs":93.22},{"w":1,"a":6,"h":1,"as":132.96,"hs":119.66},{"w":1,"a":3,"h":8,"as":127.0,"hs":149.0},{"w":1,"a":10,"h":4,"as":155.36,"hs":155.92},{"w":2,"a":8,"h":7,"as":164.46,"hs":156.38},{"w":2,"a":2,"h":3,"as":183.92,"hs":134.06},{"w":2,"a":5,"h":6,"as":71.48,"hs":92.4},{"w":2,"a":10,"h":1,"as":111.84,"hs":89.68},{"w":2,"a":9,"h":4,"as":104.62,"hs":155.76},{"w":3,"a":8,"h":2,"as":164.04,"hs":131.72},{"w":3,"a":6,"h":3,"as":121.94,"hs":143.14},{"w":3,"a":1,"h":9,"as":129.58,"hs":156.18},{"w":3,"a":4,"h":7,"as":93.92,"hs":88.26},{"w":3,"a":10,"h":5,"as":181.66,"hs":148.44},{"w":4,"a":3,"h":5,"as":140.78,"hs":130.76},{"w":4,"a":7,"h":10,"as":175.08,"hs":167.68},{"w":4,"a":4,"h":6,"as":118.42,"hs":108.28},{"w":4,"a":1,"h":2,"as":152.62,"hs":116.52},{"w":4,"a":9,"h":8,"as":151.32,"hs":161.24},{"w":5,"a":10,"h":3,"as":177.54,"hs":147.62},{"w":5,"a":5,"h":9,"as":112.48,"hs":201.06},{"w":5,"a":8,"h":4,"as":175.34,"hs":88.68},{"w":5,"a":7,"h":1,"as":89.92,"hs":162.7},{"w":5,"a":6,"h":2,"as":179.14,"hs":145.1},{"w":6,"a":4,"h":1,"as":108.46,"hs":123.32},{"w":6,"a":2,"h":10,"as":156.9,"hs":139.9},{"w":6,"a":6,"h":8,"as":94.18,"hs":155.92},{"w":6,"a":5,"h":7,"as":114.64,"hs":93.98},{"w":6,"a":3,"h":9,"as":136.58,"hs":101.56},{"w":7,"a":10,"h":6,"as":146.92,"hs":126.02},{"w":7,"a":5,"h":4,"as":123.06,"hs":138.62},{"w":7,"a":1,"h":8,"as":160.18,"hs":118.38},{"w":7,"a":9,"h":2,"as":113.32,"hs":110.7},{"w":7,"a":3,"h":7,"as":85.4,"hs":149.34},{"w":8,"a":7,"h":2,"as":139.46,"hs":156.06},{"w":8,"a":3,"h":4,"as":115.5,"hs":183.68},{"w":8,"a":10,"h":8,"as":144.78,"hs":83.9},{"w":8,"a":6,"h":9,"as":117.9,"hs":133.88},{"w":8,"a":1,"h":5,"as":161.98,"hs":112.92},{"w":9,"a":6,"h":7,"as":101.38,"hs":123.96},{"w":9,"a":9,"h":10,"as":156.14,"hs":144.36},{"w":9,"a":8,"h":5,"as":189.0,"hs":143.48},{"w":9,"a":1,"h":3,"as":152.94,"hs":111.38},{"w":9,"a":4,"h":2,"as":129.7,"hs":110.26},{"w":10,"a":10,"h":4,"as":175.56,"hs":80.18},{"w":10,"a":9,"h":7,"as":105.7,"hs":84.62},{"w":10,"a":3,"h":8,"as":131.78,"hs":258.32},{"w":10,"a":1,"h":6,"as":150.66,"hs":166.36},{"w":10,"a":2,"h":5,"as":143.74,"hs":117.2},{"w":11,"a":9,"h":4,"as":null,"hs":null},{"w":11,"a":2,"h":3,"as":null,"hs":null},{"w":11,"a":1,"h":10,"as":null,"hs":null},{"w":11,"a":6,"h":5,"as":null,"hs":null},{"w":11,"a":8,"h":7,"as":null,"hs":null},{"w":12,"a":1,"h":2,"as":null,"hs":null},{"w":12,"a":4,"h":6,"as":null,"hs":null},{"w":12,"a":3,"h":5,"as":null,"hs":null},{"w":12,"a":7,"h":10,"as":null,"hs":null},{"w":12,"a":9,"h":8,"as":null,"hs":null},{"w":13,"a":3,"h":6,"as":null,"hs":null},{"w":13,"a":4,"h":7,"as":null,"hs":null},{"w":13,"a":8,"h":2,"as":null,"hs":null},{"w":13,"a":1,"h":9,"as":null,"hs":null},{"w":13,"a":5,"h":10,"as":null,"hs":null},{"w":14,"a":7,"h":1,"as":null,"hs":null},{"w":14,"a":3,"h":10,"as":null,"hs":null},{"w":14,"a":6,"h":2,"as":null,"hs":null},{"w":14,"a":8,"h":4,"as":null,"hs":null},{"w":14,"a":5,"h":9,"as":null,"hs":null}],"updatedAt":"2026-11-17T18:53:19Z","lastWeek":10}</script>
+<script type="application/json" id="player-data">{"asOfWeek":10,"players":{"4723086":["Colston Loveland",4,3],"4430807":["Bijan Robinson",2,1],"4426502":["Drake London",3,1],"4430737":["Kyren Williams",2,14],"4567750":["Emeka Egbuka",3,27],"3915416":["DJ Moore",3,2],"4035538":["David Montgomery",2,34],"4035687":["Michael Pittman Jr.",3,23],"4038941":["Justin Herbert",1,24],"4608686":["Kyle Monangai",2,3],"2976212":["Stefon Diggs",3,28],"-16014":["Rams D/ST",16,14],"4683062":["Xavier Worthy",3,12],"4362081":["Cameron Dicker",5,24],"4430539":["Brenton Strange",4,30],"4036378":["Jordan Love",1,9],"4702555":["Jonah Coleman",2,7],"4431459":["Tyler Warren",4,11],"4430878":["Jaxon Smith-Njigba",3,26],"4362238":["Chase Brown",2,4],"3918298":["Josh Allen",1,2],"4427366":["Breece Hall",2,20],"4431299":["Rome Odunze",3,3],"4882093":["Bhayshul Tuten",2,30],"4432773":["Brian Thomas Jr.",3,30],"4432710":["TreVeyon Henderson",2,17],"4385690":["Dalton Kincaid",4,2],"4710714":["De'Zhaun Stribling",3,25],"4429205":["Jordan Addison",3,16],"4426338":["Bo Nix",1,7],"4382466":["Jalen Nailor",3,13],"-16021":["Eagles D/ST",16,21],"4360234":["Evan McPherson",5,4],"4869645":["Caleb Douglas",3,15],"4569559":["Devaughn Vele",3,18],"4426515":["Puka Nacua",3,14],"3043078":["Derrick Henry",2,33],"4361307":["Trey McBride",4,22],"4569618":["Garrett Wilson",3,20],"4361579":["Javonte Williams",2,6],"3116165":["Chris Godwin Jr.",3,27],"16737":["Mike Evans",3,25],"4431611":["Caleb Williams",1,3],"4239996":["Travis Etienne Jr.",2,18],"4429096":["Blake Corum",2,14],"4569587":["Wan'Dale Robinson",3,10],"-16034":["Texans D/ST",16,34],"4870847":["Ja'Kobi Lane",3,33],"4373626":["Tyler Allgeier",2,22],"4034949":["Eddy Pineiro",5,25],"4361741":["Brock Purdy",1,25],"-16008":["Lions D/ST",16,8],"4685702":["Quinshon Judkins",2,5],"4241389":["CeeDee Lamb",3,6],"3929630":["Saquon Barkley",2,21],"4428331":["Rashee Rice",3,12],"4685472":["Tetairoa McMillan",3,29],"4047365":["Josh Jacobs",2,9],"4431452":["Drake Maye",1,17],"4430027":["Sam LaPorta",4,8],"4870795":["Makai Lemon",3,21],"4371733":["Kenny Gainwell",2,27],"4242355":["Jake Ferguson",4,6],"4361432":["Romeo Doubs",3,17],"4373678":["Khalil Shakir",3,2],"3953687":["Brandon Aubrey",5,6],"-16023":["Steelers D/ST",16,23],"12483":["Matthew Stafford",1,14],"5081397":["Dylan Sampson",2,5],"4262921":["Justin Jefferson",3,16],"4429160":["De'Von Achane",2,15],"4612826":["Ladd McConkey",3,24],"3916387":["Lamar Jackson",1,33],"4426388":["Jameson Williams",3,8],"4248528":["Christian Watson",3,9],"4569987":["Jaylen Warren",2,23],"5083076":["Harold Fannin Jr.",4,5],"4688813":["Josh Downs",3,12],"4696981":["Cam Skattebo",2,19],"3916433":["Jakobi Meyers",3,30],"4032473":["Rashid Shaheed",3,26],"4430834":["Jalen McMillan",3,27],"-16003":["Bears D/ST",16,3],"4574716":["Harrison Mevis",5,0],"3149687":["Chris Brooks",2,9],"4819231":["Kaleb Johnson",2,9],"4241985":["J.K. Dobbins",2,7],"4362628":["Ja'Marr Chase",3,4],"4890973":["Ashton Jeanty",2,13],"4595348":["Malik Nabers",3,19],"4596448":["Bucky Irving",2,27],"3915511":["Joe Burrow",1,4],"4572680":["Tucker Kraft",4,9],"4432708":["Marvin Harrison Jr.",3,34],"4360078":["Alec Pierce",3,11],"3916148":["Tony Pollard",2,10],"4047650":["DK Metcalf",3,23],"4880281":["Jordyn Tyson",3,18],"4697815":["Rachaad White",2,28],"2473037":["Jason Myers",5,26],"3052587":["Baker Mayfield",1,27],"-16033":["Ravens D/ST",16,33],"4696044":["Kaelon Black",2,25],"4832800":["Denzel Boston",3,5],"4242335":["Jonathan Taylor",2,11],"4047646":["A.J. Brown",3,17],"4379399":["James Cook III",2,2],"4870808":["Jeremiyah Love",2,22],"16800":["Davante Adams",3,14],"4871023":["Carnell Tate",3,10],"4360761":["Michael Wilson",3,22],"4360248":["Kyle Pitts Sr.",4,1],"3128429":["Courtland Sutton",3,7],"4360310":["Trevor Lawrence",1,30],"4575131":["Jacory Croskey-Merritt",2,28],"4361050":["Isaiah Likely",4,19],"3139477":["Patrick Mahomes",1,12],"2971573":["Ka'imi Fairbairn",5,34],"-16024":["Chargers D/ST",16,24],"4429501":["Ray Davis",2,2],"4428718":["Tre Tucker",3,13],"3117251":["Christian McCaffrey",2,25],"4567048":["Kenneth Walker III",2,12],"4241478":["DeVonta Smith",3,21],"4239993":["Tee Higgins",3,4],"4426354":["George Pickens",3,6],"4685512":["Jadarian Price",2,26],"4432620":["Parker Washington",3,30],"3040151":["George Kittle",4,25],"2577417":["Dak Prescott",1,6],"3121023":["Dallas Goedert",4,21],"4701936":["Matthew Golden",3,9],"4426385":["Zach Charbonnet",2,26],"4429059":["Woody Marks",2,34],"4689114":["Jaxson Dart",1,19],"-16026":["Seahawks D/ST",16,26],"3042519":["Aaron Jones Sr.",2,16],"4697745":["Tyler Loop",5,33],"4429835":["George Holani",2,26],"4429795":["Jahmyr Gibbs",2,8],"4429615":["Zay Flowers",3,33],"4432665":["Brock Bowers",4,13],"4685278":["Luther Burden III",3,3],"3121422":["Terry McLaurin",3,28],"4569173":["Rhamondre Stevenson",2,17],"4361370":["Chris Olave",3,18],"4426348":["Jayden Daniels",1,28],"4038815":["Rico Dowdle",2,23],"4241416":["Chuba Hubbard",2,29],"4360569":["Jordan Mason",2,16],"4695883":["Jalen Coker",3,29],"4362619":["Chris Rodriguez Jr.",2,30],"-16007":["Broncos D/ST",16,7],"4686361":["Cam Little",5,30],"3126486":["Deebo Samuel Sr.",3,25],"4429086":["Michael Mayer",4,13],"4685382":["Omarion Hampton",2,24],"4374302":["Amon-Ra St. Brown",3,8],"4258173":["Nico Collins",3,34],"4372016":["Jaylen Waddle",3,7],"4259545":["D'Andre Swift",2,3],"4568490":["RJ Harvey",2,7],"4040715":["Jalen Hurts",1,21],"4678008":["Jonathon Brooks",2,29],"4429025":["Quentin Johnston",3,24],"4870653":["KC Concepcion",3,5],"4362249":["Jayden Reed",3,9],"3929645":["Juwan Johnson",4,18],"4429023":["MarShawn Lloyd",2,9],"15847":["Travis Kelce",4,12],"-16030":["Jaguars D/ST",16,30],"4689936":["Jake Bates",5,8],"3116365":["Mark Andrews",4,33],"4428850":["Dontayvion Wicks",3,21],"4597500":["Adonai Mitchell",3,20],"5081432":["Antonio Williams",3,28],"-16027":["Buccaneers D/ST",16,27],"4869961":["Chris Bell",3,15],"-16025":["49ers D/ST",16,25],"4361411":["Pat Freiermuth",4,23],"4832846":["Demond Claiborne",2,16],"-16012":["Chiefs D/ST",16,12],"4429022":["Kayshon Boutte",3,34],"4832955":["Emmett Johnson",2,12],"4360689":["Tyler Shough",1,18],"4887558":["Emanuel Wilson",2,26],"4869461":["Trey Smack",5,9],"-16019":["Giants D/ST",16,19],"-16016":["Vikings D/ST",16,16],"4036133":["T.J. Hockenson",4,16],"3917315":["Kyler Murray",1,16],"4570037":["Terrance Ferguson",4,14],"4360939":["Rashod Bateman",3,33],"3117256":["Dalton Schultz",4,34],"3150744":["Chase McLaughlin",5,27],"4429013":["Tank Bigsby",2,21],"4569603":["Malik Washington",3,15],"3046779":["Jared Goff",1,8],"4685720":["Bryce Young",1,29],"3055899":["Harrison Butker",5,12],"4571557":["Spencer Shrader",5,11],"-16002":["Bills D/ST",16,2],"2973405":["Kalif Raymond",3,3],"5083315":["Kenyon Sadiq",4,20],"15818":["Keenan Allen",3,25],"2576980":["Marcus Mariota",1,28],"4695404":["Isaiah Davis",2,20],"3054850":["Alvin Kamara",2,18],"4567104":["Will Reichard",5,16],"4599739":["Kendre Miller",2,0],"4686612":["Tre' Harris",3,24],"4711533":["Ollie Gordon II",2,15],"4685247":["Braelon Allen",2,20],"4682745":["Jaylen Wright",2,15],"-16009":["Packers D/ST",16,9],"4360763":["Brycen Tremayne",3,29],"-16006":["Cowboys D/ST",16,6],"4596334":["Keaton Mitchell",2,24],"4715355":["Darius Cooper",3,21],"-16013":["Raiders D/ST",16,13],"3116406":["Tyreek Hill",3,0],"4242557":["Colby Parkinson",4,14],"4431545":["Will Shipley",2,21],"4431492":["Roman Wilson",3,23],"2578570":["Jacoby Brissett",1,33],"4258620":["Andre Szmyt",5,5],"4241474":["Brian Robinson Jr.",2,1],"4363538":["Chad Ryland",5,22],"3122840":["Deshaun Watson",1,5],"4635008":["Keon Coleman",3,2],"4432577":["C.J. Stroud",1,34],"-16004":["Bengals D/ST",16,4],"4427095":["DeMario Douglas",3,17],"4722893":["Jaleel McLaughlin",2,5],"4249087":["Matt Gay",5,13],"14880":["Kirk Cousins",1,16],"4685261":["Germie Bernard",3,23],"5082424":["Dominic Zvada",5,19],"17372":["Chris Boswell",5,23],"-16029":["Panthers D/ST",16,29],"2969939":["Jameis Winston",1,19],"4360238":["Dameon Pierce",2,21],"5083754":["Ryan Flournoy",3,6],"3045523":["Kendrick Bourne",3,22],"4428557":["Tyjae Spears",2,10],"3895856":["Christian Kirk",3,25],"4360635":["Chig Okonkwo",4,28],"4586312":["Jaylin Noel",3,34],"4360516":["Tyrone Tracy Jr.",2,19],"-16005":["Browns D/ST",16,5],"4723820":["Omar Cooper Jr.",3,20],"3116389":["Samaje Perine",2,4],"2573401":["Tyler Higbee",4,14],"-16020":["Jets D/ST",16,20],"4426386":["Roschon Johnson",2,3],"4686468":["Seth McGowan",2,11],"-16028":["Commanders D/ST",16,28],"4682648":["Malachi Fields",3,19],"4831959":["Eli Raridon",4,17],"3046439":["Hunter Henry",4,17],"4686658":["Mike Washington Jr.",2,13],"-16017":["Patriots D/ST",16,17],"3917232":["Tyler Bass",5,2],"4040761":["Devin Singletary",2,19],"4242512":["Malik Willis",1,15],"-16018":["Saints D/ST",16,18],"3043116":["Demarcus Robinson",3,25],"4569682":["Audric Estime",2,18],"3924327":["Drew Lock",1,26],"4431431":["Corey Kiner",2,17],"8439":["Aaron Rodgers",1,23],"4360797":["Tutu Atwell",3,14],"4430968":["Kimani Vidal",2,24],"2991662":["Mack Hollins",3,17],"4366031":["Tank Dell",3,34],"4710855":["Konata Mumpfield",3,14],"-16011":["Colts D/ST",16,11],"2576925":["Darren Waller",4,29]},"season":{"4362628":[201.3,9,null],"4890973":[151.7,10,null],"4595348":[145.2,9,null],"4596448":[165.1,9,null],"3915511":[242.8,9,null],"4572680":[93.3,10,null],"4360078":[12.2,2,null],"3916148":[144.4,9,null],"4047650":[95.3,9,null],"4880281":[24.0,2,null],"4832800":[107.3,10,null],"-16016":[105.0,9,null],"4711533":[99.1,9,null],"4249087":[101.5,10,null],"4870653":[104.1,10,null],"4686658":[41.3,10,null],"-16019":[55.0,9,null],"2991662":[58.3,6,null],"4431459":[86.5,8,null],"4430878":[283.16,10,null],"4362238":[129.7,9,null],"3918298":[225.02,9,null],"4427366":[71.0,5,null],"4431299":[88.8,9,null],"4882093":[149.5,9,null],"4432773":[39.6,9,null],"4432710":[33.8,6,null],"4385690":[94.7,9,null],"4710714":[0.0,0,null],"4429205":[53.9,7,null],"4685247":[116.6,10,null],"4685261":[67.8,9,null],"-16012":[65.0,9,null],"4360234":[86.0,9,null],"4869645":[72.7,6,null],"4432708":[37.5,7,null],"4635008":[75.5,9,null],"4242335":[165.9,10,null],"4047646":[23.8,4,null],"4379399":[182.1,9,null],"4870808":[53.4,6,null],"16800":[106.0,6,null],"4871023":[79.3,7,null],"4360310":[177.96,9,null],"4361050":[160.5,9,null],"3139477":[179.4,9,null],"4428718":[115.2,10,null],"4571557":[120.1,10,null],"5081432":[72.6,9,null],"4036133":[87.8,8,null],"4686468":[46.4,10,null],"4373678":[83.7,9,null],"4597500":[59.4,6,null],"-16033":[38.0,10,null],"4360797":[21.0,7,null],"4430968":[47.2,9,null],"4685382":[87.7,9,null],"4374302":[189.4,9,null],"4372016":[84.0,9,null],"4259545":[155.8,9,null],"4568490":[69.4,6,null],"4678008":[9.3,2,null],"15847":[106.3,9,null],"4427095":[99.8,10,null],"4360689":[159.12,9,null],"4429059":[78.4,9,null],"4239993":[177.4,9,null],"4697815":[75.9,8,null],"4723820":[66.6,6,null],"-16030":[78.0,9,null],"3150744":[103.9,9,null],"4682648":[63.0,9,null],"14880":[187.68,10,null],"3046439":[84.3,10,null],"3917232":[101.2,9,null],"4723086":[83.3,9,null],"4430807":[205.7,10,null],"4426502":[144.5,10,null],"4430737":[164.3,10,null],"4567750":[78.0,7,null],"3915416":[80.9,7,null],"4035538":[45.5,5,null],"4035687":[15.9,3,null],"4608686":[65.3,4,null],"2976212":[110.6,8,null],"4683062":[66.8,9,null],"4036378":[199.82,10,null],"4685720":[158.68,9,null],"2971573":[105.9,9,null],"4430539":[80.5,9,null],"-16017":[58.0,10,null],"3043116":[24.6,4,null],"2576925":[83.3,9,null],"4262921":[111.6,8,null],"4612826":[51.6,6,null],"3916387":[81.08,5,null],"4426388":[116.7,9,null],"4569987":[161.9,9,null],"5083076":[120.4,10,null],"4688813":[90.4,10,null],"4696981":[99.6,8,null],"3916433":[82.0,9,null],"4567104":[108.2,9,null],"4432577":[188.48,9,null],"4702555":[62.9,5,null],"4429096":[117.5,10,null],"4361741":[210.96,9,null],"4241985":[62.5,9,null],"4366031":[35.1,3,null],"-16002":[63.0,9,null],"4710855":[44.3,10,null],"4685702":[108.2,9,null],"4241389":[230.0,10,null],"3929630":[58.7,7,null],"4428331":[79.4,7,null],"4685472":[135.0,9,null],"4047365":[43.8,3,null],"4431452":[182.2,10,null],"4430027":[95.7,9,null],"4870795":[73.7,9,null],"4242355":[54.6,9,null],"4361432":[58.1,6,null],"3953687":[91.8,10,null],"-16023":[74.0,9,null],"4569603":[89.16,9,null],"15818":[92.2,9,null],"5081397":[39.1,5,null],"4431431":[34.5,10,null],"8439":[134.76,9,null],"3117251":[219.0,9,null],"4567048":[208.4,8,null],"4241478":[71.0,4,null],"4426354":[151.8,9,null],"4685512":[42.9,7,null],"4432620":[145.8,9,null],"3040151":[129.7,9,null],"2577417":[201.86,10,null],"4701936":[183.9,10,null],"4426385":[24.9,3,null],"-16026":[80.0,10,null],"3042519":[99.4,9,null],"4832955":[101.9,9,null],"4258173":[118.0,7,null],"5083754":[102.9,10,null],"4689936":[84.2,9,null],"4696044":[52.3,9,null],"4819231":[27.4,8,null],"4426515":[179.6,7,null],"3043078":[165.28,10,null],"4361307":[173.5,10,null],"4569618":[135.3,9,null],"4361579":[171.3,10,null],"3116165":[57.9,9,null],"16737":[91.0,6,null],"4431611":[112.34,6,null],"4239996":[37.3,4,null],"4569587":[81.3,9,null],"-16034":[57.0,9,null],"4373626":[96.1,10,null],"3116406":[0.0,0,null],"2473037":[79.2,10,null],"-16014":[67.0,10,null],"4360635":[51.3,7,null],"4248528":[195.6,10,null],"2578570":[122.96,9,null],"3924327":[66.38,6,null],"4429795":[263.4,9,null],"4429615":[146.9,9,null],"4432665":[155.8,8,null],"4685278":[140.3,9,null],"4569173":[115.2,10,null],"4361370":[153.4,9,null],"4426348":[137.96,7,null],"4038815":[50.0,6,null],"4241416":[184.8,9,null],"4360569":[32.8,5,null],"4695883":[90.3,8,null],"-16007":[68.0,9,null],"4686361":[103.3,9,null],"3126486":[90.3,6,null],"4429086":[85.6,10,null],"3046779":[173.28,9,null],"-16004":[69.0,9,null]},"lineups":{"1":{"5":[[4723086,6,0.0,12.28,1],[4430807,2,31.3,19.59,1],[4426502,4,5.5,14.21,1],[4430737,2,15.5,14.09,1],[4567750,4,11.3,14.51,1],[3915416,4,23.0,11.83,1],[4035538,23,28.9,13.05,1],[4035687,20,8.8,12.55,1],[4038941,0,13.26,19.39,1],[4608686,20,24.4,10.52,1],[2976212,20,15.5,9.85,1],[-16014,16,2.0,7.45,1],[4683062,20,4.8,9.69,1],[4362081,17,2.0,10.63,1],[4430539,20,10.3,8.21,1],[4036378,20,21.48,15.22,1],[4702555,20,0.0,4.18,1]],"2":[[4431459,6,10.3,12.46,1],[4430878,4,28.2,19.8,1],[4362238,2,18.8,16.45,1],[3918298,0,35.66,19.73,1],[4427366,2,21.8,17.06,1],[4431299,20,7.2,12.75,1],[4882093,23,9.8,12.3,1],[4432773,4,7.0,10.34,1],[4432710,21,0.0,0.0,1],[4385690,20,20.0,8.77,1],[4710714,20,0.0,9.81,1],[4429205,20,0.0,10.07,1],[4426338,20,5.44,16.48,1],[4382466,20,5.7,9.22,1],[-16021,16,3.0,7.19,1],[4360234,17,19.5,8.79,1],[4869645,20,14.4,7.46,1],[4569559,4,19.9,9.44,1]],"9":[[4426515,4,12.4,21.92,1],[3043078,2,37.3,17.16,1],[4361307,6,24.5,14.68,1],[4569618,4,13.9,15.26,1],[4361579,2,24.2,15.87,1],[3116165,4,8.3,10.43,1],[16737,20,16.9,10.92,1],[4431611,0,37.26,16.75,1],[4239996,23,14.8,15.59,1],[4429096,20,5.4,9.63,1],[4569587,20,8.8,10.58,1],[-16034,20,-1.0,6.95,1],[4870847,20,2.1,7.19,1],[4373626,20,9.0,7.66,1],[4034949,17,9.6,9.05,1],[4361741,20,21.1,15.86,1],[-16008,16,10.0,8.25,1]],"7":[[4685702,2,7.0,13.7,1],[4241389,4,15.4,17.93,1],[3929630,2,9.0,18.39,1],[4428331,4,9.9,14.72,1],[4685472,4,10.5,15.3,1],[4047365,20,0.0,0.0,1],[4431452,0,9.82,16.67,1],[4430027,6,9.8,11.12,1],[4870795,20,2.5,8.58,1],[4371733,23,2.8,12.18,1],[4242355,20,2.6,9.89,1],[4361432,20,0.0,8.3,1],[4373678,20,9.0,9.62,1],[3953687,17,1.0,10.3,1],[-16023,16,18.0,7.97,1],[12483,20,4.1,17.9,1],[5081397,20,0.0,5.05,1]],"6":[[4262921,4,31.2,17.73,1],[4429160,2,10.6,18.95,1],[4612826,4,19.2,14.13,1],[3916387,0,26.96,19.61,1],[4426388,4,8.5,12.48,1],[4248528,20,36.7,11.16,1],[4569987,23,10.3,12.94,1],[5083076,6,4.1,11.32,1],[4688813,20,5.7,9.23,1],[4696981,2,14.1,14.1,1],[3916433,20,12.2,10.56,1],[4032473,20,1.4,9.11,1],[4430834,20,0.0,0.0,1],[-16003,16,7.0,7.09,1],[4574716,17,1.0,9.7,1],[3149687,20,2.9,7.86,1],[4819231,20,0.0,1.27,1]],"1":[[4241985,20,3.6,9.82,1],[4362628,4,3.2,20.73,1],[4890973,2,34.7,18.53,1],[4595348,23,12.9,13.02,1],[4596448,2,20.3,13.97,1],[3915511,0,14.16,18.53,1],[4572680,6,9.5,9.11,1],[4432708,4,4.3,11.76,1],[4360078,20,10.1,9.91,1],[3916148,20,4.4,11.98,1],[4047650,4,8.0,12.5,1],[4880281,21,0.0,0.0,1],[4697815,20,4.7,8.97,1],[2473037,17,6.6,9.73,1],[3052587,20,11.64,16.65,1],[-16033,16,6.0,7.31,1],[4696044,20,8.0,4.57,1],[4832800,20,13.9,8.4,1]],"3":[[4242335,2,25.1,18.47,1],[4047646,4,5.6,14.7,1],[4379399,2,9.9,16.49,1],[4870808,23,13.0,14.18,1],[16800,4,5.6,14.17,1],[4871023,20,7.8,12.35,1],[4360761,20,10.6,10.68,1],[4360248,20,0.0,10.01,1],[3128429,4,3.1,11.94,1],[4360310,0,26.1,17.26,1],[4575131,20,12.6,8.51,1],[4361050,6,27.8,9.62,1],[3139477,20,21.66,15.82,1],[2971573,17,9.8,10.17,1],[-16024,16,1.0,8.21,1],[4429501,20,0.3,5.16,1],[4428718,20,4.7,10.19,1]],"8":[[3117251,2,13.8,18.98,1],[4567048,23,38.1,15.19,1],[4241478,4,8.3,15.31,1],[4239993,4,8.9,13.26,1],[4426354,4,5.8,15.17,1],[4685512,2,7.8,14.56,1],[4432620,20,19.3,11.58,1],[3040151,20,3.2,8.47,1],[2577417,0,14.4,17.12,1],[3121023,6,23.7,11.09,1],[4701936,20,15.5,11.25,1],[4426385,21,0.0,0.0,1],[4429059,20,5.0,8.43,1],[4689114,20,26.6,18.92,1],[-16026,16,13.0,8.33,1],[3042519,20,10.0,10.61,1],[4697745,17,15.2,8.72,1],[4429835,20,2.9,6.08,1]],"10":[[4429795,2,35.6,23.31,1],[4429615,4,30.0,14.71,1],[4432665,20,0.0,0.0,1],[4685278,4,9.5,12.28,1],[3121422,23,3.4,12.58,1],[4569173,20,14.5,14.32,1],[4361370,4,30.2,15.31,1],[4426348,0,17.66,17.28,1],[4038815,2,4.1,12.95,1],[4241416,20,23.7,12.54,1],[4360569,20,11.9,9.92,1],[4695883,20,37.8,9.34,1],[4362619,20,2.3,5.9,1],[-16007,16,3.0,7.01,1],[4686361,17,12.7,9.13,1],[3126486,20,18.0,9.04,1],[4429086,6,9.2,9.44,1]],"4":[[4685382,2,8.3,18.17,1],[4374302,4,28.7,19.51,1],[4258173,4,21.2,16.14,1],[4372016,4,1.2,12.56,1],[4259545,2,34.4,12.68,1],[4568490,20,8.1,8.53,1],[4040715,0,24.72,21.45,1],[4678008,20,7.2,10.95,1],[4429025,23,3.7,10.55,1],[4870653,20,7.8,9.22,1],[4362249,20,5.0,10.19,1],[3929645,6,14.4,8.94,1],[4429023,20,3.7,13.17,1],[15847,20,10.1,9.95,1],[-16030,16,13.0,8.85,1],[4689936,17,6.3,8.97,1],[3116365,20,8.9,10.17,1]]},"2":{"8":[[3117251,2,22.6,22.14,1],[4567048,2,25.8,18.51,1],[4241478,4,29.7,14.38,1],[4239993,23,14.5,12.61,1],[4426354,4,10.0,15.26,1],[4685512,20,5.0,13.64,1],[4432620,4,16.8,12.49,1],[3040151,20,18.0,10.71,1],[2577417,0,29.76,20.45,1],[3121023,6,1.4,10.97,1],[4701936,20,9.8,11.09,1],[4426385,21,0.0,0.0,1],[4429059,20,8.5,7.86,1],[4689114,20,0.8,18.62,1],[-16026,16,8.0,8.3,1],[3042519,20,12.5,14.61,1],[4697745,17,5.9,9.35,1],[4429835,20,2.5,8.23,1]],"7":[[4685702,2,9.8,12.41,1],[4241389,4,37.3,18.63,1],[3929630,2,3.0,18.43,1],[4428331,4,12.3,15.41,1],[4685472,4,17.1,14.09,1],[4047365,20,0.0,0.0,1],[4431452,20,8.02,18.7,1],[4430027,6,17.2,11.42,1],[4870795,20,1.9,9.16,1],[4371733,20,4.5,9.76,1],[4242355,20,20.3,9.71,1],[4361432,20,12.6,10.81,1],[4373678,23,6.8,10.5,1],[3953687,17,16.9,10.97,1],[-16023,16,9.0,7.64,1],[12483,0,26.98,18.64,1],[5081397,20,0.0,0.0,1]],"2":[[4431459,20,14.4,11.57,1],[4430878,4,46.5,19.21,1],[4362238,2,11.2,15.84,1],[3918298,0,40.82,23.13,1],[4427366,2,14.2,16.32,1],[4431299,4,7.3,11.98,1],[4882093,23,14.2,10.31,1],[4432773,20,7.0,9.95,1],[4432710,20,13.6,9.49,1],[4385690,6,22.5,10.63,1],[4710714,21,0.0,0.0,1],[4429205,20,4.1,10.77,1],[4382466,20,1.9,8.71,1],[-16021,16,3.0,7.88,1],[4360234,17,12.8,8.27,1],[4869645,20,3.9,9.61,1],[4569559,4,11.4,9.59,1],[4428850,20,12.4,8.77,1]],"3":[[4242335,2,29.2,19.2,1],[4047646,21,0.0,0.0,1],[4379399,2,22.9,19.31,1],[4870808,23,7.5,13.18,1],[16800,4,41.5,16.0,1],[4871023,20,5.7,11.74,1],[4360761,4,3.8,10.14,1],[4360248,20,2.5,10.58,1],[3128429,4,5.5,12.23,1],[4360310,0,6.16,16.28,1],[4575131,20,5.8,10.47,1],[4361050,6,8.3,11.16,1],[3139477,20,28.98,18.61,1],[2971573,17,7.2,10.23,1],[4597500,20,12.3,9.22,1],[5081432,20,5.4,6.09,1],[-16027,16,2.0,8.88,1],[4869961,20,0.0,7.05,1]],"5":[[4723086,6,1.3,11.64,1],[4430807,2,11.1,23.84,1],[4426502,4,8.9,13.15,1],[4430737,23,15.7,14.86,1],[4567750,4,10.3,14.29,1],[3915416,4,-0.1,12.9,1],[4035538,2,4.4,14.67,1],[4035687,20,0.0,0.0,1],[4038941,0,7.88,19.91,1],[4608686,20,7.8,10.04,1],[2976212,20,21.7,10.53,1],[-16014,16,11.0,7.08,1],[4683062,20,13.5,11.25,1],[4362081,17,1.0,10.2,1],[4430539,20,3.7,8.07,1],[4036378,20,13.8,16.32,1],[4702555,20,14.8,6.35,1]],"6":[[4262921,4,8.5,19.09,1],[4429160,2,12.3,17.74,1],[4612826,23,6.5,14.9,1],[3916387,0,14.8,22.23,1],[4426388,4,5.3,12.68,1],[4248528,4,14.1,12.83,1],[4569987,20,9.7,11.69,1],[5083076,6,10.4,10.19,1],[4688813,20,14.2,9.57,1],[4696981,2,9.5,13.3,1],[3916433,20,3.8,9.91,1],[4430834,20,0.0,7.08,1],[4574716,17,3.0,9.72,1],[3149687,20,3.6,9.84,1],[-16025,16,8.0,8.01,1],[4361411,20,7.4,8.58,1],[4832846,20,1.2,3.15,1]],"10":[[4429795,2,23.3,25.13,1],[4429615,20,0.0,0.0,1],[4432665,20,0.0,0.0,1],[4685278,4,6.2,12.77,1],[3121422,4,7.0,12.79,1],[4569173,23,3.6,13.21,1],[4361370,4,22.6,16.53,1],[4426348,0,14.74,20.34,1],[4038815,20,6.4,10.38,1],[4241416,2,14.4,14.93,1],[4360569,21,0.0,0.0,1],[4695883,20,14.6,12.22,1],[4362619,20,1.3,4.98,1],[-16007,16,8.0,7.36,1],[4686361,17,6.7,8.49,1],[3126486,20,6.5,12.27,1],[4429086,6,5.3,10.12,1]],"1":[[4241985,20,3.6,13.08,1],[4362628,4,26.5,19.77,1],[4890973,2,10.3,18.84,1],[4595348,4,1.1,15.41,1],[4596448,2,13.0,15.04,1],[3915511,0,16.18,16.88,1],[4572680,6,3.5,10.79,1],[4432708,20,0.0,9.47,1],[4360078,4,2.1,11.32,1],[3916148,20,7.5,11.54,1],[4047650,23,6.7,12.56,1],[4880281,21,0.0,0.0,1],[4697815,20,14.3,7.64,1],[2473037,17,7.3,9.76,1],[3052587,20,12.18,17.17,1],[-16033,16,3.0,7.9,1],[4696044,20,2.5,8.57,1],[4832800,20,22.5,9.6,1]],"9":[[4426515,20,0.0,0.0,1],[3043078,2,17.7,18.57,1],[4361307,6,18.1,14.82,1],[4569618,4,16.7,16.4,1],[4361579,2,8.0,17.33,1],[3116165,4,8.8,10.17,1],[16737,4,8.4,13.36,1],[4431611,0,7.72,19.83,1],[4239996,20,7.1,13.08,1],[4429096,23,10.2,10.04,1],[4569587,20,1.9,9.65,1],[-16034,20,6.0,7.31,1],[4870847,21,0.0,0.0,1],[4373626,20,3.9,7.24,1],[4034949,17,5.0,10.24,1],[4361741,20,28.48,21.06,1],[-16008,20,-1.0,5.73,1],[-16024,16,4.0,7.78,1]],"4":[[4685382,2,17.5,16.39,1],[4374302,4,37.2,21.17,1],[4258173,21,0.0,0.0,1],[4372016,4,23.8,12.47,1],[4259545,2,12.9,13.94,1],[4568490,20,0.0,0.0,1],[4040715,0,16.16,20.37,1],[4678008,20,2.1,8.84,1],[4429025,4,2.4,10.13,1],[4870653,20,8.2,9.63,1],[4362249,20,1.4,10.11,1],[3929645,6,10.6,8.99,1],[4429023,20,8.6,11.51,1],[15847,23,27.1,10.72,1],[4689936,17,7.1,8.79,1],[3116365,20,10.9,10.49,1],[-16012,16,1.0,7.96,1],[4429022,20,6.7,10.01,1]]},"3":{"8":[[3117251,2,21.6,21.46,1],[4567048,2,21.3,21.86,1],[4241478,4,12.5,16.16,1],[4239993,23,21.0,13.03,1],[4426354,4,15.2,14.22,1],[4685512,20,1.2,12.42,1],[4432620,4,13.0,15.5,1],[3040151,6,26.2,12.98,1],[2577417,0,18.94,17.53,1],[3121023,21,0.0,0.0,1],[4701936,20,23.0,11.66,1],[4426385,21,0.0,0.0,1],[4429059,20,9.1,8.91,1],[-16026,16,2.0,8.43,1],[3042519,20,14.2,14.23,1],[4697745,17,12.3,8.94,1],[4832955,20,1.7,6.18,1],[4360689,20,23.8,19.27,1]],"2":[[4431459,20,14.7,12.54,1],[4430878,4,37.36,21.72,1],[4362238,2,8.9,17.12,1],[3918298,0,17.46,24.05,1],[4427366,2,8.5,16.68,1],[4431299,20,7.4,10.13,1],[4882093,23,17.0,11.33,1],[4432773,20,1.8,10.92,1],[4432710,20,3.9,10.76,1],[4385690,6,3.8,11.89,1],[4710714,21,0.0,0.0,1],[4429205,4,20.0,10.76,1],[-16021,16,0.0,8.75,1],[4360234,17,11.8,8.1,1],[4869645,21,0.0,0.0,1],[4569559,4,6.9,11.7,1],[4428850,20,5.2,10.11,1],[4032473,20,3.4,11.19,1],[-16033,20,4.0,6.2,1]],"6":[[4262921,4,5.2,18.97,1],[4429160,2,1.7,20.19,1],[4612826,4,10.6,13.94,1],[3916387,0,20.44,21.65,1],[4426388,20,8.9,11.18,1],[4248528,4,22.6,14.46,1],[4569987,2,22.6,16.31,1],[5083076,6,24.1,9.92,1],[4688813,23,12.7,12.3,1],[4696981,20,13.0,14.51,1],[3916433,20,19.4,9.4,1],[4430834,20,0.0,5.85,1],[-16025,16,1.0,7.86,1],[4361411,20,5.1,8.36,1],[4819231,20,2.6,8.09,1],[4887558,20,1.4,9.13,1],[4869461,17,1.0,9.5,1]],"3":[[4242335,2,9.2,21.54,1],[4047646,21,0.0,0.0,1],[4379399,2,21.4,17.68,1],[4870808,23,21.9,13.06,1],[16800,4,22.7,16.17,1],[4871023,20,11.8,12.1,1],[4360761,4,25.9,11.6,1],[4360248,20,1.5,10.07,1],[3128429,20,7.6,11.12,1],[4360310,20,19.78,17.87,1],[4575131,20,5.3,9.03,1],[4361050,20,3.3,12.5,1],[3139477,0,15.94,20.05,1],[2971573,17,4.4,9.66,1],[4597500,20,0.0,0.0,1],[4428718,4,8.3,10.01,1],[-16019,16,8.0,7.92,1],[3116365,6,5.4,10.35,1]],"1":[[4241985,20,6.3,11.31,1],[4362628,4,24.8,19.69,1],[4890973,2,12.3,19.44,1],[4595348,4,7.6,14.88,1],[4596448,2,7.8,16.34,1],[3915511,0,22.58,16.82,1],[4572680,6,6.6,10.46,1],[4432708,20,7.0,7.13,1],[4360078,21,0.0,0.0,1],[3916148,20,13.6,10.91,1],[4047650,23,12.1,11.56,1],[4880281,21,0.0,0.0,1],[4697815,20,11.1,9.4,1],[2473037,17,9.7,9.77,1],[4696044,20,1.7,7.6,1],[4832800,4,8.1,11.56,1],[-16016,16,18.0,7.96,1],[4036133,20,3.1,9.28,1],[3917315,20,10.42,17.77,1]],"9":[[4426515,20,0.0,0.0,1],[3043078,2,21.9,18.71,1],[4361307,6,16.5,16.96,1],[4569618,4,28.7,16.65,1],[4361579,2,18.3,15.54,1],[3116165,4,5.5,8.91,1],[16737,4,12.4,12.8,1],[4431611,20,0.0,0.0,1],[4239996,20,9.0,12.23,1],[4429096,20,3.5,9.29,1],[4569587,20,18.7,8.1,1],[-16034,16,11.0,7.37,1],[4870847,21,0.0,0.0,1],[4373626,20,4.9,7.65,1],[4034949,17,6.7,10.18,1],[4361741,0,33.28,21.28,1],[-16008,20,7.0,7.95,1],[4570037,23,1.9,10.78,1]],"4":[[4685382,2,5.6,15.53,1],[4374302,4,11.9,20.59,1],[4258173,21,0.0,0.0,1],[4372016,4,6.4,13.46,1],[4259545,2,10.8,13.24,1],[4568490,20,10.7,9.18,1],[4040715,0,12.62,20.21,1],[4678008,21,0.0,0.0,1],[4429025,20,7.0,11.12,1],[4870653,20,2.9,11.15,1],[3929645,20,23.3,9.3,1],[4429023,20,3.8,8.8,1],[15847,6,13.9,12.95,1],[-16012,16,8.0,8.51,1],[4429022,20,4.1,9.04,1],[4360939,4,5.7,8.93,1],[3117256,23,6.0,11.19,1],[3150744,17,13.0,8.73,1],[4429013,20,-0.5,3.45,1]],"7":[[4685702,2,9.9,14.2,1],[4241389,4,22.2,17.92,1],[3929630,2,9.0,18.12,1],[4428331,4,15.8,12.98,1],[4685472,4,3.7,14.71,1],[4047365,20,0.0,0.0,1],[4431452,0,3.76,19.16,1],[4430027,6,7.4,11.35,1],[4870795,20,5.9,7.58,1],[4371733,20,3.0,7.69,1],[4242355,20,9.3,8.77,1],[4361432,20,7.9,11.8,1],[4373678,23,1.6,10.59,1],[3953687,17,9.9,10.09,1],[-16023,16,5.0,7.79,1],[12483,20,20.9,16.14,1],[5081397,21,0.0,0.0,1],[4569603,20,11.1,10.07,1]],"10":[[4429795,2,41.4,26.53,1],[4429615,23,15.4,14.34,1],[4432665,6,29.6,14.51,1],[4685278,20,19.8,11.4,1],[3121422,20,19.7,12.17,1],[4569173,20,6.8,12.27,1],[4361370,4,21.7,18.44,1],[4426348,21,0.0,0.0,1],[4038815,20,0.0,0.0,1],[4241416,2,15.0,15.06,1],[4360569,21,0.0,0.0,1],[4695883,4,3.8,14.16,1],[4362619,20,9.7,4.41,1],[-16007,16,14.0,6.06,1],[4686361,17,4.0,9.0,1],[3126486,4,17.4,12.6,1],[4429086,20,12.2,6.3,1],[3046779,0,19.36,17.0,1]],"5":[[4723086,20,7.1,9.83,1],[4430807,2,37.3,20.2,1],[4426502,4,30.4,15.94,1],[4430737,23,21.8,13.3,1],[4567750,4,11.2,12.77,1],[3915416,4,12.7,12.88,1],[4035538,2,6.8,12.4,1],[4035687,21,3.6,11.54,1],[4038941,20,12.74,17.67,1],[4608686,20,3.1,8.64,1],[2976212,20,7.3,11.04,1],[-16014,16,3.0,6.43,1],[4683062,20,4.0,11.64,1],[4430539,6,6.2,7.97,1],[4036378,20,18.48,17.65,1],[4702555,21,0.0,0.0,1],[4685720,0,13.64,17.12,1],[3055899,17,5.4,9.29,1]]},"4":{"3":[[4242335,2,22.7,21.12,1],[4047646,21,0.0,0.0,1],[4379399,2,16.3,18.29,1],[4870808,23,6.5,16.1,1],[16800,4,7.2,16.22,1],[4871023,4,23.5,12.28,1],[4360761,4,16.5,13.74,1],[3128429,20,1.4,10.71,1],[4360310,0,13.08,18.91,1],[4575131,20,7.0,11.56,1],[4361050,6,13.6,11.97,1],[3139477,20,17.0,19.1,1],[4597500,21,0.0,0.0,1],[4428718,20,8.4,9.43,1],[3116365,20,13.7,10.22,1],[4571557,17,17.4,9.28,1],[-16002,16,4.0,8.43,1],[2973405,20,2.6,10.1,1],[4373678,20,13.2,9.93,1]],"5":[[4723086,20,11.7,8.75,1],[4430807,2,31.7,22.32,1],[4426502,4,14.6,17.4,1],[4430737,2,36.7,13.41,1],[4567750,20,3.3,11.5,1],[3915416,4,2.7,13.35,1],[4035538,23,4.3,13.9,1],[4035687,20,3.5,9.86,1],[4038941,20,9.56,12.83,1],[4608686,20,30.0,8.44,1],[2976212,4,8.5,13.12,1],[-16014,16,5.0,7.46,1],[4683062,20,11.0,9.94,1],[4036378,20,13.08,15.27,1],[4702555,21,0.0,0.0,1],[4685720,0,21.46,20.64,1],[3055899,17,5.8,9.07,1],[5083315,6,0.0,10.01,1]],"7":[[4685702,2,21.6,12.94,1],[4241389,4,43.3,17.48,1],[3929630,2,2.0,14.94,1],[4428331,4,0.0,15.3,1],[4685472,4,47.2,16.42,1],[4047365,20,0.0,0.0,1],[4431452,20,26.16,17.99,1],[4430027,6,22.4,11.33,1],[4870795,20,5.7,10.74,1],[4371733,20,10.7,8.35,1],[4242355,20,4.1,8.19,1],[4361432,20,23.8,9.97,1],[3953687,17,10.9,9.92,1],[-16023,16,6.0,8.88,1],[12483,0,9.68,16.92,1],[5081397,21,0.0,0.0,1],[4569603,23,12.0,10.71,1],[15818,20,0.0,0.0,1]],"10":[[4429795,2,17.7,27.26,1],[4429615,4,27.8,16.11,1],[4432665,6,20.6,16.32,1],[4685278,4,11.4,12.71,1],[3121422,4,0.0,0.0,1],[4569173,20,18.4,11.8,1],[4361370,23,21.6,18.94,1],[4426348,21,0.0,0.0,1],[4038815,20,0.0,0.0,1],[4241416,2,27.9,17.16,1],[4360569,21,0.0,0.0,1],[4695883,20,0.0,0.0,1],[4362619,20,9.5,5.07,1],[-16007,16,2.0,5.83,1],[4686361,17,14.7,9.04,1],[3126486,20,18.0,10.95,1],[4429086,20,16.2,6.5,1],[3046779,0,23.98,17.71,1]],"4":[[4685382,2,13.3,11.16,1],[4374302,4,15.5,20.89,1],[4258173,4,32.8,15.77,1],[4372016,4,14.5,12.26,1],[4259545,2,7.4,15.14,1],[4568490,20,19.3,10.2,1],[4040715,0,13.52,18.0,1],[4678008,21,0.0,0.0,1],[4429025,20,5.0,8.7,1],[4870653,20,11.4,9.6,1],[3929645,23,11.9,10.72,1],[4429023,20,9.9,6.62,1],[15847,6,3.5,12.04,1],[-16012,16,4.0,7.3,1],[3150744,17,2.0,8.84,1],[4869961,20,0.0,8.87,1],[4429835,20,3.0,10.48,1],[2576980,20,5.34,18.98,1]],"6":[[4262921,21,0.0,0.0,1],[4612826,4,0.0,12.03,1],[3916387,0,18.88,21.72,1],[4426388,23,18.2,10.58,1],[4248528,4,7.7,14.91,1],[4569987,2,15.6,17.72,1],[5083076,6,11.7,11.3,1],[4688813,4,4.6,13.97,1],[4696981,2,7.6,16.72,1],[3916433,20,6.3,10.95,1],[-16025,16,4.0,7.07,1],[4887558,20,27.0,11.98,1],[4695404,20,0.0,9.43,1],[3054850,20,22.8,10.77,1],[4567104,17,20.0,9.46,1],[4599739,20,1.9,9.01,1],[4686612,20,9.0,7.9,1],[4426338,20,13.56,15.46,1]],"1":[[4241985,20,7.2,10.49,1],[4362628,4,5.7,21.2,1],[4890973,2,18.6,19.4,1],[4595348,4,25.2,14.03,1],[4596448,2,6.1,16.62,1],[3915511,0,27.22,18.56,1],[4572680,23,16.5,9.04,1],[4432708,20,8.2,6.43,1],[4360078,21,0.0,0.0,1],[3916148,20,13.0,12.25,1],[4047650,20,18.5,10.27,1],[4880281,21,0.0,0.0,1],[2473037,17,5.5,10.13,1],[4696044,20,1.3,5.58,1],[4832800,4,12.9,10.79,1],[-16016,16,8.0,9.17,1],[4036133,6,26.9,9.15,1],[3917315,20,11.48,19.62,1],[4711533,20,20.0,9.21,1]],"2":[[4431459,6,9.1,13.26,1],[4430878,4,12.6,22.77,1],[4362238,2,19.1,16.69,1],[3918298,0,18.52,22.7,1],[4427366,20,0.0,0.0,1],[4431299,20,15.4,10.09,1],[4882093,2,11.1,13.13,1],[4432773,20,9.7,8.34,1],[4432710,20,4.2,9.78,1],[4385690,20,1.7,10.93,1],[4710714,21,0.0,0.0,1],[4429205,4,9.1,15.24,1],[4360234,17,4.9,8.73,1],[4869645,21,0.0,0.0,1],[4569559,4,17.4,10.79,1],[4428850,20,4.8,11.51,1],[-16033,16,6.0,7.49,1],[4685247,23,8.7,13.17,1],[4682745,20,0.7,7.65,1]],"9":[[4426515,4,29.7,18.78,1],[3043078,2,15.9,21.39,1],[4361307,6,10.1,17.82,1],[4569618,4,5.7,17.06,1],[4361579,2,31.3,15.01,1],[3116165,20,9.1,7.12,1],[16737,23,12.6,12.11,1],[4431611,20,0.0,0.0,1],[4239996,21,0.0,0.0,1],[4429096,20,3.1,8.33,1],[4569587,4,11.0,9.32,1],[-16034,20,4.0,6.4,1],[4870847,21,0.0,0.0,1],[4373626,20,12.9,8.16,1],[4034949,17,4.4,9.62,1],[4361741,0,21.62,19.22,1],[4570037,20,0.0,0.0,1],[-16009,16,9.0,7.63,1],[4360763,20,5.2,9.33,1]],"8":[[3117251,2,16.0,20.85,1],[4567048,2,32.9,21.32,1],[4241478,20,0.0,0.0,1],[4239993,4,28.7,14.07,1],[4426354,4,9.5,14.15,1],[4685512,20,0.0,0.0,1],[4432620,4,2.0,15.84,1],[3040151,6,19.0,14.12,1],[2577417,20,18.1,17.67,1],[3121023,21,0.0,0.0,1],[4701936,20,11.7,13.27,1],[4426385,21,0.0,0.0,1],[4429059,20,8.2,8.62,1],[-16026,16,12.0,8.65,1],[3042519,23,16.8,18.75,1],[4697745,17,8.4,9.56,1],[4832955,20,2.0,5.12,1],[4360689,0,15.94,19.0,1],[5081432,20,5.1,8.7,1]]},"5":{"10":[[4429795,2,39.7,28.06,1],[4429615,23,14.6,14.47,1],[4432665,6,25.0,16.79,1],[4685278,4,8.9,12.56,1],[3121422,4,12.2,13.14,1],[4569173,2,17.5,13.57,1],[4361370,4,8.6,17.2,1],[4426348,21,34.26,21.06,1],[4038815,20,0.0,0.0,1],[4241416,20,0.0,0.0,0],[4360569,21,0.0,0.0,1],[4695883,20,0.0,0.0,0],[4362619,20,2.1,5.3,1],[-16007,16,13.0,7.84,1],[4686361,17,9.1,10.06,1],[3126486,20,2.5,11.26,1],[4429086,20,1.2,8.24,1],[3046779,0,28.94,19.92,1]],"3":[[4242335,2,11.2,19.77,1],[4047646,21,0.0,0.0,1],[4379399,2,24.8,16.37,1],[4870808,23,2.2,14.8,1],[16800,4,22.1,16.06,1],[4871023,4,1.6,14.03,1],[4360761,4,7.28,17.38,1],[3128429,20,9.8,10.45,1],[4360310,0,23.74,19.26,1],[4575131,20,14.2,9.27,1],[4361050,6,32.4,13.18,1],[3139477,20,0.0,0.0,0],[4597500,21,0.0,0.0,1],[4428718,20,7.5,9.31,1],[3116365,20,4.8,9.63,1],[4571557,17,21.3,9.23,1],[4373678,20,11.0,10.15,1],[-16006,16,1.0,8.88,1],[4596334,20,5.9,8.4,1]],"5":[[4723086,6,3.9,9.8,1],[4430807,2,15.8,23.19,1],[4426502,4,20.8,16.68,1],[4430737,2,19.6,18.24,1],[4567750,20,17.2,9.97,1],[3915416,4,0.0,0.0,1],[4035538,23,1.1,12.22,1],[4035687,21,0.0,0.0,1],[4608686,21,0.0,0.0,1],[2976212,20,0.0,0.0,1],[-16014,20,2.0,6.22,1],[4683062,20,0.0,0.0,0],[4036378,0,27.28,15.69,1],[4685720,20,0.0,0.0,0],[5083315,20,0.3,9.57,1],[2971573,17,17.9,9.36,1],[5081432,4,6.1,9.84,1],[4715355,20,17.1,9.38,1],[-16013,16,0.0,7.54,1]],"9":[[4426515,4,39.7,22.58,1],[3043078,2,23.0,17.54,1],[4361307,6,21.6,19.2,1],[4569618,4,25.4,15.09,1],[4361579,2,14.2,18.08,1],[3116165,20,7.0,6.87,1],[16737,4,28.3,13.14,1],[4431611,20,0.0,0.0,1],[4239996,21,0.0,0.0,1],[4429096,20,16.2,8.57,1],[4569587,23,11.3,9.11,1],[-16034,16,15.0,7.56,1],[4870847,21,0.0,0.0,1],[4373626,20,3.6,9.57,1],[4034949,17,6.4,8.87,1],[4361741,0,16.16,18.36,1],[3116406,20,0.0,null,0],[-16025,20,18.0,6.6,1],[4242557,20,1.3,7.88,1]],"8":[[3117251,2,17.3,19.19,1],[4567048,20,0.0,0.0,0],[4241478,20,0.0,0.0,1],[4239993,20,4.2,13.15,1],[4426354,4,30.0,13.57,1],[4685512,21,0.0,0.0,1],[4432620,4,34.4,14.49,1],[3040151,6,7.4,14.07,1],[2577417,0,12.64,18.07,1],[3121023,20,9.8,11.06,1],[4701936,4,22.3,13.17,1],[4426385,21,0.0,0.0,1],[4429059,20,12.5,7.78,1],[-16026,16,9.0,6.23,1],[3042519,2,20.7,18.12,1],[4697745,17,13.3,8.24,1],[4832955,20,0.0,0.0,0],[4360689,20,-0.16,16.9,1],[4431545,23,8.3,10.47,1]],"4":[[4685382,2,4.9,12.45,1],[4374302,4,12.9,20.74,1],[4258173,4,10.6,17.02,1],[4372016,4,4.8,11.65,1],[4259545,2,17.3,17.78,1],[4568490,23,0.7,11.4,1],[4040715,20,15.0,16.42,1],[4678008,21,0.0,0.0,0],[4870653,20,1.5,10.7,1],[3929645,6,5.6,10.21,1],[4429023,20,16.7,9.46,1],[15847,20,0.0,0.0,0],[4869961,20,2.6,9.23,1],[4429835,20,5.1,7.62,1],[4431492,20,0.0,10.38,1],[2578570,0,25.28,19.19,1],[4258620,17,5.6,8.22,1],[-16003,16,1.0,7.57,1]],"7":[[4685702,2,8.0,15.03,1],[4241389,4,2.9,19.82,1],[3929630,20,0.0,0.0,1],[4428331,20,0.0,0.0,0],[4685472,20,0.0,0.0,0],[4047365,20,0.0,0.0,1],[4431452,20,39.46,18.95,1],[4430027,6,19.8,13.33,1],[4870795,20,9.3,10.3,1],[4242355,20,4.9,6.89,1],[4361432,4,2.6,12.47,1],[3953687,17,5.1,11.21,1],[-16023,16,1.0,7.72,1],[12483,0,27.32,18.64,1],[5081397,21,0.0,0.0,1],[4569603,4,12.1,11.35,1],[15818,23,9.5,10.15,1],[4241474,2,1.6,8.29,1]],"1":[[4241985,20,15.4,11.04,1],[4362628,4,19.7,22.6,1],[4890973,2,10.7,18.34,1],[4595348,4,31.1,13.95,1],[4596448,2,33.5,15.87,1],[3915511,0,24.6,20.54,1],[4572680,20,11.6,10.67,1],[4432708,20,0.0,0.0,1],[4360078,21,0.0,0.0,1],[3916148,20,5.2,14.13,1],[4047650,20,5.3,12.68,1],[4880281,21,0.0,0.0,1],[4696044,20,1.6,5.27,1],[4832800,4,13.6,12.21,1],[-16016,16,11.0,7.91,1],[4036133,6,1.7,10.65,1],[4711533,23,14.8,11.23,1],[4363538,17,2.0,9.21,1],[3122840,20,12.2,17.3,1]],"6":[[4262921,4,18.8,19.61,1],[4612826,20,0.0,0.0,1],[3916387,21,0.0,0.0,1],[4426388,4,18.7,11.21,1],[4248528,4,36.3,14.26,1],[4569987,2,42.8,18.35,1],[5083076,6,1.4,12.18,1],[4688813,20,7.7,12.37,1],[4696981,2,7.1,13.69,1],[3916433,20,5.7,10.85,1],[4887558,23,13.2,14.09,1],[3054850,20,2.6,11.4,1],[4567104,17,16.9,9.91,1],[4686612,20,3.6,10.06,1],[-16030,16,3.0,8.25,1],[4635008,20,7.7,8.96,1],[4697815,20,3.0,8.05,1],[4432577,0,20.94,15.76,1]],"2":[[4431459,6,21.4,12.02,1],[4430878,4,24.8,21.33,1],[4362238,2,7.0,17.96,1],[3918298,0,32.5,20.33,1],[4427366,20,0.0,0.0,1],[4431299,4,5.0,11.2,1],[4882093,2,11.6,14.47,1],[4432773,20,0.0,7.66,1],[4432710,20,4.8,10.9,1],[4385690,20,3.7,8.96,1],[4710714,21,0.0,0.0,1],[4429205,20,0.0,0.0,1],[4360234,17,6.6,8.97,1],[4869645,21,0.0,0.0,1],[4569559,4,6.6,10.96,1],[4428850,20,11.3,10.31,1],[4685247,23,20.6,14.54,1],[4682745,20,1.1,7.85,1],[-16004,16,9.0,8.13,1]]},"6":{"4":[[4685382,20,7.9,9.26,1],[4374302,20,0.0,0.0,0],[4372016,4,6.4,9.67,1],[4259545,2,23.0,15.52,1],[4568490,20,14.6,9.5,1],[4040715,21,0.0,0.0,1],[4678008,21,0.0,0.0,1],[3929645,6,0.0,10.9,1],[4429023,2,1.0,11.24,1],[15847,20,9.3,11.71,1],[4258620,17,8.5,8.63,1],[-16003,16,11.0,5.21,1],[4427095,4,19.6,7.52,1],[4722893,20,9.5,10.76,1],[4360689,0,26.96,17.24,1],[4429059,23,10.1,11.8,1],[4239993,20,0.0,0.0,0],[4715355,4,1.9,3.48,1],[4697815,20,15.7,10.69,1]],"1":[[4241985,20,13.6,10.67,1],[4362628,20,0.0,0.0,0],[4890973,2,15.8,19.66,1],[4595348,4,30.5,17.95,1],[4596448,2,6.9,16.72,1],[3915511,20,0.0,0.0,0],[4572680,6,8.7,12.34,1],[4432708,20,6.4,3.61,1],[4360078,21,0.0,0.0,1],[3916148,23,7.6,14.9,1],[4047650,4,20.3,11.92,1],[4880281,21,0.0,0.0,1],[4832800,4,2.5,13.91,1],[-16016,20,0.0,0.0,0],[4711533,20,0.0,0.0,0],[-16019,16,1.0,7.24,1],[4249087,17,11.5,11.08,1],[14880,0,18.52,18.74,1],[4361411,20,3.1,11.25,1]],"2":[[4431459,20,0.0,0.0,1],[4430878,4,27.4,20.62,1],[4362238,20,0.0,0.0,0],[3918298,0,18.3,25.73,1],[4427366,20,0.0,0.0,1],[4431299,4,6.9,10.62,1],[4882093,2,24.7,13.13,1],[4432773,20,0.0,6.47,1],[4432710,20,3.0,8.93,1],[4385690,6,10.8,8.81,1],[4710714,21,0.0,0.0,1],[4429205,21,0.0,0.0,0],[4569559,4,7.2,11.35,1],[4428850,20,4.4,8.8,1],[4685247,2,12.4,14.98,1],[4685261,23,25.7,10.05,1],[-16012,16,15.0,8.35,1],[5082424,17,8.5,11.31,1],[3917315,20,0.0,0.0,0]],"10":[[4429795,20,0.0,0.0,0],[4429615,4,12.7,14.57,1],[4432665,6,11.0,20.44,1],[4685278,23,17.5,12.75,1],[3121422,20,3.7,12.67,1],[4569173,2,3.6,13.66,1],[4361370,4,14.3,17.98,1],[4426348,0,21.0,20.52,1],[4038815,20,7.9,6.47,1],[4241416,2,21.1,15.35,1],[4360569,21,0.0,0.0,0],[4695883,4,15.7,14.31,1],[4362619,20,5.5,4.01,1],[-16007,16,13.0,7.48,1],[4686361,17,10.0,7.66,1],[3126486,20,0.0,0.0,1],[4429086,20,16.5,7.89,1],[3046779,20,0.0,0.0,0]],"6":[[4262921,20,0.0,0.0,0],[4612826,20,2.7,10.66,1],[3916387,21,0.0,0.0,1],[4426388,20,0.0,0.0,0],[4248528,4,9.4,16.87,1],[4569987,2,9.8,15.43,1],[5083076,6,1.9,10.39,1],[4688813,4,8.7,10.15,1],[4696981,23,0.0,9.23,1],[3916433,4,13.3,9.71,1],[4887558,2,5.2,15.49,1],[3054850,20,14.9,10.23,1],[4567104,20,0.0,0.0,0],[4635008,20,15.9,10.95,1],[4432577,0,22.98,16.3,1],[4870653,20,7.9,8.3,1],[17372,17,17.9,9.13,1],[-16029,16,5.0,6.98,1]],"8":[[3117251,2,30.7,21.82,1],[4567048,2,29.9,24.33,1],[4241478,20,20.5,13.87,1],[4426354,23,13.3,13.92,1],[4685512,21,0.0,0.0,1],[4432620,4,10.4,15.92,1],[3040151,6,17.9,15.34,1],[2577417,0,11.02,17.52,1],[3121023,20,12.1,10.27,1],[4701936,4,24.4,16.18,1],[4426385,21,0.0,0.0,1],[-16026,16,4.0,6.9,1],[3042519,20,0.0,0.0,0],[4697745,17,3.4,9.49,1],[4832955,20,4.4,5.24,1],[4258173,4,10.9,17.53,1],[2969939,20,6.48,18.15,1],[4360238,20,15.0,12.72,1],[5083754,20,17.0,8.23,1]],"5":[[4723086,20,18.5,8.71,1],[4430807,2,7.3,24.03,1],[4426502,4,12.2,16.53,1],[4430737,2,9.7,21.62,1],[4567750,4,17.8,11.21,1],[3915416,20,0.0,0.0,1],[4035538,20,0.0,0.0,1],[4035687,21,0.0,0.0,1],[4608686,21,0.0,0.0,1],[2976212,20,16.4,10.8,1],[-16014,16,3.0,8.18,1],[4683062,23,14.3,11.3,1],[4036378,20,20.24,21.47,1],[4685720,0,19.84,18.64,1],[5083315,20,2.2,6.39,1],[2971573,17,11.4,8.66,1],[4430539,6,9.4,9.96,1],[3045523,4,9.7,5.74,1],[4599739,20,9.0,9.31,1]],"7":[[4685702,21,0.0,0.0,1],[4241389,4,16.0,19.28,1],[3929630,20,0.0,0.0,1],[4428331,21,0.0,0.0,1],[4685472,4,14.6,16.52,1],[4047365,20,0.0,0.0,1],[4431452,20,23.8,20.77,1],[4430027,20,0.0,0.0,0],[4870795,20,4.9,5.64,1],[4242355,6,3.3,7.05,1],[4361432,4,11.2,9.51,1],[3953687,17,1.0,10.59,1],[-16023,16,10.0,8.61,1],[12483,0,16.88,20.14,1],[5081397,20,0.0,0.0,1],[4569603,20,0.0,0.0,0],[15818,23,16.2,9.51,1],[4241474,2,3.0,7.78,1],[4428557,2,1.8,8.85,1]],"3":[[4242335,2,21.1,20.41,1],[4047646,4,5.7,13.05,1],[4379399,2,24.3,20.43,1],[4870808,20,0.0,0.0,1],[16800,4,6.9,16.58,1],[4871023,23,19.0,11.23,1],[4360761,4,7.2,14.44,1],[3128429,20,3.9,8.55,1],[4360310,20,27.34,18.06,1],[4575131,20,0.0,0.0,1],[4361050,6,23.9,15.07,1],[3139477,0,10.48,19.16,1],[4597500,21,0.0,0.0,1],[4428718,20,26.7,10.46,1],[3116365,20,1.4,8.73,1],[4571557,17,9.0,11.45,1],[4373678,20,13.4,11.82,1],[-16033,16,9.0,8.33,1],[3895856,21,0.0,0.0,1]],"9":[[4426515,4,14.0,23.69,1],[3043078,2,5.0,19.33,1],[4361307,6,12.3,17.46,1],[4569618,4,8.4,15.27,1],[4361579,2,13.0,17.38,1],[3116165,20,7.7,6.63,1],[16737,23,12.4,15.31,1],[4431611,20,16.5,17.09,1],[4239996,21,0.0,0.0,1],[4429096,20,14.0,9.15,1],[4569587,4,5.2,9.49,1],[-16034,20,1.0,7.02,1],[4870847,21,8.0,4.69,1],[4373626,20,5.8,12.74,1],[4361741,0,17.36,21.84,1],[3116406,20,0.0,null,0],[-16025,16,6.0,6.61,1],[2473037,17,7.9,6.99,1],[4360635,20,13.9,6.55,1]]},"7":{"10":[[4429795,2,19.3,26.94,1],[4429615,23,29.7,15.84,1],[4432665,6,13.3,19.11,1],[4685278,4,25.7,13.0,1],[4569173,20,22.5,11.78,1],[4361370,4,11.6,16.3,1],[4426348,20,0.0,0.0,0],[4038815,20,14.6,7.9,1],[4241416,2,10.0,15.47,1],[4360569,21,6.8,10.68,1],[4695883,4,1.9,15.96,1],[4362619,20,0.0,0.0,0],[-16007,16,5.0,7.4,1],[4686361,20,0.0,0.0,0],[3126486,20,0.0,0.0,1],[4429086,20,6.2,8.49,1],[3046779,0,18.02,18.92,1],[17372,17,12.4,11.81,1]],"6":[[4262921,4,8.4,19.14,1],[4612826,20,0.0,0.0,0],[3916387,21,0.0,0.0,1],[4426388,4,26.1,11.0,1],[4248528,4,10.7,17.28,1],[4569987,2,18.7,18.3,1],[5083076,6,13.1,8.29,1],[4688813,20,3.8,8.51,1],[4696981,2,21.1,8.05,1],[3916433,20,0.0,0.0,0],[4887558,20,20.5,11.01,1],[3054850,20,13.2,8.22,1],[4567104,17,12.7,12.05,1],[4635008,20,0.0,0.0,0],[4432577,0,16.52,19.92,1],[-16029,16,-3.0,7.65,1],[4586312,23,1.7,8.56,1],[4702555,21,8.9,2.68,1],[4360516,20,8.7,5.58,1]],"5":[[4723086,6,19.9,11.7,1],[4430807,2,17.2,21.92,1],[4426502,4,19.6,17.86,1],[4430737,2,18.1,20.16,1],[4567750,20,0.0,0.0,1],[3915416,20,0.0,0.0,0],[4035538,20,0.0,0.0,1],[4035687,21,0.0,0.0,1],[4608686,21,0.0,0.0,1],[2976212,20,0.0,0.0,0],[4683062,4,4.1,12.75,1],[4036378,0,16.96,20.15,1],[4685720,20,7.42,18.08,1],[5083315,20,1.6,5.28,1],[2971573,17,12.5,11.68,1],[4430539,20,0.0,0.0,0],[3045523,4,3.9,7.81,1],[4599739,23,5.8,9.64,1],[-16005,16,5.0,7.29,1]],"4":[[4685382,20,0.0,0.0,0],[4374302,4,26.2,20.16,1],[4372016,20,8.8,11.45,1],[4259545,2,19.0,16.69,1],[4568490,2,16.0,11.53,1],[4040715,21,0.0,0.0,1],[4678008,21,0.0,0.0,1],[3929645,20,1.7,8.72,1],[15847,6,8.4,10.27,1],[4258620,17,8.0,8.92,1],[-16003,16,4.0,7.57,1],[4427095,4,5.3,10.73,1],[4360689,0,13.82,15.64,1],[4429059,23,9.1,14.48,1],[4239993,4,28.8,14.69,1],[4697815,20,0.0,0.0,0],[4723820,20,24.5,8.15,1],[3116389,20,7.6,6.27,1],[-16030,20,0.0,0.0,0]],"1":[[4241985,20,8.3,13.98,1],[4362628,4,17.2,22.58,1],[4890973,2,21.6,17.41,1],[4595348,4,20.1,18.35,1],[4596448,2,26.0,14.59,1],[3915511,0,28.88,19.78,1],[4572680,6,14.8,12.35,1],[4432708,20,7.6,7.42,1],[4360078,21,0.0,0.0,1],[3916148,20,38.5,14.59,1],[4047650,4,7.6,15.3,1],[4880281,21,0.0,0.0,1],[4832800,23,5.7,12.33,1],[-16016,16,10.0,9.0,1],[4711533,20,19.3,12.27,1],[4249087,17,8.3,10.07,1],[14880,20,20.4,16.8,1],[4361411,20,4.0,10.15,1],[4032473,20,2.1,7.99,1]],"8":[[3117251,2,22.0,22.5,1],[4567048,2,9.7,19.79,1],[4241478,20,0.0,0.0,1],[4426354,4,15.7,13.57,1],[4685512,21,0.0,0.0,1],[4432620,20,0.0,0.0,0],[3040151,6,14.8,17.18,1],[2577417,0,23.28,17.13,1],[3121023,20,9.8,11.54,1],[4701936,4,9.9,17.49,1],[4426385,21,0.0,0.0,1],[-16026,16,10.0,6.18,1],[3042519,23,3.6,12.56,1],[4697745,17,6.8,8.86,1],[4832955,20,3.7,5.36,1],[4258173,4,2.6,17.22,1],[4360238,20,11.8,6.95,1],[5083754,20,11.0,8.99,1],[4360248,20,13.2,9.88,1]],"9":[[4426515,4,21.8,23.46,1],[3043078,2,5.9,19.02,1],[4361307,6,29.1,16.16,1],[4569618,4,4.6,15.57,1],[4361579,2,23.5,17.31,1],[3116165,4,6.7,11.32,1],[16737,21,0.0,0.0,1],[4431611,20,22.12,18.03,1],[4239996,21,0.0,0.0,1],[4429096,20,17.1,10.24,1],[4569587,20,4.7,8.55,1],[-16034,20,3.0,8.44,1],[4870847,20,5.5,4.85,1],[4373626,20,7.9,11.48,1],[4361741,0,12.02,20.9,1],[3116406,20,0.0,null,0],[-16025,16,-1.0,6.3,1],[2473037,17,8.0,9.86,1],[4715355,23,2.7,9.24,1]],"2":[[4431459,21,0.0,0.0,1],[4430878,4,33.3,20.89,1],[4362238,2,9.8,15.09,1],[3918298,20,0.0,0.0,0],[4427366,20,0.0,0.0,1],[4431299,4,10.9,10.48,1],[4882093,20,0.0,0.0,0],[4432773,20,0.0,0.0,0],[4432710,20,4.3,7.31,1],[4385690,20,0.0,0.0,0],[4710714,21,0.0,0.0,1],[4429205,23,4.3,11.16,1],[4569559,20,16.4,10.44,1],[4685247,2,21.4,15.23,1],[4685261,4,5.7,13.67,1],[-16012,16,3.0,7.96,1],[3917315,0,13.9,18.4,1],[4360234,17,5.0,7.66,1],[2573401,6,3.4,7.49,1]],"3":[[4242335,2,19.0,15.89,1],[4047646,4,7.8,16.57,1],[4379399,20,0.0,0.0,0],[4870808,20,0.0,0.0,1],[16800,21,0.0,0.0,1],[4871023,4,9.9,11.46,1],[4360761,4,10.6,12.65,1],[4360310,20,0.0,0.0,0],[4575131,21,0.0,0.0,0],[4361050,6,3.2,14.59,1],[3139477,0,6.0,15.97,1],[4428718,23,23.3,10.64,1],[4571557,17,3.3,10.15,1],[3895856,20,0.0,8.14,1],[5081432,20,0.0,0.0,0],[4036133,20,13.5,10.68,1],[-16020,16,1.0,8.42,1],[4570037,20,0.0,0.0,1],[4426386,2,1.3,9.25,1]],"7":[[4685702,2,23.4,13.66,1],[4241389,4,24.4,19.2,1],[3929630,2,15.1,15.66,1],[4428331,20,0.0,0.0,1],[4685472,4,8.0,16.34,1],[4047365,23,20.1,12.96,1],[4431452,0,27.44,21.16,1],[4430027,6,2.8,12.86,1],[4870795,20,19.7,8.72,1],[4242355,20,0.0,5.92,1],[4361432,21,0.0,0.0,1],[3953687,17,13.6,8.43,1],[-16023,16,8.0,7.76,1],[12483,20,17.5,19.09,1],[4569603,4,6.5,10.42,1],[15818,20,6.1,9.07,1],[4241474,20,0.0,0.0,0],[5081397,20,10.7,6.11,1]]},"8":{"7":[[4685702,2,6.9,11.51,1],[4241389,4,12.8,20.83,1],[3929630,2,12.4,14.41,1],[4428331,20,18.3,13.0,1],[4685472,4,11.8,16.15,1],[4047365,23,23.2,15.53,1],[4431452,0,22.46,22.61,1],[4430027,6,6.5,10.88,1],[4870795,4,11.7,10.35,1],[4242355,20,0.0,5.51,1],[4361432,21,0.0,0.0,1],[3953687,17,12.7,10.33,1],[-16023,16,19.0,8.87,1],[12483,20,8.28,17.36,1],[4569603,20,15.0,10.37,1],[15818,20,13.7,9.25,1],[4241474,20,0.0,0.0,1],[5081397,20,12.9,6.84,1]],"2":[[4431459,6,5.8,11.49,1],[4430878,4,25.8,23.02,1],[4362238,23,16.1,17.5,1],[3918298,0,26.56,24.21,1],[4427366,20,0.0,0.0,1],[4431299,20,12.7,9.46,1],[4882093,2,31.9,15.13,1],[4432773,20,8.2,5.37,1],[4432710,21,0.0,0.0,1],[4385690,20,18.6,9.03,1],[4710714,21,0.0,0.0,0],[4429205,4,11.6,9.99,1],[4685247,2,25.3,18.17,1],[4685261,4,8.0,10.95,1],[-16012,16,0.0,5.97,1],[4360234,17,5.0,8.6,1],[4869645,20,8.3,9.26,1],[4432708,20,0.0,0.0,0],[4569559,20,0.0,0.0,0]],"3":[[4242335,2,6.7,16.19,1],[4047646,20,0.0,0.0,1],[4379399,2,18.1,19.65,1],[4870808,23,2.3,11.91,1],[16800,21,0.0,0.0,1],[4871023,20,0.0,0.0,1],[4360761,4,28.8,12.95,1],[4360310,0,19.4,20.74,1],[4575131,21,0.0,0.0,1],[4361050,20,0.0,0.0,0],[3139477,20,27.44,14.58,1],[4428718,4,0.0,11.14,1],[4571557,17,1.0,10.64,1],[5081432,4,10.4,8.27,1],[4036133,6,15.8,11.34,1],[4570037,20,0.0,0.0,1],[4686468,20,2.9,3.7,1],[-16028,16,13.0,7.97,1],[4373678,20,11.4,9.5,1]],"4":[[4685382,20,4.7,8.4,1],[4374302,4,12.6,18.45,1],[4372016,20,14.9,11.13,1],[4259545,2,27.9,15.01,1],[4568490,21,0.0,0.0,1],[4678008,21,0.0,0.0,1],[3929645,20,0.0,0.0,0],[15847,6,11.7,9.49,1],[4427095,4,16.6,11.24,1],[4360689,20,0.0,0.0,0],[4429059,20,0.0,0.0,0],[4239993,4,39.5,16.05,1],[4697815,2,14.0,12.69,1],[4723820,23,0.0,10.81,1],[-16030,16,20.0,8.32,1],[3150744,17,13.2,9.81,1],[4682648,20,0.0,0.0,0],[14880,0,28.18,17.08,1],[4831959,20,1.5,7.98,1]],"10":[[4429795,2,26.8,25.74,1],[4429615,4,0.0,21.12,1],[4432665,6,28.2,16.68,1],[4685278,4,18.6,13.8,1],[4569173,23,12.0,16.15,1],[4361370,20,0.0,0.0,0],[4426348,0,14.98,23.36,1],[4038815,20,11.6,9.48,1],[4241416,2,24.9,15.83,1],[4360569,21,2.0,9.8,1],[4695883,4,9.6,15.03,1],[4362619,20,12.8,6.32,1],[-16007,16,2.0,6.68,1],[4686361,20,6.0,9.31,1],[3126486,20,0.0,0.0,0],[4429086,20,10.3,7.45,1],[3046779,20,9.04,16.47,1],[17372,17,7.7,10.89,1]],"8":[[3117251,20,0.0,0.0,0],[4567048,2,12.4,20.66,1],[4241478,20,0.0,0.0,1],[4426354,4,6.8,14.36,1],[4685512,21,5.7,7.91,1],[4432620,4,3.6,16.54,1],[3040151,20,0.0,0.0,0],[2577417,0,19.8,19.95,1],[3121023,6,7.2,11.17,1],[4701936,4,20.9,15.6,1],[4426385,20,5.9,10.66,1],[-16026,16,2.0,7.04,1],[3042519,2,6.0,10.67,1],[4697745,17,2.6,9.1,1],[4832955,20,29.3,4.85,1],[4258173,20,0.0,0.0,0],[5083754,20,13.1,9.22,1],[4360248,23,2.6,10.35,1]],"6":[[4262921,4,14.3,18.51,1],[4612826,23,12.6,10.6,1],[3916387,0,0.0,22.75,1],[4426388,4,17.0,11.37,1],[4248528,4,19.3,15.03,1],[4569987,2,23.3,16.55,1],[5083076,20,25.4,9.0,1],[4688813,20,12.3,8.44,1],[4696981,20,0.0,0.0,0],[3916433,20,4.4,10.78,1],[4887558,20,0.0,7.06,1],[3054850,20,0.0,0.0,0],[4567104,17,0.0,11.75,1],[4432577,20,0.0,0.0,0],[4702555,2,20.4,9.52,1],[3046439,6,6.0,10.49,1],[-16004,16,5.0,7.31,1]],"9":[[4426515,4,25.0,23.71,1],[3043078,2,14.0,19.52,1],[4361307,6,20.2,18.11,1],[4569618,4,14.3,14.52,1],[4361579,2,6.7,21.0,1],[3116165,20,0.0,10.78,1],[16737,21,0.0,0.0,0],[4431611,0,13.98,15.85,1],[4239996,21,0.0,0.0,0],[4429096,23,13.3,11.87,1],[4569587,4,15.7,10.05,1],[-16034,20,0.0,0.0,0],[4870847,20,2.3,8.07,1],[4373626,20,40.1,8.16,1],[4361741,20,0.0,0.0,0],[3116406,20,0.0,null,0],[2473037,17,0.7,9.91,1],[-16014,16,10.0,8.9,1],[4360635,20,3.2,8.4,1]],"1":[[4241985,20,1.3,9.22,1],[4362628,4,33.1,22.66,1],[4890973,2,10.3,17.19,1],[4595348,20,0.0,0.0,0],[4596448,2,23.0,17.78,1],[3915511,0,42.98,23.37,1],[4572680,6,17.3,10.95,1],[4360078,21,0.0,0.0,1],[3916148,20,30.7,15.77,1],[4047650,4,1.4,12.52,1],[4880281,21,0.0,0.0,0],[4832800,4,9.7,11.73,1],[-16016,16,7.0,6.39,1],[4711533,23,6.9,14.73,1],[4249087,17,10.3,10.49,1],[4032473,20,0.0,0.0,1],[4870653,20,6.7,10.39,1],[4696044,20,0.0,0.0,0],[4686658,20,8.3,7.04,1]],"5":[[4723086,6,11.5,11.94,1],[4430807,2,7.6,20.86,1],[4426502,4,1.8,18.75,1],[4430737,2,12.9,18.5,1],[4567750,21,0.0,0.0,1],[3915416,23,16.6,14.08,1],[4035538,20,0.0,0.0,0],[4035687,21,0.0,0.0,1],[4608686,20,0.0,0.0,1],[2976212,4,12.8,12.82,1],[4683062,4,4.3,8.28,1],[4036378,0,21.52,17.49,1],[4685720,20,10.36,17.31,1],[2971573,20,0.0,0.0,0],[4430539,20,7.5,9.85,1],[3045523,20,3.9,8.36,1],[4599739,20,0.0,0.0,0],[-16017,16,8.0,7.38,1],[3917232,17,15.9,10.74,1]]},"9":{"6":[[4262921,4,8.8,18.96,1],[4612826,4,0.0,11.07,1],[3916387,21,0.0,0.0,1],[4426388,4,5.0,14.44,1],[4569987,20,0.0,0.0,0],[5083076,6,12.2,11.77,1],[4688813,20,5.4,8.7,1],[4696981,20,0.0,0.0,1],[3916433,20,10.5,10.74,1],[3054850,20,7.9,12.52,1],[4567104,17,9.6,11.22,1],[4432577,20,39.36,17.33,1],[4702555,2,18.8,14.76,1],[-16004,16,4.0,7.15,1],[4429096,23,11.8,10.09,1],[4361741,0,25.28,22.7,1],[4241985,20,3.2,8.4,1],[4040761,2,5.9,13.69,1]],"7":[[4685702,23,5.5,14.66,1],[4241389,4,35.5,22.09,1],[3929630,2,8.2,12.91,1],[4428331,4,9.9,14.31,1],[4685472,4,15.6,13.96,1],[4047365,2,0.5,16.96,1],[4431452,0,18.26,21.34,1],[4430027,6,7.2,12.27,1],[4870795,20,12.1,10.48,1],[4242355,20,10.1,8.43,1],[4361432,21,0.0,0.0,1],[3953687,17,9.3,10.95,1],[-16023,20,0.0,0.0,0],[12483,20,11.22,17.31,1],[4569603,20,4.1,9.98,1],[15818,20,6.6,10.33,1],[5081397,20,7.8,8.99,1],[-16003,16,14.0,8.28,1]],"9":[[4426515,4,37.0,25.18,1],[3043078,2,5.58,14.66,1],[4361307,6,12.4,14.56,1],[4569618,20,0.0,0.0,1],[4361579,2,24.4,18.08,1],[3116165,4,4.8,8.25,1],[16737,20,0.0,0.0,1],[4431611,0,14.76,17.17,1],[4239996,21,0.0,0.0,1],[4569587,20,0.0,0.0,0],[-16034,16,12.0,8.92,1],[4373626,23,6.6,13.69,1],[3116406,20,0.0,null,0],[2473037,17,6.5,10.51,1],[-16014,20,12.0,7.03,1],[4360635,20,11.7,9.6,1],[4248528,4,32.1,16.35,1],[4242512,20,3.82,17.78,1]],"10":[[4429795,2,13.4,27.7,1],[4429615,4,5.3,13.93,1],[4432665,6,24.3,18.82,1],[4685278,23,22.7,14.3,1],[4569173,20,14.8,15.24,1],[4361370,4,16.8,14.49,1],[4426348,0,14.56,20.31,1],[4038815,20,0.0,0.0,0],[4241416,2,13.6,18.56,1],[4360569,21,6.2,8.26,1],[4695883,4,6.6,12.33,1],[4362619,20,11.2,5.81,1],[-16007,16,8.0,7.73,1],[4686361,17,19.1,8.62,1],[3126486,20,0.0,0.0,1],[4429086,20,4.7,8.47,1],[3046779,20,5.3,19.89,1],[17372,20,0.0,0.0,0]],"8":[[3117251,2,22.7,22.56,1],[4567048,2,38.3,23.93,1],[4241478,21,0.0,0.0,1],[4426354,20,0.0,0.0,1],[4685512,20,11.8,11.09,1],[4432620,4,16.1,12.88,1],[3040151,6,9.8,16.74,1],[2577417,0,19.5,19.52,1],[4701936,4,34.4,17.97,1],[4426385,20,9.6,11.06,1],[-16026,16,10.0,8.63,1],[3042519,20,3.1,8.51,1],[4832955,20,9.4,7.57,1],[4258173,4,15.5,14.22,1],[5083754,23,7.3,12.64,1],[4360248,20,5.3,10.26,1],[4689936,17,15.4,9.9,1],[-16009,20,12.0,6.75,1]],"5":[[4723086,6,9.4,12.31,1],[4430807,2,28.7,20.62,1],[4426502,4,11.8,17.18,1],[4430737,2,9.1,17.36,1],[4567750,20,6.9,11.77,1],[3915416,4,6.6,12.89,1],[4035538,21,0.0,0.0,1],[4035687,21,0.0,0.0,0],[4608686,20,0.0,0.0,1],[2976212,4,8.1,12.84,1],[4683062,23,10.8,9.4,1],[4036378,0,36.18,17.52,1],[4685720,20,20.34,16.15,1],[2971573,17,17.8,10.24,1],[4430539,20,4.2,9.35,1],[-16017,20,0.0,6.81,1],[3917232,20,13.6,10.96,1],[-16018,16,5.0,7.49,1],[3043116,20,5.2,9.89,1]],"1":[[4362628,4,33.5,23.23,1],[4890973,2,7.0,15.08,1],[4595348,4,9.3,17.67,1],[4596448,2,28.5,16.25,1],[3915511,0,29.54,21.72,1],[4572680,6,1.9,10.91,1],[4360078,21,0.0,0.0,1],[3916148,20,0.0,0.0,0],[4047650,20,0.0,0.0,0],[4880281,21,5.0,5.95,1],[4832800,4,15.8,12.85,1],[-16016,20,6.0,6.59,1],[4711533,23,7.4,17.08,1],[4249087,17,7.0,9.73,1],[4032473,20,0.0,0.0,1],[4870653,20,20.8,11.38,1],[4696044,20,7.0,11.04,1],[4686658,20,-0.3,7.09,1],[-16019,16,13.0,8.54,1]],"3":[[4242335,2,9.4,20.4,1],[4047646,20,0.0,0.0,1],[4379399,2,18.7,19.56,1],[4870808,21,0.0,0.0,1],[16800,21,0.0,0.0,1],[4871023,20,0.0,0.0,0],[4360761,4,12.0,13.46,1],[4360310,0,15.58,20.48,1],[4361050,6,16.3,12.97,1],[3139477,20,16.48,18.59,1],[4428718,20,9.5,9.59,1],[4571557,17,17.6,11.36,1],[5081432,4,5.5,10.28,1],[4036133,23,7.3,10.8,1],[4570037,20,0.0,0.0,1],[4686468,20,11.2,4.85,1],[4373678,20,9.8,9.3,1],[4597500,4,0.0,11.7,1],[-16008,16,9.0,7.18,1]],"4":[[4685382,20,6.0,9.02,1],[4374302,4,16.6,21.38,1],[4372016,20,3.2,11.65,1],[4259545,2,3.1,19.22,1],[4568490,21,0.0,0.0,1],[4678008,21,0.0,0.0,1],[3929645,20,11.4,7.22,1],[15847,6,17.3,10.83,1],[4427095,4,17.2,11.3,1],[4360689,0,19.7,15.57,1],[4429059,23,8.4,15.14,1],[4239993,4,20.2,17.08,1],[4697815,2,6.9,12.19,1],[4723820,20,13.8,11.37,1],[-16030,16,11.0,9.29,1],[3150744,17,9.3,9.17,1],[4682648,20,7.0,8.57,1],[14880,20,12.64,15.26,1],[3046439,20,6.5,9.57,1]],"2":[[4431459,6,8.4,12.03,1],[4430878,4,12.1,23.4,1],[4362238,2,10.5,17.18,1],[3918298,0,12.86,20.4,1],[4427366,23,11.7,11.14,1],[4431299,4,16.0,10.29,1],[4882093,2,8.9,16.06,1],[4432773,20,0.0,6.67,1],[4432710,21,0.0,0.0,1],[4385690,20,5.8,8.73,1],[4710714,21,0.0,0.0,1],[4429205,4,4.8,11.23,1],[4685247,20,5.4,9.23,1],[4685261,20,0.0,0.0,0],[-16012,16,11.0,7.33,1],[4360234,17,14.0,7.72,1],[4869645,20,13.0,9.61,1],[4432708,20,4.0,7.59,1],[4569682,20,14.7,11.77,1]]},"10":{"10":[[4429795,2,46.2,24.77,1],[4429615,23,11.4,15.18,1],[4432665,6,3.8,15.84,1],[4685278,20,0.0,0.0,0],[4569173,20,1.5,13.7,1],[4361370,4,6.0,16.35,1],[4426348,0,20.76,18.12,1],[4038815,20,5.4,9.96,1],[4241416,2,34.2,20.79,1],[4360569,20,5.9,9.49,1],[4695883,4,0.3,11.54,1],[-16007,20,0.0,0.0,0],[4686361,17,21.0,10.14,1],[3126486,4,27.9,11.88,1],[4429086,20,3.8,7.27,1],[3046779,20,22.42,17.77,1],[-16004,16,4.0,7.3,1]],"4":[[4685382,20,19.5,8.15,1],[4374302,4,27.8,21.18,1],[4372016,20,0.0,0.0,0],[4259545,20,0.0,0.0,0],[4568490,21,0.0,0.0,0],[4678008,21,0.0,0.0,1],[15847,6,5.0,11.84,1],[4427095,4,1.4,10.21,1],[4360689,0,9.98,17.83,1],[4429059,2,7.5,14.77,1],[4239993,4,11.6,16.71,1],[4697815,2,6.2,11.12,1],[4723820,23,0.0,9.62,1],[-16030,16,3.0,7.29,1],[3150744,20,0.0,0.0,0],[4682648,20,9.2,9.38,1],[14880,20,15.38,13.35,1],[3046439,20,4.2,8.86,1],[3917232,17,7.7,11.61,1]],"9":[[4426515,21,0.0,0.0,1],[3043078,2,19.0,19.29,1],[4361307,6,8.7,14.43,1],[4569618,4,17.6,13.03,1],[4361579,2,7.7,15.24,1],[3116165,20,0.0,0.0,0],[16737,21,0.0,0.0,1],[4431611,20,0.0,0.0,0],[4239996,23,6.4,10.72,1],[4569587,4,4.0,10.5,1],[-16034,20,6.0,8.11,1],[4373626,20,1.4,8.99,1],[3116406,20,0.0,null,0],[2473037,17,2.0,9.34,1],[-16014,16,16.0,9.27,1],[4360635,20,6.4,8.37,1],[4248528,4,6.7,16.26,1],[2578570,20,11.8,14.11,1],[3924327,0,17.6,17.96,1]],"7":[[4685702,2,16.1,12.14,1],[4241389,4,20.2,21.68,1],[3929630,20,0.0,0.0,0],[4428331,4,13.2,13.68,1],[4685472,4,6.5,16.58,1],[4047365,20,0.0,0.0,1],[4431452,0,3.02,22.49,1],[4430027,6,2.6,11.63,1],[4870795,20,0.0,0.0,0],[4242355,20,0.0,0.0,1],[4361432,21,0.0,0.0,1],[3953687,17,11.4,10.89,1],[-16023,16,-2.0,7.26,1],[4569603,20,13.36,9.06,1],[15818,23,11.1,8.8,1],[5081397,20,7.7,9.03,1],[4431431,2,2.5,7.01,1],[8439,20,15.62,15.14,1]],"3":[[4242335,2,12.3,18.51,1],[4047646,23,4.7,12.9,1],[4379399,2,25.7,21.62,1],[4870808,21,0.0,0.0,1],[16800,21,0.0,0.0,1],[4871023,20,0.0,0.0,1],[4360310,0,26.78,21.92,1],[4361050,6,31.7,12.43,1],[3139477,20,35.42,18.97,1],[4428718,20,1.9,8.56,1],[4571557,17,8.1,11.1,1],[5081432,20,12.2,7.9,1],[4036133,20,0.0,0.0,1],[4686468,20,13.7,5.64,1],[4373678,4,7.5,10.37,1],[4597500,4,8.9,10.57,1],[-16033,16,2.0,8.97,1],[4360797,4,4.1,9.06,1],[4430968,20,3.4,7.91,1]],"8":[[3117251,2,52.3,22.36,1],[4567048,21,0.0,0.0,1],[4241478,21,0.0,0.0,0],[4426354,23,45.5,12.54,1],[4685512,20,11.4,12.19,1],[4432620,4,30.2,14.9,1],[3040151,6,13.4,15.87,1],[2577417,0,34.42,16.92,1],[4701936,4,12.0,17.84,1],[4426385,20,9.4,15.04,1],[-16026,20,10.0,7.77,1],[3042519,20,12.5,8.74,1],[4832955,2,37.1,18.9,1],[4258173,4,24.4,14.06,1],[5083754,20,19.1,8.45,1],[4689936,17,5.0,9.63,1],[-16009,16,4.0,7.09,1],[4696044,20,14.6,7.79,1],[4819231,20,4.2,6.69,1]],"1":[[4362628,4,37.6,23.83,1],[4890973,2,10.4,13.81,1],[4595348,4,7.4,16.6,1],[4596448,20,0.0,0.0,0],[3915511,0,36.66,19.53,1],[4572680,6,2.9,9.48,1],[4360078,21,0.0,0.0,1],[3916148,23,23.9,14.06,1],[4047650,20,15.4,10.81,1],[4880281,20,19.0,8.67,1],[4832800,4,2.6,13.06,1],[-16016,20,20.0,6.89,1],[4711533,2,15.5,16.59,1],[4249087,17,8.7,8.66,1],[4870653,20,11.7,10.84,1],[4686658,20,3.7,6.13,1],[-16019,16,5.0,7.27,1],[2991662,20,9.8,9.46,1]],"6":[[4262921,4,16.4,19.59,1],[4612826,20,0.0,0.0,1],[3916387,21,0.0,0.0,1],[4426388,4,9.0,12.42,1],[4569987,2,9.1,16.15,1],[5083076,6,16.1,10.26,1],[4688813,20,15.3,10.57,1],[4696981,2,27.2,11.99,1],[3916433,4,6.4,11.81,1],[4567104,17,11.6,9.84,1],[4432577,20,20.44,18.68,1],[4702555,20,0.0,0.0,0],[4429096,23,22.9,11.93,1],[4361741,0,35.66,21.22,1],[4241985,20,0.0,0.0,0],[4366031,20,5.1,10.39,1],[-16002,16,12.0,7.35,1],[4710855,20,11.1,8.99,1]],"2":[[4431459,6,2.4,10.75,1],[4430878,4,35.1,23.2,1],[4362238,2,28.3,13.76,1],[3918298,0,22.34,24.8,1],[4427366,2,14.8,12.5,1],[4431299,20,0.0,0.0,0],[4882093,23,20.3,18.07,1],[4432773,20,5.9,6.33,1],[4432710,21,0.0,0.0,1],[4385690,20,7.8,9.0,1],[4710714,21,0.0,0.0,1],[4429205,20,0.0,0.0,1],[4685247,20,5.6,8.01,1],[4685261,4,1.0,11.09,1],[-16012,16,11.0,6.65,1],[4360234,17,6.4,8.06,1],[4869645,20,10.1,8.91,1],[4432708,20,0.0,0.0,1],[4635008,4,2.1,7.63,1]],"5":[[4723086,20,0.0,0.0,0],[4430807,2,17.7,19.46,1],[4426502,4,18.9,15.46,1],[4430737,2,5.2,19.15,1],[4567750,20,0.0,0.0,0],[3915416,4,19.4,13.77,1],[4035538,21,0.0,0.0,1],[4035687,21,0.0,0.0,1],[4608686,20,0.0,0.0,0],[2976212,4,20.3,10.43,1],[4683062,23,0.0,9.93,1],[4036378,0,10.8,16.5,1],[4685720,20,8.1,19.29,1],[2971573,17,7.5,10.42,1],[4430539,20,8.9,9.73,1],[-16017,20,3.0,5.81,1],[3043116,20,0.0,6.5,1],[-16011,16,13.0,8.11,1],[2576925,6,4.4,8.58,1]]}},"roster":{"1":[[4362628,4,"ACTIVE"],[4890973,2,"ACTIVE"],[4595348,4,"ACTIVE"],[4596448,2,"ACTIVE"],[3915511,0,"ACTIVE"],[4572680,6,"ACTIVE"],[4360078,21,"INJURY_RESERVE"],[3916148,20,"ACTIVE"],[4047650,4,"ACTIVE"],[4880281,23,"ACTIVE"],[4832800,20,"ACTIVE"],[-16016,16,"ACTIVE"],[4711533,20,"ACTIVE"],[4249087,17,"ACTIVE"],[4870653,20,"ACTIVE"],[4686658,20,"ACTIVE"],[-16019,20,"ACTIVE"],[2991662,20,"ACTIVE"]],"2":[[4431459,20,"ACTIVE"],[4430878,20,"ACTIVE"],[4362238,23,"ACTIVE"],[3918298,0,"ACTIVE"],[4427366,2,"ACTIVE"],[4431299,4,"ACTIVE"],[4882093,2,"ACTIVE"],[4432773,20,"ACTIVE"],[4432710,21,"INJURY_RESERVE"],[4385690,6,"ACTIVE"],[4710714,21,"INJURY_RESERVE"],[4429205,20,"OUT"],[4685247,20,"ACTIVE"],[4685261,4,"ACTIVE"],[-16012,16,"ACTIVE"],[4360234,17,"ACTIVE"],[4869645,20,"ACTIVE"],[4432708,4,"QUESTIONABLE"],[4635008,20,"ACTIVE"]],"3":[[4242335,2,"ACTIVE"],[4047646,20,"QUESTIONABLE"],[4379399,2,"ACTIVE"],[4870808,21,"INJURY_RESERVE"],[16800,21,"INJURY_RESERVE"],[4871023,4,"QUESTIONABLE"],[4360310,0,"ACTIVE"],[4361050,6,"ACTIVE"],[3139477,20,"ACTIVE"],[4428718,20,"ACTIVE"],[4571557,17,"ACTIVE"],[5081432,20,"ACTIVE"],[4036133,23,"QUESTIONABLE"],[4686468,20,"ACTIVE"],[4373678,4,"ACTIVE"],[4597500,4,"ACTIVE"],[-16033,16,"ACTIVE"],[4360797,20,"ACTIVE"],[4430968,20,"ACTIVE"]],"4":[[4685382,23,"ACTIVE"],[4374302,4,"ACTIVE"],[4372016,20,"QUESTIONABLE"],[4259545,2,"ACTIVE"],[4568490,21,"INJURY_RESERVE"],[4678008,21,"INJURY_RESERVE"],[15847,6,"ACTIVE"],[4427095,20,"ACTIVE"],[4360689,0,"ACTIVE"],[4429059,20,"DOUBTFUL"],[4239993,4,"ACTIVE"],[4697815,2,"ACTIVE"],[4723820,20,"QUESTIONABLE"],[-16030,16,"ACTIVE"],[3150744,20,"ACTIVE"],[4682648,4,"ACTIVE"],[14880,20,"ACTIVE"],[3046439,20,"ACTIVE"],[3917232,17,"ACTIVE"]],"5":[[4723086,6,"ACTIVE"],[4430807,20,"ACTIVE"],[4426502,20,"ACTIVE"],[4430737,20,"ACTIVE"],[4567750,4,"ACTIVE"],[3915416,4,"ACTIVE"],[4035538,2,"ACTIVE"],[4035687,21,"INJURY_RESERVE"],[4608686,2,"QUESTIONABLE"],[2976212,4,"ACTIVE"],[4683062,23,"ACTIVE"],[4036378,20,"ACTIVE"],[4685720,0,"ACTIVE"],[2971573,17,"ACTIVE"],[4430539,20,"ACTIVE"],[-16017,20,"ACTIVE"],[3043116,20,"ACTIVE"],[2576925,20,"ACTIVE"]],"6":[[4262921,4,"ACTIVE"],[4612826,20,"QUESTIONABLE"],[3916387,21,"INJURY_RESERVE"],[4426388,4,"ACTIVE"],[4569987,2,"ACTIVE"],[5083076,6,"ACTIVE"],[4688813,4,"ACTIVE"],[4696981,23,"ACTIVE"],[3916433,20,"ACTIVE"],[4567104,17,"ACTIVE"],[4432577,0,"ACTIVE"],[4702555,2,"ACTIVE"],[4429096,20,"ACTIVE"],[4361741,20,"ACTIVE"],[4241985,20,"ACTIVE"],[4366031,20,"ACTIVE"],[-16002,16,"ACTIVE"],[4710855,20,"ACTIVE"]],"7":[[4685702,20,"ACTIVE"],[4241389,4,"ACTIVE"],[3929630,2,"ACTIVE"],[4428331,4,"ACTIVE"],[4685472,4,"ACTIVE"],[4047365,20,"OUT"],[4431452,20,"DOUBTFUL"],[4430027,6,"ACTIVE"],[4870795,20,"ACTIVE"],[4242355,20,"OUT"],[4361432,21,"INJURY_RESERVE"],[3953687,17,"ACTIVE"],[-16023,16,"ACTIVE"],[4569603,20,"ACTIVE"],[15818,23,"ACTIVE"],[5081397,20,"ACTIVE"],[4431431,2,"ACTIVE"],[8439,0,"ACTIVE"]],"8":[[3117251,2,"ACTIVE"],[4567048,21,"QUESTIONABLE"],[4241478,21,"QUESTIONABLE"],[4426354,4,"ACTIVE"],[4685512,20,"ACTIVE"],[4432620,4,"ACTIVE"],[3040151,6,"ACTIVE"],[2577417,0,"ACTIVE"],[4701936,20,"ACTIVE"],[4426385,20,"ACTIVE"],[-16026,20,"ACTIVE"],[3042519,23,"ACTIVE"],[4832955,2,"ACTIVE"],[4258173,4,"ACTIVE"],[5083754,20,"ACTIVE"],[4689936,17,"ACTIVE"],[4696044,20,"ACTIVE"],[4819231,20,"ACTIVE"]],"9":[[4426515,21,"INJURY_RESERVE"],[3043078,2,"ACTIVE"],[4361307,6,"ACTIVE"],[4569618,4,"ACTIVE"],[4361579,2,"ACTIVE"],[3116165,4,"ACTIVE"],[16737,21,"QUESTIONABLE"],[4431611,0,"ACTIVE"],[4239996,23,"ACTIVE"],[4569587,4,"QUESTIONABLE"],[-16034,16,"ACTIVE"],[4373626,20,"ACTIVE"],[3116406,20,"QUESTIONABLE"],[2473037,17,"ACTIVE"],[-16014,20,"ACTIVE"],[4360635,20,"ACTIVE"],[4248528,20,"ACTIVE"],[2578570,20,"ACTIVE"],[3924327,20,"ACTIVE"]],"10":[[4429795,2,"ACTIVE"],[4429615,23,"ACTIVE"],[4432665,6,"QUESTIONABLE"],[4685278,20,"ACTIVE"],[4569173,20,"ACTIVE"],[4361370,4,"ACTIVE"],[4426348,0,"ACTIVE"],[4038815,20,"ACTIVE"],[4241416,2,"ACTIVE"],[4360569,20,"ACTIVE"],[4695883,4,"ACTIVE"],[-16007,20,"ACTIVE"],[4686361,17,"ACTIVE"],[3126486,4,"ACTIVE"],[4429086,20,"ACTIVE"],[3046779,20,"ACTIVE"],[-16004,16,"ACTIVE"]]},"byes":{"11":13,"12":5,"13":13,"14":11,"15":6,"16":6,"17":11,"18":8,"19":8,"20":13,"21":10,"22":14,"23":9,"24":7,"25":8,"26":11,"27":10,"28":7,"29":5,"30":7,"33":13,"34":8,"0":0,"1":11,"2":7,"3":10,"4":6,"5":11,"6":14,"7":10,"8":6,"9":11,"10":9},"proAbbr":{"11":"IND","12":"KC","13":"LV","14":"LAR","15":"MIA","16":"MIN","17":"NE","18":"NO","19":"NYG","20":"NYJ","21":"PHI","22":"ARI","23":"PIT","24":"LAC","25":"SF","26":"SEA","27":"TB","28":"WSH","29":"CAR","30":"JAX","33":"BAL","34":"HOU","0":"FA","1":"ATL","2":"BUF","3":"CHI","4":"CIN","5":"CLE","6":"DAL","7":"DEN","8":"DET","9":"GB","10":"TEN"}}</script>
+<script>/* League-wide engine: everything is computed from game scores and the schedule only (no rosters, no player values). */
+(function (root) {
+  function rng(seed) { let a = seed >>> 0; return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+  function erf(x) { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); }
+  const mean = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0;
+
+  function build(data, opts) {
+    opts = Object.assign({ shrinkWeeks: 3, sims: 10000, seed: 2026 }, opts || {});
+    const teams = Object.keys(data.teams).map(Number).sort((a, b) => a - b);
+    const S = data.settings || {};
+    const regWeeks = S.regWeeks || 14, poTeams = S.playoffTeams || 6, byes = S.byes || 2;
+    const games = data.games.map(g => Object.assign({}, g));
+    const played = g => g.as != null && g.hs != null;
+    const done = games.filter(played);
+    const weeks = [...new Set(done.map(g => g.w))].sort((a, b) => a - b);
+    const lastWeek = weeks.length ? weeks[weeks.length - 1] : 0;
+    const T = {}; for (const t of teams) T[t] = { t, w: 0, l: 0, ti: 0, pf: 0, pa: 0, scores: [], byWeek: {} };
+    for (const g of done) {
+      const A = T[g.a], H = T[g.h];
+      A.pf += g.as; A.pa += g.hs; H.pf += g.hs; H.pa += g.as;
+      A.scores.push(g.as); H.scores.push(g.hs);
+      A.byWeek[g.w] = { s: g.as, opp: g.h, os: g.hs }; H.byWeek[g.w] = { s: g.hs, opp: g.a, os: g.as };
+      if (g.as > g.hs) { A.w++; H.l++; } else if (g.hs > g.as) { H.w++; A.l++; } else { A.ti++; H.ti++; }
+    }
+    // weekly league stats + luck pieces
+    const wk = {};
+    for (const w of weeks) {
+      const sc = {}; for (const t of teams) if (T[t].byWeek[w]) sc[t] = T[t].byWeek[w].s;
+      const ts = Object.keys(sc).map(Number), v = ts.map(t => sc[t]).sort((a, b) => a - b), n = v.length;
+      const med = n % 2 ? v[(n - 1) / 2] : (v[n / 2 - 1] + v[n / 2]) / 2, avg = mean(v);
+      wk[w] = { sc, med, avg, n, hi: v[n - 1], lo: v[0] };
+      for (const t of ts) {
+        const s = sc[t], beat = ts.filter(x => x !== t && sc[x] < s).length, tie = ts.filter(x => x !== t && sc[x] === s).length;
+        const b = T[t].byWeek[w];
+        Object.assign(b, { beat, ap: (beat + 0.5 * tie) / (n - 1), am: s > med ? 1 : s === med ? 0.5 : 0, aa: s > avg ? 1 : s === avg ? 0.5 : 0,
+          won: s > b.os ? 1 : s === b.os ? 0.5 : 0, rank: 1 + ts.filter(x => sc[x] > s).length, med, avg });
+      }
+    }
+    for (const t of teams) {
+      const r = T[t], bw = weeks.map(w => r.byWeek[w]).filter(Boolean);
+      r.gp = bw.length; r.actual = r.w + 0.5 * r.ti;
+      r.allplay = bw.reduce((s, x) => s + x.ap, 0); r.median = bw.reduce((s, x) => s + x.am, 0); r.average = bw.reduce((s, x) => s + x.aa, 0);
+      r.apW = bw.reduce((s, x) => s + x.beat, 0); r.apL = bw.length * (teams.length - 1) - r.apW;
+      r.expected = (r.allplay + r.median + r.average) / 3; r.luck = r.actual - r.expected;
+      r.ppg = mean(r.scores); r.papg = r.gp ? r.pa / r.gp : 0;
+      const recent = weeks.slice(-3).map(w => r.byWeek[w]).filter(Boolean);
+      r.apPct = r.gp ? r.allplay / r.gp : 0; r.recentAp = recent.length ? mean(recent.map(x => x.ap)) : 0; r.recentPpg = mean(recent.map(x => x.s));
+      r.power = 0.6 * r.apPct + 0.4 * r.recentAp;
+      r.hi = r.scores.length ? Math.max(...r.scores) : 0; r.lo = r.scores.length ? Math.min(...r.scores) : 0;
+      r.sd = r.scores.length > 1 ? Math.sqrt(r.scores.reduce((s, x) => s + (x - r.ppg) ** 2, 0) / (r.scores.length - 1)) : 0;
+    }
+    // power ranking last week (same formula with the latest week removed)
+    const prevPower = {};
+    if (weeks.length > 1) {
+      const pw = weeks.slice(0, -1);
+      for (const t of teams) {
+        const bw = pw.map(w => T[t].byWeek[w]).filter(Boolean);
+        // all-play % needs re-ranking within earlier weeks only, which the per-week values already are
+        const apPct = mean(bw.map(x => x.ap)), rec = mean(pw.slice(-3).map(w => T[t].byWeek[w]).filter(Boolean).map(x => x.ap));
+        prevPower[t] = 0.6 * apPct + 0.4 * rec;
+      }
+    }
+    const order = (key) => teams.slice().sort((a, b) => key(b) - key(a));
+    const pr = order(t => T[t].power); pr.forEach((t, i) => T[t].powerRank = i + 1);
+    if (weeks.length > 1) order(t => prevPower[t]).forEach((t, i) => T[t].prevPowerRank = i + 1);
+    // scoring model: team mean shrunk toward league mean; spread = pooled within-team SD
+    const all = done.flatMap(g => [g.as, g.hs]), lgMean = mean(all);
+    let ss = 0, df = 0; for (const t of teams) { for (const s of T[t].scores) ss += (s - T[t].ppg) ** 2; df += Math.max(T[t].scores.length - 1, 0); }
+    const sd = opts.sd || (df > 0 ? Math.sqrt(ss / df) : 30);
+    for (const t of teams) { const n = T[t].gp, k = n / (n + opts.shrinkWeeks); T[t].mu = lgMean + k * (T[t].ppg - lgMean); }
+    const rem = games.filter(g => !played(g) && g.w <= regWeeks);
+    const remWeeks = [...new Set(rem.map(g => g.w))].sort((a, b) => a - b);
+    const ctx = { data, teams, T, games, done, rem, weeks, remWeeks, lastWeek, wk, lgMean, sd, regWeeks, poTeams, byes, opts };
+    ctx.winProb = (a, b) => 0.5 * (1 + erf((T[a].mu - T[b].mu) / (sd * Math.SQRT2)));
+    // remaining strength of schedule = average opponent strength (mu)
+    for (const t of teams) { const o = rem.filter(g => g.a === t || g.h === t).map(g => g.a === t ? g.h : g.a); T[t].sos = o.length ? mean(o.map(x => T[x].mu)) : null; T[t].remGames = o.length; }
+    return ctx;
+  }
+
+  function simulate(ctx, N, seed) {
+    N = N || ctx.opts.sims; const r = rng(seed || ctx.opts.seed), { teams, T, rem, remWeeks, sd, poTeams, byes } = ctx;
+    const out = {}; for (const t of teams) out[t] = { po: 0, bye: 0, final: 0, champ: 0, last: 0, wins: 0, seed: new Array(teams.length).fill(0) };
+    const ties = ctx.data.settings && ctx.data.settings.tiebreak === "h2h" ? "h2h" : "pf";
+    for (let i = 0; i < N; i++) {
+      const W = {}, P = {}; for (const t of teams) { W[t] = T[t].actual; P[t] = T[t].pf; }
+      for (const w of remWeeks) {
+        const sc = {}; for (const t of teams) { sc[t] = T[t].mu + sd * gauss(r); }
+        for (const g of rem.filter(g => g.w === w)) { P[g.a] += sc[g.a]; P[g.h] += sc[g.h]; W[sc[g.a] > sc[g.h] ? g.a : g.h]++; }
+      }
+      const order = teams.slice().sort((a, b) => (W[b] - W[a]) || (P[b] - P[a]));
+      order.forEach((t, k) => { out[t].seed[k]++; out[t].wins += W[t]; });
+      out[order[order.length - 1]].last++;
+      const S = order.slice(0, poTeams); S.forEach(t => out[t].po++); S.slice(0, byes).forEach(t => out[t].bye++);
+      if (poTeams === 6 && byes === 2) {
+        const g = t => T[t].mu + sd * gauss(r);
+        const q1 = g(S[2]) > g(S[5]) ? S[2] : S[5], q2 = g(S[3]) > g(S[4]) ? S[3] : S[4];
+        const [lo, hi] = [q1, q2].sort((a, b) => S.indexOf(a) - S.indexOf(b));
+        const f1 = g(S[0]) > g(hi) ? S[0] : hi, f2 = g(S[1]) > g(lo) ? S[1] : lo;
+        out[f1].final++; out[f2].final++; out[g(f1) > g(f2) ? f1 : f2].champ++;
+      }
+    }
+    for (const t of teams) { const o = out[t]; ["po", "bye", "final", "champ", "last"].forEach(k => o[k] /= N); o.wins /= N; o.seed = o.seed.map(x => x / N); }
+    return out;
+  }
+
+  const API = { build, simulate };
+  if (typeof module !== "undefined" && module.exports) module.exports = API; else root.LG = API;
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const pct=x=>(x*100).toFixed(1)+"%", f1=x=>(+x).toFixed(1), f2=x=>(+x).toFixed(2), sg=(x,d=1)=>(x>=0?"+":"")+(+x).toFixed(d);
+function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?"":v);}for(const c of kids.flat()){if(c==null)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
+function table(el,cols,rows,rowCls){el.textContent="";const tr=h("tr");cols.forEach(c=>tr.append(h("th",{class:c.n?"n":""},c.h)));el.append(h("thead",null,tr));const tb=h("tbody");rows.forEach((r,i)=>{const row=h("tr",{class:rowCls?rowCls(r,i):""});cols.forEach(c=>{const v=c.f(r,i);const td=h("td",{class:(c.n?"n ":"")+(c.cls?c.cls(r):"")});if(v&&v.nodeType)td.append(v);else td.textContent=v==null?"":v;row.append(td);});tb.append(row);});el.append(tb);}
+function heat(x){const cs=getComputedStyle(document.documentElement),bad=cs.getPropertyValue("--bad").trim()||"#b0281f",good=cs.getPropertyValue("--good").trim()||"#1c7443";return `color-mix(in srgb, ${x>=0.5?good:bad} ${Math.round(Math.abs(x-0.5)*2*70)+8}%, var(--panel))`;}
+
+let DATA=null; try{DATA=JSON.parse($("#league-data").textContent);}catch(e){}
+if(!DATA||!DATA.games){$("#app").textContent="";$("#app").append(h("div",{class:"empty",text:"League data hasn't been loaded yet. It appears after the first weekly refresh."}));$("#sub").textContent="";return;}
+let overrides={}, ctx, sim, path;
+const N=t=>(overrides[t]||(DATA.teams[t]&&DATA.teams[t].name)||("Team "+t));
+const O=t=>(DATA.teams[t]&&DATA.teams[t].owner)||"";
+const short=(s,n)=>s.length>n?s.slice(0,n-1)+"…":s;
+
+function compute(){ctx=LG.build(DATA);sim=LG.simulate(ctx,10000);path=pathSim(10000);computePlayers();}
+function render(){
+  $("#title").textContent=DATA.leagueName||"League Hub";
+  $("#sub").textContent=`${DATA.season} · ${(DATA.settings&&DATA.settings.scoring)||""} · ${ctx.teams.length} teams · results through Week ${ctx.lastWeek} of ${ctx.regWeeks}`;
+  $("#stamp").textContent=DATA.updatedAt?"Updated "+new Date(DATA.updatedAt).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"";
+  renderStandings();renderPower();renderProfile();renderOdds();renderPath();renderPlayers();renderWhatIf();renderLuck();renderWeeks();renderSchedule();renderNames();
+}
+const T=t=>ctx.T[t];
+const byRecord=()=>ctx.teams.slice().sort((a,b)=>(T(b).actual-T(a).actual)||(T(b).pf-T(a).pf));
+
+function renderStandings(){
+  const wk=ctx.wk[ctx.lastWeek], top=ctx.teams.slice().sort((a,b)=>T(b).pf-T(a).pf)[0], hot=ctx.teams.slice().sort((a,b)=>T(b).recentPpg-T(a).recentPpg)[0];
+  const lucky=ctx.teams.slice().sort((a,b)=>T(b).luck-T(a).luck)[0], unlucky=ctx.teams.slice().sort((a,b)=>T(a).luck-T(b).luck)[0];
+  const hiT=wk?ctx.teams.find(t=>T(t).byWeek[ctx.lastWeek]&&T(t).byWeek[ctx.lastWeek].s===wk.hi):null;
+  const el=$("#tiles");el.textContent="";
+  [["Most points",N(top),`${f2(T(top).pf)} total`],["Hottest, last 3 weeks",N(hot),`${f1(T(hot).recentPpg)} per game`],
+   [`Week ${ctx.lastWeek} high score`,hiT?N(hiT):"—",wk?f2(wk.hi):""],["Luckiest",N(lucky),`${sg(T(lucky).luck,2)} wins vs expected`],["Unluckiest",N(unlucky),`${sg(T(unlucky).luck,2)} wins vs expected`]]
+   .forEach(([k,v,s])=>el.append(h("div",{class:"tile"},h("span",{class:"k",text:k}),h("span",{class:"v",text:v}),h("span",{class:"s",text:s}))));
+  const rows=byRecord();
+  table($("#stand"),[{h:"#",f:(r,i)=>i+1},{h:"Team",f:t=>N(t)},{h:"Owner",f:t=>O(t)},{h:"Record",f:t=>`${T(t).w}-${T(t).l}${T(t).ti?"-"+T(t).ti:""}`},
+    {h:"PF",n:1,f:t=>f2(T(t).pf)},{h:"PA",n:1,f:t=>f2(T(t).pa)},{h:"Avg",n:1,f:t=>f1(T(t).ppg)},{h:"All-play",n:1,f:t=>`${T(t).apW}-${T(t).apL}`},
+    {h:"Streak",f:t=>streak(t)},{h:"Playoffs",n:1,f:t=>pct(sim[t].po)}],rows,(t,i)=>i===ctx.poTeams-1?"cut":"");
+}
+function streak(t){const ws=ctx.weeks.slice().reverse().map(w=>T(t).byWeek[w]).filter(Boolean);if(!ws.length)return "";const k=ws[0].won;let n=0;for(const x of ws){if(x.won===k)n++;else break;}return (k===1?"W":k===0?"L":"T")+n;}
+
+function renderPower(){
+  const rows=ctx.teams.slice().sort((a,b)=>T(a).powerRank-T(b).powerRank);
+  table($("#power"),[{h:"Rank",f:t=>h("span",{class:"rk",text:T(t).powerRank})},
+    {h:"Move",f:t=>{const p=T(t).prevPowerRank;if(!p)return "";const d=p-T(t).powerRank;return h("span",{class:d>0?"pos":d<0?"neg":"mut",text:d>0?`▲ ${d}`:d<0?`▼ ${-d}`:"–"});}},
+    {h:"Team",f:t=>N(t)},{h:"Record",f:t=>`${T(t).w}-${T(t).l}`},
+    {h:"Power",n:1,f:t=>f1(T(t).power*100)},{h:"",f:t=>h("div",{class:"bar"},h("i",{style:`width:${Math.round(T(t).power*100)}%`}))},
+    {h:"Season all-play",n:1,f:t=>pct(T(t).apPct)},{h:"Last 3 all-play",n:1,f:t=>pct(T(t).recentAp)},{h:"Last 3 avg",n:1,f:t=>f1(T(t).recentPpg)},{h:"Season avg",n:1,f:t=>f1(T(t).ppg)}],rows);
+}
+function renderOdds(){
+  const rows=ctx.teams.slice().sort((a,b)=>(sim[b].po-sim[a].po)||(sim[b].champ-sim[a].champ));
+  const bar=v=>h("div",{class:"bar",style:"min-width:90px"},h("i",{style:`width:${Math.round(v*100)}%`}));
+  table($("#odds"),[{h:"Team",f:t=>N(t)},{h:"Record",f:t=>`${T(t).w}-${T(t).l}`},{h:"Proj. wins",n:1,f:t=>f1(sim[t].wins)},
+    {h:"Playoffs",n:1,f:t=>pct(sim[t].po)},{h:"",f:t=>bar(sim[t].po)},{h:"Bye",n:1,f:t=>pct(sim[t].bye)},{h:"Final",n:1,f:t=>pct(sim[t].final)},{h:"Title",n:1,f:t=>pct(sim[t].champ)},{h:"Last place",n:1,f:t=>pct(sim[t].last)}],rows);
+  const el=$("#seeds");el.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team"}));ctx.teams.forEach((_,i)=>hr.append(h("th",{class:"n",text:i+1})));tb.append(h("thead",null,hr));
+  const body=h("tbody");const cs=getComputedStyle(document.documentElement),acc=cs.getPropertyValue("--accent").trim()||"#22508f";
+  rows.forEach(t=>{const tr=h("tr",null,h("td",{text:N(t)}));sim[t].seed.forEach((p,i)=>tr.append(h("td",{class:"n",style:`background:color-mix(in srgb, ${acc} ${Math.round(Math.min(p/0.5,1)*75)}%, var(--panel));${p>0.3?"color:var(--accent-ink)":""}${i===ctx.poTeams-1?";border-right:2px dashed var(--accent)":""}`,text:p<0.005?"":Math.round(p*100)})));body.append(tr);});
+  tb.append(body);el.append(tb);
+}
+let luckTeam=null;
+function renderLuck(){
+  const rows=ctx.teams.slice().sort((a,b)=>T(b).luck-T(a).luck);
+  const el=$("#luckChart");el.textContent="";const W=Math.max(el.clientWidth||600,300),rh=26,m={t:24,b:24,l:Math.min(170,W*0.38),r:46},H=m.t+m.b+rows.length*rh;
+  const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.setAttribute("width","100%");
+  const mk=(tag,a,txt)=>{const e=document.createElementNS(ns,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.append(e);return e;};
+  const ext=Math.max(1,Math.ceil(Math.max(...rows.map(t=>Math.abs(T(t).luck)))*2)/2),x=v=>m.l+(v+ext)/(2*ext)*(W-m.l-m.r);
+  for(let v=-ext;v<=ext+1e-9;v+=0.5){mk("line",{x1:x(v),x2:x(v),y1:m.t-6,y2:H-m.b,stroke:"var(--line)","stroke-dasharray":Math.abs(v)<1e-9?"":"2 3"});if(Math.abs(v%1)<1e-9)mk("text",{x:x(v),y:H-6,"text-anchor":"middle","font-size":11,fill:"var(--muted)"},(v>0?"+":"")+v);}
+  mk("text",{x:x(-ext),y:12,"font-size":11,fill:"var(--bad)"},"← unlucky");mk("text",{x:x(ext),y:12,"font-size":11,fill:"var(--good)","text-anchor":"end"},"lucky →");
+  rows.forEach((t,i)=>{const y=m.t+i*rh,L=T(t).luck;mk("text",{x:m.l-8,y:y+rh/2+4,"text-anchor":"end","font-size":12,fill:"var(--ink)"},short(N(t),24));
+    const x0=x(0),x1=x(L);mk("rect",{x:Math.min(x0,x1),y:y+4,width:Math.max(Math.abs(x1-x0),1.5),height:rh-8,rx:3,fill:heat(L>=0?0.5+Math.min(L/ext,1)/2:0.5-Math.min(-L/ext,1)/2)});
+    mk("text",{x:L>=0?x1+5:x1-5,y:y+rh/2+4,"text-anchor":L>=0?"start":"end","font-size":11,fill:"var(--ink)"},sg(L,2));});
+  el.append(svg);
+  const lc=v=>v>0.5?"pos":v<-0.5?"neg":"";
+  table($("#luckTable"),[{h:"Team",f:t=>N(t)},{h:"Actual W",n:1,f:t=>T(t).actual},{h:"All-play exp",n:1,f:t=>f2(T(t).allplay)},{h:"Median exp",n:1,f:t=>f1(T(t).median)},{h:"Average exp",n:1,f:t=>f1(T(t).average)},
+    {h:"Expected",n:1,f:t=>f2(T(t).expected)},{h:"vs all-play",n:1,f:t=>sg(T(t).actual-T(t).allplay),cls:t=>lc(T(t).actual-T(t).allplay)},{h:"vs median",n:1,f:t=>sg(T(t).actual-T(t).median),cls:t=>lc(T(t).actual-T(t).median)},
+    {h:"vs average",n:1,f:t=>sg(T(t).actual-T(t).average),cls:t=>lc(T(t).actual-T(t).average)},{h:"Luck index",n:1,f:t=>h("b",{text:sg(T(t).luck,2)}),cls:t=>lc(T(t).luck)},{h:"PA / game",n:1,f:t=>f1(T(t).papg)}],rows);
+  const hm=$("#luckHeat");hm.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team"}));ctx.weeks.forEach(w=>hr.append(h("th",{class:"n",text:"Wk "+w})));hr.append(h("th",{class:"n",text:"Index"}));tb.append(h("thead",null,hr));
+  const body=h("tbody");rows.forEach(t=>{const tr=h("tr",null,h("td",{text:N(t)}));ctx.weeks.forEach(w=>{const x=T(t).byWeek[w];if(!x){tr.append(h("td"));return;}
+      const lucky=x.won===1&&x.s<x.med,unlucky=x.won===0&&x.s>x.med;
+      tr.append(h("td",{class:"n",title:`Week ${w}: ${f2(x.s)} vs ${N(x.opp)} ${f2(x.os)} · beat ${x.beat} of ${ctx.teams.length-1}`,style:`background:${heat(x.ap)};${lucky?"box-shadow:inset 0 0 0 2px var(--good)":unlucky?"box-shadow:inset 0 0 0 2px var(--bad)":""}`},
+        h("div",{style:"font-weight:600",text:(x.won===1?"W ":x.won===0?"L ":"T ")+f1(x.s)}),h("div",{style:"font-size:.72rem;opacity:.8",text:`beat ${x.beat}/${ctx.teams.length-1}`})));});
+    tr.append(h("td",{class:"n "+lc(T(t).luck),text:sg(T(t).luck,2)}));body.append(tr);});
+  tb.append(body);hm.append(tb);
+  const sel=$("#luckTeam");if(luckTeam==null)luckTeam=rows[0];sel.textContent="";ctx.teams.forEach(t=>sel.append(h("option",{value:t,selected:t===luckTeam},N(t))));
+  const R=T(luckTeam),ws=ctx.weeks.map(w=>Object.assign({w},R.byWeek[w])).filter(x=>x.s!=null);
+  table($("#luckWeeks"),[{h:"Week",f:x=>x.w},{h:"Score",n:1,f:x=>f2(x.s)},{h:"Opponent",f:x=>`${N(x.opp)} ${f2(x.os)}`},{h:"Result",f:x=>x.won===1?"W":x.won===0?"L":"T"},
+    {h:"Rank",n:1,f:x=>`${x.rank} of ${ctx.teams.length}`},{h:"All-play",n:1,f:x=>`${x.beat}/${ctx.teams.length-1} = ${f2(x.ap)}`},{h:"Median",n:1,f:x=>`${f2(x.med)} → ${x.am}`},{h:"Average",n:1,f:x=>`${f2(x.avg)} → ${x.aa}`}],ws);
+  const s=$("#luckSum");s.textContent="";
+  s.append(h("div",null,`Actual wins ${R.actual}. All-play ${f2(R.allplay)}, median ${f1(R.median)}, average ${f1(R.average)}.`),
+    h("div",null,`Expected = (${f2(R.allplay)} + ${f1(R.median)} + ${f1(R.average)}) ÷ 3 = ${f2(R.expected)}.`),
+    h("div",null,h("b",{text:`Luck index = ${R.actual} − ${f2(R.expected)} = ${sg(R.luck,2)}`}),R.luck>0.5?": winning more than the scores earned.":R.luck<-0.5?": losing more than the scores deserved.":": the record matches the scores."));
+}
+$("#luckTeam").addEventListener("change",e=>{luckTeam=+e.target.value;renderLuck();});
+
+let wkSel=null;
+function renderWeeks(){
+  const sel=$("#wkSel");if(wkSel==null)wkSel=ctx.lastWeek;sel.textContent="";ctx.weeks.forEach(w=>sel.append(h("option",{value:w,selected:w===wkSel},"Week "+w)));
+  const w=wkSel,gs=ctx.done.filter(g=>g.w===w),W=ctx.wk[w];$("#wkTitle").textContent=`Week ${w} results`;
+  if(!W){return;}
+  const margin=g=>Math.abs(g.as-g.hs),blow=gs.slice().sort((a,b)=>margin(b)-margin(a))[0],close=gs.slice().sort((a,b)=>margin(a)-margin(b))[0];
+  const hiT=ctx.teams.find(t=>W.sc[t]===W.hi),loT=ctx.teams.find(t=>W.sc[t]===W.lo);
+  const unlucky=gs.map(g=>g.as>g.hs?[g.h,g.hs]:[g.a,g.as]).sort((a,b)=>b[1]-a[1])[0],lucky=gs.map(g=>g.as>g.hs?[g.a,g.as]:[g.h,g.hs]).sort((a,b)=>a[1]-b[1])[0];
+  const el=$("#wkTiles");el.textContent="";
+  [["High score",N(hiT),f2(W.hi)],["Low score",N(loT),f2(W.lo)],["Biggest blowout",N(blow.as>blow.hs?blow.a:blow.h),`by ${f2(margin(blow))}`],["Closest game",`${short(N(close.a),14)} vs ${short(N(close.h),14)}`,`by ${f2(margin(close))}`],
+   ["Highest losing score",N(unlucky[0]),`${f2(unlucky[1])} pts, ${ctx.T[unlucky[0]].byWeek[w].beat} teams outscored`],["Lowest winning score",N(lucky[0]),`${f2(lucky[1])} pts, ${ctx.T[lucky[0]].byWeek[w].beat} teams outscored`],["League median",f2(W.med),`average ${f2(W.avg)}`]]
+   .forEach(([k,v,s])=>el.append(h("div",{class:"tile"},h("span",{class:"k",text:k}),h("span",{class:"v",style:"font-size:1.25rem",text:v}),h("span",{class:"s",text:s}))));
+  table($("#wkGames"),[{h:"Winner",f:g=>N(g.as>=g.hs?g.a:g.h)},{h:"Score",n:1,f:g=>`${f2(Math.max(g.as,g.hs))} – ${f2(Math.min(g.as,g.hs))}`},{h:"Loser",f:g=>N(g.as>=g.hs?g.h:g.a)},
+    {h:"Margin",n:1,f:g=>f2(margin(g))},{h:"Winner beat",n:1,f:g=>`${T(g.as>=g.hs?g.a:g.h).byWeek[w].beat} of ${ctx.teams.length-1}`},{h:"Loser beat",n:1,f:g=>`${T(g.as>=g.hs?g.h:g.a).byWeek[w].beat} of ${ctx.teams.length-1}`}],gs);
+  const hm=$("#scoreHeat");hm.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team"}));ctx.weeks.forEach(x=>hr.append(h("th",{class:"n",text:"Wk "+x})));hr.append(h("th",{class:"n",text:"Avg"}));tb.append(h("thead",null,hr));
+  const body=h("tbody");byRecord().forEach(t=>{const tr=h("tr",null,h("td",{text:N(t)}));ctx.weeks.forEach(x=>{const b=T(t).byWeek[x];tr.append(h("td",{class:"n",style:b?`background:${heat(b.ap)}`:"",text:b?f1(b.s):""}));});tr.append(h("td",{class:"n",text:f1(T(t).ppg)}));body.append(tr);});
+  tb.append(body);hm.append(tb);
+}
+$("#wkSel").addEventListener("change",e=>{wkSel=+e.target.value;renderWeeks();});
+
+function renderSchedule(){
+  const rows=ctx.teams.slice().sort((a,b)=>(T(b).sos||0)-(T(a).sos||0));
+  table($("#sos"),[{h:"Team",f:t=>N(t)},{h:"Games left",n:1,f:t=>T(t).remGames},{h:"Avg opponent",n:1,f:t=>T(t).sos!=null?f1(T(t).sos):"—"},
+    {h:"Difficulty",f:t=>{if(T(t).sos==null)return "";const d=T(t).sos-ctx.lgMean;return h("span",{class:"chip "+(d>1.5?"bad":d<-1.5?"good":""),text:d>1.5?"Hard":d<-1.5?"Easy":"Average"});}},
+    {h:"Expected wins left",n:1,f:t=>f1(ctx.rem.filter(g=>g.a===t||g.h===t).reduce((s,g)=>s+ctx.winProb(t,g.a===t?g.h:g.a),0))}],rows);
+  const el=$("#sched");el.textContent="";
+  ctx.remWeeks.forEach(w=>{const box=h("div",{class:"panel",style:"padding:10px 12px;gap:4px"},h("h3",{text:`Week ${w}`}));
+    ctx.rem.filter(g=>g.w===w).forEach(g=>{const p=ctx.winProb(g.a,g.h);
+      box.append(h("div",{class:"game"},h("span",{class:p>=0.5?"w":"",text:N(g.a)}),h("span",{class:"sc",text:Math.round(p*100)+"%"}),h("span",{class:p<0.5?"w":"",text:"@ "+N(g.h)}),h("span",{class:"sc",text:Math.round((1-p)*100)+"%"})));});
+    el.append(box);});
+}
+
+// ---------- path to the playoffs ----------
+function pRng(seed){let a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pGauss(r){let u=0;while(u===0)u=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*r());}
+function pathSim(N){
+  const {teams,rem,remWeeks,sd,poTeams,byes}=ctx,r=pRng(4141);
+  const byW={},G=rem.map(g=>({g,a:{},h:{}})),winA=new Array(rem.length);
+  for(const t of teams){byW[t]=[];for(let k=0;k<=T(t).remGames;k++)byW[t].push({n:0,po:0,bye:0});}
+  for(const x of G)for(const t of teams){x.a[t]=[0,0];x.h[t]=[0,0];}
+  const wkIdx=remWeeks.map(w=>rem.map((g,j)=>g.w===w?j:-1).filter(j=>j>=0));
+  for(let i=0;i<N;i++){
+    const W={},P={},K={};for(const t of teams){W[t]=T(t).actual;P[t]=T(t).pf;K[t]=0;}
+    for(const idx of wkIdx){const sc={};for(const t of teams)sc[t]=T(t).mu+sd*pGauss(r);
+      for(const j of idx){const g=rem[j];P[g.a]+=sc[g.a];P[g.h]+=sc[g.h];const a=sc[g.a]>sc[g.h];winA[j]=a;const wt=a?g.a:g.h;W[wt]++;K[wt]++;}}
+    const order=teams.slice().sort((a,b)=>(W[b]-W[a])||(P[b]-P[a]));
+    const po=new Set(order.slice(0,poTeams)),by=new Set(order.slice(0,byes));
+    for(const t of teams){const c=byW[t][K[t]];c.n++;if(po.has(t))c.po++;if(by.has(t))c.bye++;}
+    G.forEach((x,j)=>{const side=winA[j]?x.a:x.h;for(const t of teams){side[t][0]++;if(po.has(t))side[t][1]++;}});
+  }
+  return {N,byW,G};
+}
+const cond=c=>c[0]>=40?c[1]/c[0]:null;
+function pathStatus(t){
+  const maxW=x=>T(x).actual+T(x).remGames,cur=T(t).actual,others=ctx.teams.filter(x=>x!==t);
+  const canReach=others.filter(o=>maxW(o)>=cur).length;
+  if(canReach<ctx.byes)return["Clinched bye","good"];
+  if(canReach<ctx.poTeams)return["Clinched playoffs","good"];
+  if(others.filter(o=>T(o).actual>maxW(t)).length>=ctx.poTeams)return["Eliminated","bad"];
+  const seed=byRecord().indexOf(t)+1;return[seed<=ctx.poTeams?`In now (${seed})`:`Out now (${seed})`,""];
+}
+function finRec(t,k){const R=T(t);return `${R.w+k}-${R.l+R.remGames-k}${R.ti?"-"+R.ti:""}`;}
+function likelyIn(t){const b=path.byW[t];for(let k=0;k<b.length;k++){if(b[k].n>=40&&b[k].po/b[k].n>=0.8)return k;}return null;}
+function ownGames(t){return path.G.filter(x=>x.g.a===t||x.g.h===t).map(x=>{const home=x.g.h===t,opp=home?x.g.a:x.g.h,win=cond(home?x.h[t]:x.a[t]),loss=cond(home?x.a[t]:x.h[t]);
+  return{w:x.g.w,opp,home,p:home?1-ctx.winProb(x.g.a,x.g.h):ctx.winProb(x.g.a,x.g.h),win,loss,swing:win!=null&&loss!=null?win-loss:0};});}
+function rootFor(t){return path.G.filter(x=>x.g.a!==t&&x.g.h!==t).map(x=>{const pa=cond(x.a[t]),ph=cond(x.h[t]);if(pa==null||ph==null)return null;
+  const fav=pa>=ph?x.g.a:x.g.h,other=fav===x.g.a?x.g.h:x.g.a;return{w:x.g.w,fav,other,pf:Math.max(pa,ph),po:Math.min(pa,ph),swing:Math.abs(pa-ph)};}).filter(Boolean).sort((a,b)=>b.swing-a.swing);}
+let pathTeam=null;
+function renderPath(){
+  const rows=byRecord(),pp=x=>x==null?"—":pct(x),pts=x=>(x>=0?"+":"−")+Math.abs(x*100).toFixed(0)+" pts";
+  const chip=t=>{const[s,c]=pathStatus(t);return h("span",{class:"chip "+c,text:s});};
+  if(!ctx.rem.length){
+    table($("#pathSum"),[{h:"Seed",f:(t,i)=>i+1},{h:"Team",f:t=>N(t)},{h:"Record",f:t=>`${T(t).w}-${T(t).l}`},{h:"Status",f:t=>h("span",{class:"chip "+((byRecord().indexOf(t)<ctx.poTeams)?"good":"bad"),text:byRecord().indexOf(t)<ctx.poTeams?"Made playoffs":"Missed playoffs"})}],rows);
+    ["#pathLine","#pathWins","#pathGames","#pathRoot"].forEach(s=>$(s).textContent="");$("#pathLine").textContent="The regular season is over.";return;}
+  table($("#pathSum"),[{h:"Seed",f:(t,i)=>i+1},{h:"Team",f:t=>N(t)},{h:"Record",f:t=>`${T(t).w}-${T(t).l}${T(t).ti?"-"+T(t).ti:""}`},
+    {h:"Playoffs",n:1,f:t=>pct(sim[t].po)},{h:"Status",f:chip},
+    {h:"Likely in at",n:1,f:t=>{const k=likelyIn(t);return k==null?"Needs help":k===0?"Any record":finRec(t,k);}},
+    {h:"If wins out",n:1,f:t=>{const c=path.byW[t][T(t).remGames];return c.n>=40?pct(c.po/c.n):c.n?"Rare finish":"—";}},
+    {h:"Biggest game",f:t=>{const g=ownGames(t).sort((a,b)=>b.swing-a.swing)[0];return g?`Wk ${g.w} ${g.home?"vs":"@"} ${short(N(g.opp),18)} (${Math.round(g.swing*100)}-pt swing)`:"";}}],rows,(t,i)=>i===ctx.poTeams-1?"cut":"");
+  const sel=$("#pathTeam");if(pathTeam==null)pathTeam=rows[ctx.poTeams-1]||rows[0];sel.textContent="";rows.forEach(t=>sel.append(h("option",{value:t,selected:t===pathTeam},N(t))));
+  const t=pathTeam,R=T(t),b=path.byW[t],k=likelyIn(t),[st]=pathStatus(t);
+  $("#pathTitle").textContent=`${N(t)}: path`;
+  const line=$("#pathLine");line.textContent="";
+  line.append(h("div",null,h("b",{text:`${R.w}-${R.l}${R.ti?"-"+R.ti:""}, seed ${rows.indexOf(t)+1}, ${pct(sim[t].po)} to make the playoffs. `}),st+"."),
+    h("div",null,k==null?`Even winning out (${finRec(t,R.remGames)}) makes the playoffs only ${pp(cond([b[R.remGames].n,b[R.remGames].po]))} of the time, so it needs help from other results.`
+      :k===0?`Gets in at least 80% of the time even if it loses every remaining game.`
+      :`Going ${k}-${R.remGames-k} or better over the last ${R.remGames} (finishing ${finRec(t,k)}) makes the playoffs at least 80% of the time.`));
+  const wt=$("#pathWins");wt.textContent="";const hd=h("tr",null,h("th",{text:"Wins left"}));b.forEach((_,i)=>hd.append(h("th",{class:"n",text:`${i}-${R.remGames-i}`})));wt.append(h("thead",null,hd));
+  const tb=h("tbody");
+  const row=(lab,fn,shade)=>{const tr=h("tr",null,h("td",{text:lab}));b.forEach((c,i)=>{const v=fn(c,i);tr.append(h("td",{class:"n",style:shade&&v!=null&&c.n>=40?`background:${heat(v)}`:"",text:v==null||c.n<40&&shade?"":typeof v==="number"?pct(v):v}));});tb.append(tr);};
+  row("Final record",(c,i)=>finRec(t,i));row("Playoffs",c=>c.n?c.po/c.n:null,1);row("Bye",c=>c.n?c.bye/c.n:null,1);row("How likely",c=>c.n/path.N);
+  wt.append(tb);
+  table($("#pathGames"),[{h:"Week",f:g=>g.w},{h:"Opponent",f:g=>(g.home?"vs ":"@ ")+N(g.opp)},{h:"Win chance",n:1,f:g=>pct(g.p)},
+    {h:"Playoffs if win",n:1,f:g=>pp(g.win),cls:()=>"pos"},{h:"If loss",n:1,f:g=>pp(g.loss),cls:()=>"neg"},{h:"Swing",n:1,f:g=>pts(g.swing)}],ownGames(t));
+  const rf=rootFor(t).filter(x=>x.swing>=0.01).slice(0,5);
+  if(!rf.length){$("#pathRoot").textContent="";$("#pathRoot").append(h("tbody",null,h("tr",null,h("td",{class:"mut",text:"No other game moves this team's odds by a point or more."}))));}
+  else table($("#pathRoot"),[{h:"Week",f:x=>x.w},{h:"Root for",f:x=>N(x.fav)},{h:"Over",f:x=>N(x.other)},{h:"Playoffs if so",n:1,f:x=>pct(x.pf)},{h:"If not",n:1,f:x=>pct(x.po)},{h:"Swing",n:1,f:x=>pts(x.swing)}],rf);
+}
+$("#pathTeam").addEventListener("change",e=>{pathTeam=+e.target.value;renderPath();});
+
+// ---------- scoring profile ----------
+const DECAY=0.8;
+function quart(so,p){const i=(so.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return so[lo]+(so[hi]-so[lo])*(i-lo);}
+function profile(t){const R=T(t),ws=ctx.weeks.filter(w=>R.byWeek[w]),sc=ws.map(w=>R.byWeek[w].s),n=sc.length,so=sc.slice().sort((a,b)=>a-b);
+  let wsum=0,ssum=0;sc.forEach((s,i)=>{const k=Math.pow(DECAY,n-1-i);wsum+=k;ssum+=k*s;});const edwa=n?ssum/wsum:0;
+  return{n,avg:R.ppg,med:n?quart(so,0.5):0,q1:n?quart(so,0.25):0,q3:n?quart(so,0.75):0,min:so[0]||0,max:so[n-1]||0,edwa,sd:R.sd,sdfm:R.sd?(edwa-R.ppg)/R.sd:0};}
+function rankHeat(vals,v){const n=vals.length;if(n<2)return "";const below=vals.filter(x=>x<v).length,eq=vals.filter(x=>x===v).length-1;return heat((below+eq/2)/(n-1));}
+const tip=(()=>{const d=document.createElement("div");d.className="tip";document.body.append(d);return d;})();
+function bindTip(el,text){el.addEventListener("mousemove",e=>{tip.textContent=text;tip.style.display="block";tip.style.left=Math.min(e.clientX+12,window.innerWidth-270)+"px";tip.style.top=(e.clientY+12)+"px";});el.addEventListener("mouseleave",()=>tip.style.display="none");}
+function renderProfile(){
+  const P={};ctx.teams.forEach(t=>P[t]=profile(t));const rows=ctx.teams.slice().sort((a,b)=>P[b].edwa-P[a].edwa);
+  const last3=ctx.weeks.slice(-3),col=k=>ctx.teams.map(t=>P[t][k]);
+  const wkVals=w=>ctx.teams.map(t=>T(t).byWeek[w]?T(t).byWeek[w].s:null).filter(x=>x!=null);
+  const cols=[{h:"Team",f:t=>N(t)}].concat(last3.map(w=>({h:"Wk "+w,n:1,f:t=>T(t).byWeek[w]?f2(T(t).byWeek[w].s):"",bg:t=>T(t).byWeek[w]?rankHeat(wkVals(w),T(t).byWeek[w].s):""})),
+    [{h:"Avg",n:1,f:t=>f2(P[t].avg),bg:t=>rankHeat(col("avg"),P[t].avg)},{h:"Median",n:1,f:t=>f2(P[t].med),bg:t=>rankHeat(col("med"),P[t].med)},
+     {h:"EDWA",n:1,f:t=>f2(P[t].edwa),bg:t=>rankHeat(col("edwa"),P[t].edwa)},{h:"SDFM",n:1,f:t=>sg(P[t].sdfm,2),bg:t=>rankHeat(col("sdfm"),P[t].sdfm)},
+     {h:"Std dev",n:1,f:t=>f2(P[t].sd)},{h:"Floor",n:1,f:t=>f2(P[t].min)},{h:"Ceiling",n:1,f:t=>f2(P[t].max)}]);
+  table($("#prof"),cols,rows);
+  $("#prof").querySelectorAll("tbody tr").forEach((tr,i)=>cols.forEach((c,j)=>{if(c.bg)tr.children[j].style.background=c.bg(rows[i]);}));
+  // box plot
+  const lg=$("#boxLegend");lg.textContent="";[["var(--s1)","25th–75th percentile"],["var(--ink)","Median"],["var(--s2)","EDWA"]].forEach(([c,l])=>lg.append(h("span",null,h("i",{style:`background:${c}`}),l)));
+  const el=$("#boxChart");el.textContent="";const order=ctx.teams.slice().sort((a,b)=>P[b].med-P[a].med);
+  const W=Math.max(el.clientWidth||700,320),H=340,m={t:22,b:44,l:40,r:8},ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.setAttribute("width","100%");svg.setAttribute("role","img");svg.setAttribute("aria-label","Box and whisker plot of weekly scores by team");
+  const mk=(tag,a,txt)=>{const e=document.createElementNS(ns,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.append(e);return e;};
+  const lo=Math.floor((Math.min(...order.map(t=>P[t].min))-10)/20)*20,hi=Math.ceil((Math.max(...order.map(t=>P[t].max))+10)/20)*20;
+  const y=v=>m.t+(hi-v)/(hi-lo)*(H-m.t-m.b),cw=(W-m.l-m.r)/order.length,bw=Math.min(34,cw*0.5);
+  for(let v=lo;v<=hi;v+=20){mk("line",{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-dasharray":v===lo?"":"2 3"});mk("text",{x:m.l-6,y:y(v)+4,"text-anchor":"end","font-size":11,fill:"var(--muted)"},v);}
+  order.forEach((t,i)=>{const p=P[t],cx=m.l+cw*(i+0.5),g=document.createElementNS(ns,"g");svg.append(g);
+    const add=(tag,a)=>{const e=document.createElementNS(ns,tag);for(const k in a)e.setAttribute(k,a[k]);g.append(e);return e;};
+    add("rect",{x:cx-cw/2,y:m.t,width:cw,height:H-m.t-m.b,fill:"transparent"});
+    add("line",{x1:cx,x2:cx,y1:y(p.max),y2:y(p.min),stroke:"var(--muted)","stroke-width":1.5});
+    add("line",{x1:cx-bw/3,x2:cx+bw/3,y1:y(p.max),y2:y(p.max),stroke:"var(--muted)","stroke-width":2});
+    add("line",{x1:cx-bw/3,x2:cx+bw/3,y1:y(p.min),y2:y(p.min),stroke:"var(--muted)","stroke-width":2});
+    add("rect",{x:cx-bw/2,y:y(p.q3),width:bw,height:Math.max(y(p.q1)-y(p.q3),2),rx:4,fill:"var(--s1)","fill-opacity":0.85});
+    add("line",{x1:cx-bw/2,x2:cx+bw/2,y1:y(p.med),y2:y(p.med),stroke:"var(--ink)","stroke-width":2.5});
+    add("circle",{cx:cx,cy:y(p.edwa),r:5,fill:"var(--s2)",stroke:"var(--panel)","stroke-width":2});
+    mk("text",{x:cx,y:y(p.max)-6,"text-anchor":"middle","font-size":10,fill:"var(--muted)"},f1(p.max));
+    mk("text",{x:cx,y:y(p.min)+14,"text-anchor":"middle","font-size":10,fill:"var(--muted)"},f1(p.min));
+    const nm=(O(t)||N(t)).split(" ")[0];mk("text",{x:cx,y:H-m.b+18,"text-anchor":"middle","font-size":11,fill:"var(--ink)"},nm);
+    bindTip(g,`${N(t)}: ceiling ${f2(p.max)} · 75th ${f2(p.q3)} · median ${f2(p.med)} · 25th ${f2(p.q1)} · floor ${f2(p.min)} · EDWA ${f2(p.edwa)}`);});
+  el.append(svg);
+}
+// ---------- players ----------
+let PD=null;try{PD=JSON.parse(document.getElementById("player-data").textContent);}catch(e){}
+const POS={1:"QB",2:"RB",3:"WR",4:"TE",5:"K",16:"D/ST"},POSL=["QB","RB","WR","TE","K","D/ST"],PCOL={QB:"var(--s1)",RB:"var(--s2)",WR:"var(--s3)",TE:"var(--s4)",K:"var(--s5)","D/ST":"var(--s6)"};
+const pName=p=>PD.players[p]?PD.players[p][0]:"Player "+p,pPos=p=>PD.players[p]?(POS[PD.players[p][1]]||"?"):"?";
+const pTeam=p=>PD.players[p]&&PD.proAbbr?(PD.proAbbr[PD.players[p][2]]||""):"";
+const ppg=p=>{const s=PD.season[p];return s&&s[1]?s[0]/s[1]:0;},gpOf=p=>{const s=PD.season[p];return s?s[1]:0;};
+const OUTST=new Set(["OUT","INJURY_RESERVE","SUSPENSION"]),INJ={OUT:"Out",INJURY_RESERVE:"IR",SUSPENSION:"Suspended",QUESTIONABLE:"Questionable",DOUBTFUL:"Doubtful"};
+const injOf=t=>{const m={};PD.roster[t].forEach(([p,sl,inj])=>m[p]=[sl,inj]);return m;};
+function healthy(t,wk){return PD.roster[t].filter(([p,sl,inj])=>sl!==21&&!OUTST.has(inj)&&!(wk&&PD.byes[PD.players[p][2]]===wk)).map(r=>r[0]);}
+const SLOTS=[["QB",1],["RB",2],["WR",3],["TE",1],["FLEX",1],["D/ST",1],["K",1]];
+function best(ps){const by={};ps.forEach(p=>{(by[pPos(p)]=by[pPos(p)]||[]).push(p);});for(const k in by)by[k].sort((a,b)=>ppg(b)-ppg(a));
+  const L=[];for(const[k,n]of SLOTS){if(k==="FLEX")continue;(by[k]||[]).splice(0,n).forEach(p=>L.push([k,p]));}
+  const fx=["RB","WR","TE"].flatMap(k=>by[k]||[]).sort((a,b)=>ppg(b)-ppg(a))[0];if(fx!=null)L.push(["FLEX",fx]);
+  const ord={QB:0,RB:1,WR:2,TE:3,FLEX:4,"D/ST":5,K:6};L.sort((a,b)=>ord[a[0]]-ord[b[0]]||ppg(b[1])-ppg(a[1]));
+  return{L,pts:L.reduce((s,[,p])=>s+ppg(p),0),set:new Set(L.map(x=>x[1]))};}
+let PL=null;
+function computePlayers(){
+  if(!PD)return;const share={};ctx.teams.forEach(t=>share[t]={total:0,pos:{},pl:{}});const proj={};
+  Object.keys(PD.lineups).map(Number).filter(w=>w<=ctx.lastWeek).forEach(w=>{for(const[t,rows]of Object.entries(PD.lineups[w])){const S=share[t];if(!S)continue;
+    for(const[p,slot,pts,pj]of rows){if(slot===20||slot===21)continue;const pos=pPos(p);S.total+=pts;S.pos[pos]=(S.pos[pos]||0)+pts;
+      const x=S.pl[p]||(S.pl[p]={p,starts:0,pts:0,proj:0,projPts:0,pg:0});x.starts++;x.pts+=pts;if(pj!=null){x.proj+=pj;x.projPts+=pts;x.pg++;}
+      if(pj!=null){const y=proj[p]||(proj[p]={p,g:0,act:0,proj:0,by:{}});y.g++;y.act+=pts;y.proj+=pj;y.by[t]=(y.by[t]||0)+1;}}}});
+  const full={},cost={},depth={};
+  ctx.teams.forEach(t=>{const hs=healthy(t),B=best(hs);full[t]=B;cost[t]=B.L.map(([slot,p])=>{const B2=best(hs.filter(x=>x!==p)),inn=[...B2.set].filter(x=>!B.set.has(x));return{slot,p,loss:B.pts-B2.pts,next:inn[0]};});});
+  const cnt={},pool={};ctx.teams.forEach(t=>{full[t].L.forEach(([,p])=>cnt[pPos(p)]=(cnt[pPos(p)]||0)+1);healthy(t).forEach(p=>(pool[pPos(p)]=pool[pPos(p)]||[]).push(ppg(p)));});
+  const repl={};for(const k in pool){const v=pool[k].sort((a,b)=>b-a),i=cnt[k]||0;repl[k]=i<v.length?v[i]:0;}
+  ctx.teams.forEach(t=>{depth[t]=healthy(t).filter(p=>!full[t].set.has(p)).reduce((s,p)=>s+Math.max(0,ppg(p)-(repl[pPos(p)]||0)),0);});
+  const remW=[];for(let w=ctx.lastWeek+1;w<=ctx.regWeeks;w++)remW.push(w);
+  const bye={};ctx.teams.forEach(t=>{bye[t]={};remW.forEach(w=>{const B=best(healthy(t,w));bye[t][w]={pts:B.pts,missing:healthy(t).filter(p=>PD.byes[PD.players[p][2]]===w&&full[t].set.has(p))};});});
+  PL={share,proj,full,cost,repl,depth,bye,remW};
+}
+let plTeam=null;
+function renderPlayers(){
+  if(!PD||!PL){$("#shareTable").textContent="Player data isn't loaded yet.";return;}
+  const lg=$("#shareLegend");lg.textContent="";POSL.forEach(k=>lg.append(h("span",null,h("i",{style:`background:${PCOL[k]}`}),k)));
+  const rows=byRecord(),S=PL.share;
+  table($("#shareTable"),[{h:"Team",f:t=>N(t)},{h:"Starting pts",n:1,f:t=>f2(S[t].total)},
+    {h:"Mix",f:t=>{const d=h("div",{class:"stack"});POSL.forEach(k=>{const v=S[t].pos[k]||0;if(!v)return;const seg=h("i",{style:`flex:${v} 0 0;background:${PCOL[k]}`});bindTip(seg,`${N(t)} · ${k}: ${f1(v)} pts (${pct(v/S[t].total)})`);d.append(seg);});return d;}}]
+    .concat(POSL.map(k=>({h:k,n:1,f:t=>pct((S[t].pos[k]||0)/(S[t].total||1))}))),rows);
+  const C=PL.cost;
+  table($("#depthTable"),[{h:"Team",f:t=>N(t)},{h:"Full strength",n:1,f:t=>f1(PL.full[t].pts)},
+    {h:"If top starter is out",f:t=>{const c=C[t].slice().sort((a,b)=>b.loss-a.loss)[0];return c?`${pName(c.p)} −${f1(c.loss)}`:"";}},
+    {h:"Avg loss per injury",n:1,f:t=>f1(C[t].reduce((s,c)=>s+c.loss,0)/(C[t].length||1))},
+    {h:"Bench VORP",n:1,f:t=>f1(PL.depth[t])},
+    {h:"Unavailable now",f:t=>{const o=PD.roster[t].filter(([p,sl,inj])=>sl===21||OUTST.has(inj)).map(r=>r[0]).filter(p=>ppg(p)>=5);return o.map(p=>pName(p)).join(", ");}}],
+    ctx.teams.slice().sort((a,b)=>PL.full[b].pts-PL.full[a].pts));
+  const bt=$("#byeTable");bt.textContent="";
+  if(!PL.remW.length){bt.append(h("tbody",null,h("tr",null,h("td",{class:"mut",text:"No regular-season weeks left."}))));}
+  else table(bt,[{h:"Team",f:t=>N(t)},{h:"Full",n:1,f:t=>f1(PL.full[t].pts)}].concat(PL.remW.map(w=>({h:"Wk "+w,n:1,f:t=>{const b=PL.bye[t][w],d=b.pts-PL.full[t].pts;
+      const td=h("span",{text:f1(b.pts)+(d<-0.05?` (${f1(d)})`:"")});if(b.missing.length)td.title="On bye: "+b.missing.map(pName).join(", ");return td;}}))),ctx.teams.slice().sort((a,b)=>PL.full[b].pts-PL.full[a].pts));
+  if(PL.remW.length)bt.querySelectorAll("tbody tr").forEach((tr,i)=>{const t=ctx.teams.slice().sort((a,b)=>PL.full[b].pts-PL.full[a].pts)[i];PL.remW.forEach((w,j)=>{const d=PL.bye[t][w].pts-PL.full[t].pts;if(d<-0.05)tr.children[j+2].style.background=heat(Math.max(0,0.5+d/40));});});
+  const sel=$("#plTeam");if(plTeam==null)plTeam=rows[0];sel.textContent="";rows.forEach(t=>sel.append(h("option",{value:t,selected:t===plTeam},N(t))));
+  const t=plTeam,ST=S[t];$("#plTitle").textContent=`${N(t)}: players`;
+  const inj=injOf(t);
+  const pls=Object.values(ST.pl).sort((a,b)=>b.pts-a.pts);
+  table($("#plShare"),[{h:"Player",f:x=>`${pName(x.p)}${inj[x.p]?"":" (no longer on roster)"}`},{h:"Pos",f:x=>pPos(x.p)},{h:"Starts",n:1,f:x=>x.starts},{h:"Points",n:1,f:x=>f2(x.pts)},
+    {h:"Share",n:1,f:x=>pct(x.pts/(ST.total||1))},{h:"",f:x=>h("div",{class:"bar"},h("i",{style:`width:${Math.round(x.pts/(pls[0].pts||1)*100)}%;background:${PCOL[pPos(x.p)]||"var(--accent)"}`}))},
+    {h:"Per start",n:1,f:x=>f1(x.pts/x.starts)},{h:"Vs projection",n:1,f:x=>x.pg?sg(x.projPts-x.proj,1):"—",cls:x=>x.pg?(x.projPts-x.proj>=0?"pos":"neg"):""}],pls);
+  table($("#plDepth"),[{h:"Slot",f:c=>c.slot},{h:"Player",f:c=>`${pName(c.p)}${pTeam(c.p)?" · "+pTeam(c.p):""}`},{h:"Pts / game",n:1,f:c=>f1(ppg(c.p))},
+    {h:"Bye",n:1,f:c=>PD.byes[PD.players[c.p][2]]||""},{h:"Status",f:c=>INJ[inj[c.p]&&inj[c.p][1]]||""},
+    {h:"If out, next up",f:c=>c.next!=null?`${pName(c.next)} (${f1(ppg(c.next))})`:"No healthy backup"},{h:"Weekly loss",n:1,f:c=>"−"+f1(c.loss),cls:c=>c.loss>=8?"neg":""}],PL.cost[t]);
+  const bench=healthy(t).filter(p=>!PL.full[t].set.has(p)).sort((a,b)=>ppg(b)-ppg(a)),out=PD.roster[t].filter(([p,sl,s])=>sl===21||OUTST.has(s)).map(r=>r[0]);
+  $("#plOut").textContent=`Bench: ${bench.map(p=>`${pName(p)} ${pPos(p)} ${f1(ppg(p))} (VORP ${sg(ppg(p)-(PL.repl[pPos(p)]||0),1)})`).join(" · ")||"none"}.`+(out.length?` Unavailable: ${out.map(p=>`${pName(p)} (${inj[p][0]===21?"IR slot"+(INJ[inj[p][1]]&&inj[p][1]!=="INJURY_RESERVE"?", "+INJ[inj[p][1]]:""):INJ[inj[p][1]]})`).join(", ")}.`:"");
+  const pj=Object.values(PL.proj).filter(x=>x.g>=2).map(x=>Object.assign(x,{d:x.act-x.proj,team:+Object.entries(x.by).sort((a,b)=>b[1]-a[1])[0][0]}));
+  const pc=[{h:"Player",f:x=>`${pName(x.p)} · ${pPos(x.p)}`},{h:"Team",f:x=>short(N(x.team),20)},{h:"Starts",n:1,f:x=>x.g},{h:"Actual",n:1,f:x=>f1(x.act)},{h:"Projected",n:1,f:x=>f1(x.proj)},{h:"Diff",n:1,f:x=>sg(x.d,1),cls:x=>x.d>=0?"pos":"neg"},{h:"Per start",n:1,f:x=>sg(x.d/x.g,1)}];
+  table($("#projUp"),pc,pj.slice().sort((a,b)=>b.d-a.d).slice(0,10));table($("#projDown"),pc,pj.slice().sort((a,b)=>a.d-b.d).slice(0,10));
+}
+$("#plTeam").addEventListener("change",e=>{plTeam=+e.target.value;renderPlayers();});
+
+// ---------- what-if records ----------
+const rec=(w,l,t)=>`${w}-${l}${t?"-"+t:""}`;
+function whatIf(){
+  const teams=ctx.teams,weeks=ctx.weeks,R={};
+  teams.forEach(t=>{const B=T(t).byWeek;let mw=0,ml=0,mt=0;weeks.forEach(w=>{const b=B[w];if(!b)return;if(b.s>b.med)mw++;else if(b.s<b.med)ml++;else mt++;});
+    R[t]={mw,ml,mt,aw:T(t).w,al:T(t).l,at:T(t).ti,apW:T(t).apW,apL:T(t).apL,sw:{}};});
+  // schedule swap: team t plays team s's schedule
+  teams.forEach(t=>teams.forEach(s=>{let w_=0,l_=0,ti=0;weeks.forEach(w=>{const bs=T(s).byWeek[w],bt=T(t).byWeek[w];if(!bs||!bt)return;
+      let o=bs.opp;if(o===t)o=s;const os=T(o).byWeek[w].s;if(bt.s>os)w_++;else if(bt.s<os)l_++;else ti++;});R[t].sw[s]=[w_,l_,ti];}));
+  return R;}
+function renderWhatIf(){
+  const R=whatIf(),teams=ctx.teams,n=ctx.weeks.length;
+  const combW=t=>R[t].aw+R[t].mw+0.5*(R[t].at+R[t].mt),rows=teams.slice().sort((a,b)=>combW(b)-combW(a)||T(b).pf-T(a).pf);
+  const vals=k=>teams.map(t=>k(t));
+  const cols=[{h:"#",f:(t,i)=>i+1},{h:"Team",f:t=>N(t)},
+    {h:"Actual",n:1,f:t=>rec(R[t].aw,R[t].al,R[t].at),bg:t=>rankHeat(vals(x=>R[x].aw+0.5*R[x].at),R[t].aw+0.5*R[t].at)},
+    {h:"Vs median",n:1,f:t=>rec(R[t].mw,R[t].ml,R[t].mt),bg:t=>rankHeat(vals(x=>R[x].mw+0.5*R[x].mt),R[t].mw+0.5*R[t].mt)},
+    {h:"With median game",n:1,f:t=>rec(R[t].aw+R[t].mw,R[t].al+R[t].ml,R[t].at+R[t].mt),bg:t=>rankHeat(vals(combW),combW(t))},
+    {h:"All-play",n:1,f:t=>rec(R[t].apW,R[t].apL,0),bg:t=>rankHeat(vals(x=>R[x].apW),R[t].apW)},
+    {h:"All-play pace",n:1,f:t=>{const w=Math.round(R[t].apW/(R[t].apW+R[t].apL||1)*n);return rec(w,n-w,0);}},
+    {h:"Median vs actual",n:1,f:t=>sg((R[t].mw+0.5*R[t].mt)-(R[t].aw+0.5*R[t].at),0),cls:t=>{const d=(R[t].mw+0.5*R[t].mt)-(R[t].aw+0.5*R[t].at);return d>0?"neg":d<0?"pos":"";}}];
+  table($("#wiTable"),cols,rows);
+  $("#wiTable").querySelectorAll("tbody tr").forEach((tr,i)=>cols.forEach((c,j)=>{if(c.bg)tr.children[j].style.background=c.bg(rows[i]);}));
+  // schedule swap matrix
+  const el=$("#wiSwap");el.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team ↓ · schedule →"}));
+  rows.forEach(s=>hr.append(h("th",{class:"n",title:N(s)+"'s schedule",text:short((O(s)||N(s)).split(" ")[0],10)})));
+  ["Best","Worst","Avg W"].forEach(x=>hr.append(h("th",{class:"n",text:x})));tb.append(h("thead",null,hr));
+  const body=h("tbody");rows.forEach(t=>{const tr=h("tr",null,h("td",{text:N(t)}));const ws=rows.map(s=>R[t].sw[s][0]+0.5*R[t].sw[s][2]);
+    rows.forEach((s,j)=>{const [w,l,ti]=R[t].sw[s];tr.append(h("td",{class:"n",title:`${N(t)} with ${N(s)}'s schedule: ${rec(w,l,ti)}`,style:`background:${heat(n?(w+0.5*ti)/n:0.5)};${s===t?"font-weight:700;box-shadow:inset 0 0 0 2px var(--ink)":""}`,text:rec(w,l,ti)}));});
+    const bi=ws.indexOf(Math.max(...ws)),wi=ws.indexOf(Math.min(...ws));
+    tr.append(h("td",{class:"n",text:rec(...R[t].sw[rows[bi]])}),h("td",{class:"n",text:rec(...R[t].sw[rows[wi]])}),h("td",{class:"n",text:f1(ws.reduce((a,b)=>a+b,0)/ws.length)}));body.append(tr);});
+  tb.append(body);el.append(tb);
+  // weekly vs median
+  const wm=$("#wiWeeks");wm.textContent="";const t2=h("table");const h2=h("tr",null,h("th",{text:"Team"}));ctx.weeks.forEach(w=>h2.append(h("th",{class:"n",text:"Wk "+w})));t2.append(h("thead",null,h2));
+  const b2=h("tbody");rows.forEach(t=>{const tr=h("tr",null,h("td",{text:N(t)}));ctx.weeks.forEach(w=>{const b=T(t).byWeek[w];if(!b){tr.append(h("td"));return;}
+      const m=b.s>b.med?"W":b.s<b.med?"L":"T",a=b.won===1?"W":b.won===0?"L":"T";
+      tr.append(h("td",{class:"n",title:`Week ${w}: ${f2(b.s)} vs median ${f2(b.med)} · ${a} vs ${N(b.opp)}`,style:`background:${heat(m==="W"?0.85:m==="L"?0.15:0.5)}`,text:`${m} · ${a}`}));});b2.append(tr);});
+  t2.append(b2);wm.append(t2);
+}
+// ---------- live ESPN data ----------
+const ESPN_BASE=`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${DATA.season}/segments/0/leagues/${DATA.leagueId}`;
+const POLL_MS=60000,HEAVY_MS=10*60000;
+const live={state:"snapshot",checked:null,err:null,cur:null,curRows:null,curGames:[],tx:[],pending:[],info:null,lastHeavy:0,idsKey:"",sig:"",warn:null,busy:false,names:{}};
+async function espn(q,filter){const r=await fetch(ESPN_BASE+"?"+q,{headers:filter?{"X-Fantasy-Filter":JSON.stringify(filter)}:{},cache:"no-store",credentials:"omit"});if(!r.ok)throw new Error("ESPN returned "+r.status);return r.json();}
+const lsGet=k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+const r2=x=>Math.round(x*100)/100;
+function statOf(p,sp,src,split){return(p.stats||[]).find(s=>s.seasonId===DATA.season&&s.scoringPeriodId===sp&&s.statSourceId===src&&s.statSplitTypeId===split)||null;}
+function lineupRows(side,sp,players){return side.rosterForCurrentScoringPeriod.entries.map(e=>{const p=e.playerPoolEntry.player;players[p.id]=[p.fullName,p.defaultPositionId,p.proTeamId];const a=statOf(p,sp,0,1),pr=statOf(p,sp,1,1);
+  return[p.id,e.lineupSlotId,a?r2(a.appliedTotal):0,pr?r2(pr.appliedTotal):null,a?1:0];});}
+const startersSum=rows=>rows.reduce((s,r)=>s+(r[1]!==20&&r[1]!==21?r[2]:0),0);
+async function weekLineups(w,sp,sched){
+  const tot={};sched.filter(m=>m.matchupPeriodId===w).forEach(m=>{tot[m.away.teamId]=m.away.totalPoints;tot[m.home.teamId]=m.home.totalPoints;});
+  const key=`mhs:${DATA.leagueId}:${DATA.season}:wk${w}:v1`,c=lsGet(key),ok=x=>x&&Object.keys(tot).every(t=>x.rows[t]&&Math.abs(startersSum(x.rows[t])-tot[t])<0.05);
+  if(ok(c))return c;
+  const d=await espn(`view=mBoxscore&scoringPeriodId=${sp}`,{schedule:{filterMatchupPeriodIds:{value:[w]}}}),out={rows:{},players:{}};
+  d.schedule.filter(m=>m.matchupPeriodId===w).forEach(m=>["away","home"].forEach(s=>{out.rows[m[s].teamId]=lineupRows(m[s],sp,out.players);}));
+  if(!ok(out))throw new Error(`Week ${w} lineups don't add up to ESPN's scores`);
+  lsSet(key,out);return out;}
+async function playerInfo(ids,sp){if(!ids.length)return{};
+  const d=await espn(`view=kona_player_info&scoringPeriodId=${sp}`,{players:{filterIds:{value:ids},filterStatsForSourceIds:{value:[0]},filterStatsForSplitTypeIds:{value:[0]},limit:ids.length+20,sortPercOwned:{sortPriority:1,sortAsc:false}}});
+  const out={};(d.players||[]).forEach(x=>{const p=x.player,s=statOf(p,0,0,0);out[p.id]={name:p.fullName,pos:p.defaultPositionId,pro:p.proTeamId,inj:p.injuryStatus||"ACTIVE",
+    season:s?[r2(s.appliedTotal),s.appliedAverage?Math.round(s.appliedTotal/s.appliedAverage):0,null]:[0,0,null]};});return out;}
+async function pool(items,n,fn){const out=new Array(items.length);let i=0;await Promise.all(Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const k=i++;out[k]=await fn(items[k]);}}));return out;}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=Math.imul(31,h)+s.charCodeAt(i)|0;return h;}
+async function refresh(force){
+  if(live.busy)return;live.busy=true;
+  try{
+    const [ts,sched]=await Promise.all([espn("view=mTeam&view=mStatus&view=mSettings"),espn("view=mMatchupScore")]);
+    const SS=ts.settings&&ts.settings.scheduleSettings||{},regW=SS.matchupPeriodCount||DATA.settings.regWeeks,cur=ts.status.currentMatchupPeriod;
+    const spOf=w=>(SS.matchupPeriods&&SS.matchupPeriods[w]&&SS.matchupPeriods[w][0])||w,spCur=spOf(cur);live.cur=cur;
+    const S=sched.schedule.filter(m=>m.away&&m.home);
+    const games=S.filter(m=>m.matchupPeriodId<=regW).map(m=>{const d=m.winner!=="UNDECIDED";return{w:m.matchupPeriodId,a:m.away.teamId,h:m.home.teamId,as:d?m.away.totalPoints:null,hs:d?m.home.totalPoints:null};}).sort((x,y)=>x.w-y.w||x.a-y.a);
+    const teams={};ts.teams.forEach(t=>{teams[t.id]={name:t.name,owner:(DATA.teams[t.id]&&DATA.teams[t.id].owner)||""};});
+    const st={};ts.teams.forEach(t=>st[t.id]=[0,0,0,0,0]);
+    games.filter(g=>g.as!=null).forEach(g=>{const A=st[g.a],H=st[g.h];A[3]+=g.as;A[4]+=g.hs;H[3]+=g.hs;H[4]+=g.as;if(g.as>g.hs){A[0]++;H[1]++;}else if(g.hs>g.as){H[0]++;A[1]++;}else{A[2]++;H[2]++;}});
+    const bad=ts.teams.filter(t=>{const o=t.record.overall,x=st[t.id];return x[0]!==o.wins||x[1]!==o.losses||x[2]!==o.ties||Math.abs(x[3]-o.pointsFor)>0.01||Math.abs(x[4]-o.pointsAgainst)>0.01;});
+    if(bad.length)throw new Error("ESPN's standings don't match its own scores right now ("+bad.map(t=>t.name).join(", ")+"), so the last good data is kept");
+    const nT=ts.teams.length,done=[...new Set(games.map(g=>g.w))].filter(w=>games.filter(g=>g.w===w&&g.as!=null).length*2===nT).sort((a,b)=>a-b);
+    let lastWeek=0;while(done.includes(lastWeek+1))lastWeek++;
+    // current week lineups (live scores, current rosters)
+    const [box,tc,tp,pend]=await Promise.all([espn(`view=mBoxscore&scoringPeriodId=${spCur}`,{schedule:{filterMatchupPeriodIds:{value:[cur]}}}),
+      espn(`view=mTransactions2&scoringPeriodId=${spCur}`).catch(()=>({transactions:[]})),cur>1?espn(`view=mTransactions2&scoringPeriodId=${spOf(cur-1)}`).catch(()=>({transactions:[]})):{transactions:[]},
+      espn("view=mPendingTransactions").catch(()=>({pendingTransactions:[]}))]);
+    const players={},curRows={},curGames=[];
+    box.schedule.filter(m=>m.matchupPeriodId===cur).forEach(m=>{["away","home"].forEach(s=>curRows[m[s].teamId]=lineupRows(m[s],spCur,players));curGames.push({a:m.away.teamId,h:m.home.teamId,winner:m.winner,as:m.away.totalPoints,hs:m.home.totalPoints});});
+    // rostered teams with no matchup this period (playoff byes) still need rosters: use previous lineups if absent
+    const weeks=[];for(let w=1;w<=lastWeek;w++)weeks.push(w);
+    const wl=await pool(weeks,3,w=>weekLineups(w,spOf(w),S));
+    const lineups={};wl.forEach((x,i)=>{lineups[weeks[i]]=x.rows;Object.assign(players,x.players,players);});
+    const ids=[...new Set(Object.values(curRows).flat().map(r=>r[0]))].sort((a,b)=>a-b),idsKey=ids.join(",");
+    if(force||!live.info||idsKey!==live.idsKey||Date.now()-live.lastHeavy>HEAVY_MS){live.info=await playerInfo(ids,spCur);live.idsKey=idsKey;live.lastHeavy=Date.now();}
+    const info=live.info,season={},roster={};
+    ids.forEach(p=>{const x=info[p];if(x){season[p]=x.season;players[p]=[x.name,x.pos,x.pro];}});
+    for(const t in curRows)roster[t]=curRows[t].map(r=>[r[0],r[1],info[r[0]]?info[r[0]].inj:"ACTIVE"]);
+    // transactions
+    live.tx=[...(tc.transactions||[]),...(tp.transactions||[])];live.pending=pend.pendingTransactions||[];
+    const txIds=new Set();live.tx.concat(live.pending).forEach(x=>(x.items||[]).forEach(i=>{if(i.playerId>0&&!players[i.playerId]&&!live.names[i.playerId])txIds.add(i.playerId);}));
+    if(txIds.size){try{const more=await playerInfo([...txIds],spCur);for(const p in more)live.names[p]=[more[p].name,more[p].pos,more[p].pro];}catch(e){}}
+    const nd=Object.assign({},DATA,{teams,games,lastWeek,updatedAt:new Date().toISOString(),settings:Object.assign({},DATA.settings,{regWeeks:regW,playoffTeams:SS.playoffTeamCount||DATA.settings.playoffTeams})});
+    const npd={asOfWeek:lastWeek,players:Object.assign({},PD?PD.players:{},players),season,lineups,roster,byes:PD?PD.byes:{},proAbbr:PD?PD.proAbbr:{}};
+    const sig=hashStr(JSON.stringify([games,teams,roster,season,lastWeek]));
+    if(String(sig)!==live.sig){DATA=nd;PD=npd;live.sig=String(sig);compute();render();}
+    else{DATA.updatedAt=nd.updatedAt;}
+    live.curRows=curRows;live.curGames=curGames;live.curSp=spCur;live.regW=regW;
+    live.state="live";live.checked=new Date();live.err=null;
+  }catch(e){live.err=(e&&e.message)||"Couldn't reach ESPN";live.state=live.checked?"stale":"snapshot";}
+  finally{live.busy=false;renderStamp();renderLive();renderActivity();}
+}
+function renderStamp(){const el=$("#stamp");el.textContent="";
+  const dot=c=>h("span",{style:`display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:6px;vertical-align:1px`});
+  const tm=d=>d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
+  if(live.state==="live")el.append(h("div",null,dot("var(--good)"),`Live from ESPN · checked ${tm(live.checked)}`),h("div",{class:"mut"},"Updates every minute"));
+  else if(live.state==="stale")el.append(h("div",null,dot("var(--warn)"),`Last checked ${tm(live.checked)}`),h("div",{class:"mut",text:live.err||""}));
+  else el.append(h("div",null,dot("var(--muted)"),DATA.updatedAt?"Snapshot from "+new Date(DATA.updatedAt).toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"Snapshot"),live.err?h("div",{class:"mut",text:"Live data unavailable here: "+live.err}):h("div",{class:"mut",text:"Connecting to ESPN…"}));}
+function liveSide(rows){let pts=0,proj=0,playing=0,left=0;rows.forEach(([p,sl,a,pj,played])=>{if(sl===20||sl===21)return;pts+=a;proj+=played?a:(pj||0);if(played)playing++;else left++;});return{pts,proj,left};}
+function renderLive(){const box=$("#livePanel");if(!box)return;
+  if(!live.curRows||!live.curGames.length){box.classList.add("hidden");return;}box.classList.remove("hidden");
+  $("#liveTitle").textContent=live.cur>live.regW?`Playoffs · week ${live.cur}`:`Week ${live.cur} · live`;
+  table($("#liveGames"),[{h:"Away",f:g=>N(g.a)},{h:"Score",n:1,f:g=>f2(liveSide(live.curRows[g.a]||[]).pts)},{h:"Proj",n:1,f:g=>f1(liveSide(live.curRows[g.a]||[]).proj)},
+    {h:"Home",f:g=>N(g.h)},{h:"Score",n:1,f:g=>f2(liveSide(live.curRows[g.h]||[]).pts)},{h:"Proj",n:1,f:g=>f1(liveSide(live.curRows[g.h]||[]).proj)},
+    {h:"Starters left",n:1,f:g=>`${liveSide(live.curRows[g.a]||[]).left} – ${liveSide(live.curRows[g.h]||[]).left}`},
+    {h:"Status",f:g=>{if(g.winner&&g.winner!=="UNDECIDED")return "Final";const A=live.curRows[g.a]||[],H=live.curRows[g.h]||[];return A.concat(H).some(r=>r[1]!==20&&r[1]!==21&&r[4])?"In progress":"Not started";}}],live.curGames);}
+// activity feed
+let showLineup=false;
+function plName(p){if(p<0){const ab=PD&&PD.proAbbr?PD.proAbbr[-p-16000]:"";return(ab||"Team")+" D/ST";}const x=(PD&&PD.players[p])||live.names[p];return x?x[0]:"Player "+p;}
+function plPos(p){if(p<0)return"D/ST";const x=(PD&&PD.players[p])||live.names[p];return x?(POS[x[1]]||""):"";}
+const SLOTN={0:"QB",2:"RB",4:"WR",6:"TE",23:"FLEX",16:"D/ST",17:"K",20:"bench",21:"IR"};
+function txEvents(){const ev=[];const seen=new Set();
+  const nm=p=>`${plName(p)}${plPos(p)&&p>0?" ("+plPos(p)+")":""}`;
+  live.pending.forEach(x=>{if(x.type==="TRADE_ACCEPT"&&x.status==="PENDING"){const by={};(x.items||[]).filter(i=>i.type==="TRADE").forEach(i=>(by[i.fromTeamId]=by[i.fromTeamId]||[]).push(i));const ts=Object.keys(by).map(Number);
+    ev.push({t:x.acceptedDate||x.proposedDate,kind:"trade",text:ts.length===2?`${N(ts[0])} trade ${by[ts[0]].map(i=>nm(i.playerId)).join(", ")} to ${N(ts[1])} for ${by[ts[1]].map(i=>nm(i.playerId)).join(", ")}`:"Trade accepted",
+      note:x.expirationDate?`Accepted, pending league review until ${new Date(x.expirationDate).toLocaleString([],{weekday:"short",hour:"numeric",minute:"2-digit"})}`:"Accepted, pending review"});seen.add(x.id);}});
+  live.tx.forEach(x=>{if(seen.has(x.id))return;seen.add(x.id);const it=x.items||[],t=x.proposedDate||x.processDate;
+    if((x.type==="FREEAGENT"||x.type==="WAIVER")&&x.status==="EXECUTED"){const add=it.filter(i=>i.type==="ADD"),drop=it.filter(i=>i.type==="DROP");
+      ev.push({t:x.processDate||t,kind:"add",text:`${N(x.teamId)} added ${add.map(i=>nm(i.playerId)).join(", ")}${drop.length?", dropped "+drop.map(i=>nm(i.playerId)).join(", "):""}`,note:x.type==="WAIVER"?("Waiver claim"+(x.bidAmount?` · $${x.bidAmount}`:"")):"Free agent"});return;}
+    const tr=it.filter(i=>i.type==="TRADE");
+    if(tr.length&&(x.status==="EXECUTED"||x.type==="TRADE_UPHOLD")){const by={};tr.forEach(i=>(by[i.fromTeamId]=by[i.fromTeamId]||[]).push(i));const ts=Object.keys(by).map(Number);
+      ev.push({t:x.processDate||t,kind:"trade",text:ts.length===2?`${N(ts[0])} trade ${by[ts[0]].map(i=>nm(i.playerId)).join(", ")} to ${N(ts[1])} for ${by[ts[1]].map(i=>nm(i.playerId)).join(", ")}`:"Trade processed",note:"Trade processed"});return;}
+    if(x.type==="TRADE_VETO"){ev.push({t,kind:"trade",text:"A trade was vetoed",note:"Vetoed"});return;}
+    if((x.type==="ROSTER"||x.type==="TRADE_ACCEPT")&&x.status!=="CANCELED"){const drop=it.filter(i=>i.type==="DROP");if(drop.length)ev.push({t,kind:"drop",text:`${N(x.teamId||drop[0].fromTeamId)} dropped ${drop.map(i=>nm(i.playerId)).join(", ")}`,note:x.type==="TRADE_ACCEPT"?"To make room for a trade":"Drop"});}
+    if((x.type==="ROSTER"||x.type==="FUTURE_ROSTER")&&x.status==="EXECUTED"){const lu=it.filter(i=>i.type==="LINEUP");if(lu.length)ev.push({t,kind:"lineup",text:`${N(x.teamId)}: ${lu.map(i=>`${plName(i.playerId)} to ${SLOTN[i.toLineupSlotId]||"slot"}`).join(", ")}`,note:x.type==="FUTURE_ROSTER"?"Future lineup":"Lineup"});}});
+  return ev.filter(e=>e.t).sort((a,b)=>b.t-a.t);}
+function renderActivity(){const el=$("#actList");if(!el)return;el.textContent="";
+  if(live.state==="snapshot"&&!live.tx.length){el.append(h("p",{class:"note",text:live.err?"League activity needs a live connection to ESPN, which isn't available here.":"Loading league activity…"}));return;}
+  const ev=txEvents().filter(e=>showLineup||e.kind!=="lineup");
+  if(!ev.length){el.append(h("p",{class:"note",text:"No moves in the last two weeks."}));return;}
+  const lab={trade:"Trade",add:"Add",drop:"Drop",lineup:"Lineup"},cls={trade:"good",add:"",drop:"bad",lineup:""};
+  table(el,[{h:"When",f:e=>new Date(e.t).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})},{h:"Type",f:e=>h("span",{class:"chip "+cls[e.kind],text:lab[e.kind]})},{h:"Move",f:e=>e.text},{h:"Detail",f:e=>e.note||"",cls:()=>"mut"}],ev.slice(0,80));}
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="actLineup"){showLineup=e.target.checked;renderActivity();}});
+let pollT=null;function schedulePoll(){clearTimeout(pollT);pollT=setTimeout(async()=>{if(document.visibilityState==="visible")await refresh();schedulePoll();},POLL_MS);}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&live.checked&&Date.now()-live.checked>POLL_MS/2)refresh();});
+
+// ---------- commissioner names (editors only) ----------
+let db=null, canEdit=false, namesRef=null;
+function renderNames(){
+  if(!canEdit)return; $("#commish").classList.remove("hidden");
+  table($("#names"),[{h:"ESPN name",f:t=>DATA.teams[t].name},{h:"Show as",f:t=>{const i=h("input",{type:"text",value:overrides[t]||"",placeholder:DATA.teams[t].name,"aria-label":"Display name"});
+      i.addEventListener("change",async e=>{const v=e.target.value.trim();const next=Object.assign({},overrides);if(v)next[t]=v;else delete next[t];
+        try{await namesRef.set({names:next,at:new Date().toISOString()});$("#namesMsg").textContent="Saved.";}catch(err){$("#namesMsg").textContent="Couldn't save. You may not have edit access to this page.";}});
+      i.addEventListener("keydown",e=>{if(e.key==="Enter")i.blur();});return i;}},{h:"Owner",f:t=>O(t)}],ctx.teams);
+}
+
+// ---------- tabs ----------
+function show(tab){document.querySelectorAll("[data-panel]").forEach(s=>s.classList.toggle("hidden",s.dataset.panel!==tab));document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));if(tab==="luck")renderLuck();if(tab==="profile")renderProfile();}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b){show(b.dataset.tab);try{history.replaceState(null,"","#"+b.dataset.tab);}catch(_){}}});
+let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{renderLuck();renderProfile();},150);});
+
+overrides=Object.assign({},DATA.nameOverrides||{});
+compute();render();renderStamp();renderActivity();
+refresh().then(schedulePoll);
+const start=(location.hash||"").slice(1);if(start&&document.querySelector(`[data-panel="${start}"]`))show(start);
+
+(async()=>{try{
+  if(!window.claude||!window.claude.use)return;
+  const [d,u]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+  if(u){try{canEdit=await u.canEdit();}catch(e){}}
+  if(!d)return; db=d; namesRef=db.doc("league/names");
+  namesRef.onSnapshot(s=>{const x=s.exists?s.data():null;overrides=x?Object.assign({},x.names||{}):Object.assign({},DATA.nameOverrides||{});render();},()=>{});
+  if(canEdit)renderNames();
+}catch(e){}})();
+})();
+</script>
+
+</body></html>
