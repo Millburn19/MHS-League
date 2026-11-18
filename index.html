@@ -120,6 +120,7 @@ svg text{font-family:var(--body)}
 .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--paper);font-size:.78rem;padding:5px 8px;border-radius:6px;z-index:20;max-width:260px;display:none}
 .more{align-self:flex-start;background:none;border:0;color:var(--accent);font-weight:500;cursor:pointer;padding:0;font-size:.86rem}
 .nw{white-space:nowrap}
+#wkTiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,8.4rem),1fr))}
 #luckHeat td:first-child,#luckHeat th:first-child{position:sticky;left:0;z-index:1;background:var(--panel)}
 #luckHeat tr.me td:first-child{background:var(--me)}
 footer{color:var(--muted);font-size:.78rem;text-align:center;padding-block:0 32px}
@@ -136,7 +137,7 @@ footer{color:var(--muted);font-size:.78rem;text-align:center;padding-block:0 32p
 <div class="navbar"><div class="inner">
   <nav class="tabs" role="tablist" id="tabs" aria-label="Sections">
     <button role="tab" data-tab="overview" aria-selected="true">Home</button>
-    <button role="tab" data-tab="power">Power</button>
+    <button role="tab" data-tab="power">Power ranks</button>
     <button role="tab" data-tab="playoffs">Playoff odds</button>
     <button role="tab" data-tab="sos">SOS ROS</button>
     <button role="tab" data-tab="luck">Luck index</button>
@@ -144,34 +145,40 @@ footer{color:var(--muted);font-size:.78rem;text-align:center;padding-block:0 32p
     <button role="tab" data-tab="players">Players</button>
     <button role="tab" data-tab="injuries">Injuries</button>
     <button role="tab" data-tab="standings">Standings</button>
-    <button role="tab" data-tab="weeks">Weekly results</button>
   </nav>
-  <label class="focus" for="focusTeam"><span>Highlight</span><select id="focusTeam"><option value="">No team</option></select></label>
 </div></div>
 
 <main class="inner" id="app">
 
   <section data-panel="overview">
     <div class="panel" id="sec-grid"><h3>Week by week</h3>
-      <p class="lead">Each team's season average, EDWA, real record, record against the weekly median, record against the weekly average and luck index, then its result and score every week. The bottom rows show the league average and median for each week.</p>
-      <p class="note">Cells are colored by the share of the league each team outscored. A green ring marks a lucky win (bottom-half score, still won); a red ring marks an unlucky loss (top-half score, still lost). EDWA weights recent weeks more: each earlier week counts 0.8 times the week after it.</p>
       
       
       <div class="tw" id="luckHeat"></div></div>
     <div class="tiles" id="tiles"></div>
+    <div class="panel" id="sec-week"><div class="ph"><h3 id="wkTitle">Week</h3><select id="wkSel" aria-label="Week"></select></div>
+      <div class="tiles" id="wkTiles"></div></div>
     <div class="panel"><div class="ph"><h3>Standings</h3><button class="more" data-go="standings" data-to="sec-standings">Full table →</button></div>
         <div class="tw"><table id="homeStand"></table></div></div>
+    <div class="panel" id="sec-whatif"><h3>Records every way</h3>
+      <p class="lead">Each team's real record next to what it would be against the weekly median, against the weekly average, with a median game added, and using EDWA. Sorted by the with-median record.</p>
+      <details class="how"><summary>How it's calculated</summary><p><b>Vs median</b> counts a win for every week a team scored above that week's league median (the middle of all 10 scores) and a loss below it. <b>Vs average</b> does the same against that week's league average (mean) score. <b>EDWA replay</b> replays the games already played using each team's current EDWA instead of its actual score, so the team with the higher EDWA wins each game. <b>EDWA final</b> is the real record plus the remaining games each team would win on EDWA. <b>With median game</b> adds that to the real record, as if every week also had a game against the median. <b>All-play</b> is the record from playing all 9 other teams every week, and <b>all-play pace</b> scales that to one game a week. <b>Median vs actual</b> is median wins minus real wins: positive means the real record is worse than the scoring deserved.</p></details>
+      <div class="tw"><table id="wiTable"></table></div>
+      <h4>Schedule swap</h4>
+      <p class="note">Each row is a team's real scores played against another team's schedule (columns, by owner). The outlined cell is the real record. When a schedule has a team playing itself, it plays that schedule's owner instead.</p>
+      <div class="tw" id="wiSwap"></div>
+      <h4>Week by week vs the median and average</h4>
+      <p class="note">Each cell reads: vs median · vs average · actual. Green beat both the median and the average; red fell below both.</p>
+      <div class="tw" id="wiWeeks"></div></div>
   </section>
   <section data-panel="power" class="hidden">
     <div class="panel" id="sec-power"><h3>Power rankings</h3>
-      <p class="lead">Ranked on scoring, weighted toward recent form (EDWA) over the season average. The schedule doesn't affect it. Arrows show the move from last week.</p>
       <details class="how"><summary>How it's calculated</summary><p>Power score = 65% EDWA + 35% season average, in points per week. EDWA is an exponential-decay weighted average that counts the latest week fully and each earlier week at 0.8 times the week after it. All-play columns are shown for reference.</p></details>
       <div class="tw"><table id="power"></table></div></div>
   </section>
   <section data-panel="playoffs" class="hidden">
     <div class="sechead"><h2>Playoffs</h2><div class="jump"><button data-to="sec-odds">Odds</button><button data-to="sec-seeds">Seeds</button><button data-to="sec-path">Path to the playoffs</button></div></div>
     <div class="panel" id="sec-odds"><h3>Playoff odds</h3>
-      <p class="lead">Chances to make the playoffs, earn a bye, reach the final and win it all, with each team's playoff status, the record it likely needs, and its biggest remaining game.</p>
       <details class="how"><summary>How it's calculated</summary><p>From 10,000 simulations of the rest of the season against the real schedule. Each team's expected weekly score is its season average pulled part of the way toward the league average, which matters most early in the season. Top 6 make the playoffs and the top 2 get a bye. Status counts wins only: clinched means not enough teams can reach the team's current win total to push it out, and eliminated means six teams already have more wins than it can reach. "Likely in at" is the worst final record that still makes the playoffs in at least 80% of simulations. Biggest game is the remaining game that changes the team's odds most between a win and a loss; swings are in percentage points of playoff odds.</p></details>
       <div class="tw"><table id="odds"></table></div></div>
     <div class="panel" id="sec-seeds"><h3>Where each team finishes</h3>
@@ -182,7 +189,6 @@ footer{color:var(--muted);font-size:.78rem;text-align:center;padding-block:0 32p
       <div class="ph"><h4 id="pathTitle" style="margin:0">Team path</h4><select id="pathTeam" aria-label="Team"></select></div>
       <div class="result" id="pathLine"></div>
       <h4>What each finish is worth</h4>
-      <p class="note">Playoff and bye chances for each number of wins over the remaining games. Blank cells are finishes that almost never happen.</p>
       <div class="tw"><table id="pathWins"></table></div>
       <h4>Remaining games</h4>
       <div class="tw"><table id="pathGames"></table></div>
@@ -259,29 +265,14 @@ footer{color:var(--muted);font-size:.78rem;text-align:center;padding-block:0 32p
   </section>
 
   <section data-panel="standings" class="hidden">
-    <div class="sechead"><h2>Standings</h2><div class="jump"><button data-to="sec-standings">Table</button><button data-to="sec-whatif">Records every way</button></div></div>
+    <div class="sechead"><h2>Standings</h2><div class="jump"><button data-to="sec-standings">Table</button></div></div>
     <div class="panel" id="sec-standings"><h3>Standings</h3>
       <p class="lead">Record first, then points for. The dashed line is the playoff cut (top 6).</p>
       <details class="how"><summary>How it's calculated</summary><p>All-play is each team's record if it had played every other team every week. Playoffs is the chance to finish top 6 from 10,000 simulations.</p></details>
       <div class="tw"><table id="stand"></table></div></div>
-    <div class="panel" id="sec-whatif"><h3>Records every way</h3>
-      <p class="lead">Each team's real record next to what it would be against the weekly median, against the weekly average, with a median game added, and using EDWA. Sorted by the with-median record.</p>
-      <details class="how"><summary>How it's calculated</summary><p><b>Vs median</b> counts a win for every week a team scored above that week's league median (the middle of all 10 scores) and a loss below it. <b>Vs average</b> does the same against that week's league average (mean) score. <b>EDWA replay</b> replays the games already played using each team's current EDWA instead of its actual score, so the team with the higher EDWA wins each game. <b>EDWA final</b> is the real record plus the remaining games each team would win on EDWA. <b>With median game</b> adds that to the real record, as if every week also had a game against the median. <b>All-play</b> is the record from playing all 9 other teams every week, and <b>all-play pace</b> scales that to one game a week. <b>Median vs actual</b> is median wins minus real wins: positive means the real record is worse than the scoring deserved.</p></details>
-      <div class="tw"><table id="wiTable"></table></div>
-      <h4>Schedule swap</h4>
-      <p class="note">Each row is a team's real scores played against another team's schedule (columns, by owner). The outlined cell is the real record. When a schedule has a team playing itself, it plays that schedule's owner instead.</p>
-      <div class="tw" id="wiSwap"></div>
-      <h4>Week by week vs the median and average</h4>
-      <p class="note">Each cell reads: vs median · vs average · actual. Green beat both the median and the average; red fell below both.</p>
-      <div class="tw" id="wiWeeks"></div></div>
     <div class="panel hidden" id="commish"><h3>Commissioner: team names</h3>
       <p class="note">Only league editors see this. Anything set here replaces the ESPN name. Clear a box to go back to the ESPN name.</p>
       <div class="tw"><table id="names"></table></div><div class="note" id="namesMsg"></div></div>
-  </section>
-  <section data-panel="weeks" class="hidden">
-    <div class="panel" id="sec-week"><div class="ph"><h3 id="wkTitle">Week</h3><select id="wkSel" aria-label="Week"></select></div>
-      <div class="tiles" id="wkTiles"></div>
-      <div class="tw"><table id="wkGames"></table></div></div>
   </section>
 </main>
 <footer class="inner">MHS League · ESPN league 45411903 · Full PPR</footer>
@@ -412,7 +403,7 @@ let overrides={}, ctx, sim, path;
 const N=t=>(overrides[t]||(DATA.teams[t]&&DATA.teams[t].name)||("Team "+t));
 const O=t=>(DATA.teams[t]&&DATA.teams[t].owner)||"";
 const short=(s,n)=>s.length>n?s.slice(0,n-1)+"…":s;
-let FOCUS=null;try{FOCUS=+localStorage.getItem("mhs:focus")||null;}catch(e){}
+let FOCUS=null;
 const INI=t=>{const o=O(t);return o?o.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase():String(t);};
 const TB=(t,n)=>h("span",{class:"tm",title:O(t)?N(t)+" · "+O(t):N(t)},h("span",{class:"mono",text:INI(t)}),h("span",{class:"nm",text:n?short(N(t),n):N(t)}));
 
@@ -521,7 +512,7 @@ function renderWeeks(){
   [["High score",N(hiT),f2(W.hi)],["Low score",N(loT),f2(W.lo)],["Biggest blowout",N(blow.as>blow.hs?blow.a:blow.h),`by ${f2(margin(blow))}`],["Closest game",`${short(N(close.a),14)} vs ${short(N(close.h),14)}`,`by ${f2(margin(close))}`],
    ["Highest losing score",N(unlucky[0]),`${f2(unlucky[1])} pts, ${ctx.T[unlucky[0]].byWeek[w].beat} teams outscored`],["Lowest winning score",N(lucky[0]),`${f2(lucky[1])} pts, ${ctx.T[lucky[0]].byWeek[w].beat} teams outscored`],["League median",f2(W.med),`average ${f2(W.avg)}`]]
    .forEach(([k,v,s])=>el.append(h("div",{class:"tile"},h("span",{class:"k",text:k}),h("span",{class:"v",style:"font-size:1.25rem",text:v}),h("span",{class:"s",text:s}))));
-  table($("#wkGames"),[{h:"Winner",f:g=>N(g.as>=g.hs?g.a:g.h)},{h:"Score",n:1,f:g=>`${f2(Math.max(g.as,g.hs))} – ${f2(Math.min(g.as,g.hs))}`},{h:"Loser",f:g=>N(g.as>=g.hs?g.h:g.a)},
+  $("#wkGames")&&table($("#wkGames"),[{h:"Winner",f:g=>N(g.as>=g.hs?g.a:g.h)},{h:"Score",n:1,f:g=>`${f2(Math.max(g.as,g.hs))} – ${f2(Math.min(g.as,g.hs))}`},{h:"Loser",f:g=>N(g.as>=g.hs?g.h:g.a)},
     {h:"Margin",n:1,f:g=>f2(margin(g))},{h:"Winner beat",n:1,f:g=>`${T(g.as>=g.hs?g.a:g.h).byWeek[w].beat} of ${ctx.teams.length-1}`},{h:"Loser beat",n:1,f:g=>`${T(g.as>=g.hs?g.h:g.a).byWeek[w].beat} of ${ctx.teams.length-1}`}],gs);
 }
 $("#wkSel").addEventListener("change",e=>{wkSel=+e.target.value;renderWeeks();});
@@ -948,6 +939,9 @@ function renderActivity(){renderHomeAct();const el=$("#actList");if(!el)return;e
   const lab={trade:"Trade",add:"Add",drop:"Drop",lineup:"Lineup"},cls={trade:"good",add:"",drop:"bad",lineup:""};
   table(el,[{h:"When",f:e=>new Date(e.t).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),cls:()=>"mut nw"},{h:"Type",f:e=>h("span",{class:"chip "+cls[e.kind],text:lab[e.kind]})},{h:"Move",f:e=>e.text},{h:"Detail",f:e=>e.note||"",cls:()=>"mut"}],ev.slice(0,80));}
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="actLineup"){showLineup=e.target.checked;renderActivity();}});
+const BUILD="2026-11-18f";
+async function checkBuild(){try{if(!/github\.io$/.test(location.hostname))return;const r=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"});if(!r.ok)return;const m=(await r.text()).match(/const BUILD="([^"]+)"/);if(m&&m[1]!==BUILD)location.reload();}catch(e){}}
+setInterval(()=>{if(document.visibilityState==="visible")checkBuild();},300000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkBuild();});
 let pollT=null;function schedulePoll(){clearTimeout(pollT);pollT=setTimeout(async()=>{if(document.visibilityState==="visible")await refresh();schedulePoll();},POLL_MS);}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&live.checked&&Date.now()-live.checked>POLL_MS/2)refresh();});
 
@@ -962,7 +956,7 @@ function renderNames(){
 }
 
 // ---------- tabs ----------
-const OLD={teams:"power",profile:"scoring",whatif:["standings","sec-whatif"],path:["playoffs","sec-path"],schedule:"sos",activity:"overview",how:"overview",about:"overview"};
+const OLD={weeks:["overview","sec-week"],teams:"power",profile:"scoring",whatif:["overview","sec-whatif"],path:["playoffs","sec-path"],schedule:"sos",activity:"overview",how:"overview",about:"overview"};
 function show(tab,to){document.querySelectorAll("[data-panel]").forEach(s=>s.classList.toggle("hidden",s.dataset.panel!==tab));document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
   if(tab==="luck"||tab==="overview")renderLuck();if(tab==="scoring")renderProfile();
   if(to){const el=document.getElementById(to);if(el)requestAnimationFrame(()=>el.scrollIntoView({behavior:"smooth",block:"start"}));}else window.scrollTo({top:0});
@@ -970,8 +964,6 @@ function show(tab,to){document.querySelectorAll("[data-panel]").forEach(s=>s.cla
 $("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)show(b.dataset.tab);});
 document.addEventListener("click",e=>{const j=e.target.closest(".jump button");if(j){const el=document.getElementById(j.dataset.to);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});return;}
   const m=e.target.closest(".more");if(m)show(m.dataset.go,m.dataset.to);});
-$("#focusTeam").addEventListener("change",e=>{FOCUS=+e.target.value||null;try{localStorage.setItem("mhs:focus",FOCUS||"");}catch(_){}
-  if(FOCUS){luckTeam=FOCUS;pathTeam=FOCUS;plTeam=FOCUS;injTeam=FOCUS;}render();renderStamp();renderLive();renderActivity();});
 let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{renderLuck();renderProfile();},150);});
 
 overrides=Object.assign({},DATA.nameOverrides||{});
