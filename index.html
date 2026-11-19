@@ -42,6 +42,14 @@ h1::before{content:"";width:14px;height:14px;border-radius:50%;background:radial
 .sub{font-size:.74rem;color:rgba(255,255,255,.8);margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,.2)}
 .stamp{font-size:.74rem;color:rgba(255,255,255,.85);text-align:right;display:flex;flex-direction:column;gap:0;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .stamp>div:first-child{font-weight:600;color:#FFFFFF}
+.brandl{display:flex;align-items:center;gap:14px}
+.backbtn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.28);border:0;color:#fff;font-size:.86rem;font-weight:600;padding:6px 12px 6px 8px;cursor:pointer}
+.backbtn:hover{background:rgba(0,0,0,.45)}
+.backbtn[hidden]{display:none}
+.band{position:sticky;top:env(safe-area-inset-top,0px);z-index:6}
+.band.stuck{background:color-mix(in srgb,var(--bgm) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.band .inner{padding-block:14px 12px}
+h1{cursor:pointer}
 .stamp .mut{color:rgba(255,255,255,.75)}
 /* pivot */
 .navbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:transparent}
@@ -62,7 +70,7 @@ h4{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06e
 .lead{color:var(--muted);font-size:.88rem;margin:0;max-width:70ch}
 .note{color:var(--muted);font-size:.84rem;margin:0;max-width:76ch}
 details.how{font-size:.84rem;color:var(--muted);max-width:80ch}
-details.how summary{cursor:pointer;color:var(--green-d);font-weight:600;list-style:none;display:inline-flex;align-items:center;gap:6px}
+details.how summary{cursor:pointer;color:var(--green-d);font-weight:600;list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
 details.how summary::-webkit-details-marker{display:none}
 details.how summary::before{content:"+";display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--green);color:#fff;font-size:.8rem;line-height:1}
 details.how[open] summary::before{content:"–"}
@@ -79,8 +87,8 @@ details.drawer[open]>summary .chev{transform:rotate(45deg)}
 details.drawer[open]>summary{border-bottom:3px solid var(--green)}
 details.drawer>.dbody{display:flex;flex-direction:column;gap:12px;padding:16px 18px 18px}
 /* tile canvas */
-.hub{display:grid;gap:4px;grid-template-columns:1fr 1.32fr 1.32fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));aspect-ratio:2.15/1;
-  grid-template-areas:"a h h c" "b h h d" "e f g i";margin-top:2px}
+.hub{display:grid;gap:4px;grid-template-columns:1fr .88fr .88fr .88fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));aspect-ratio:2.15/1;
+  grid-template-areas:"a h h h c" "b h h h d" "e f o g i";margin-top:2px}
 .ht{position:relative;border:0;border-radius:0;padding:0;text-align:left;cursor:pointer;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .14s ease,box-shadow .14s ease;box-shadow:0 1px 3px rgba(0,0,0,.3);font-family:var(--ui)}
 .ht:hover,.ht:focus-visible{transform:scale(1.04);z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.4);outline:3px solid #fff;outline-offset:0}
 .ht .ico{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:34%;max-width:64px;aspect-ratio:1;fill:currentColor}
@@ -98,11 +106,11 @@ details.drawer>.dbody{display:flex;flex-direction:column;gap:12px;padding:16px 1
 .ht.hero .d{font-size:.86rem;white-space:normal}
 .ht.hero .bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(155,215,122,.18),transparent 60%)}
 .hint{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);margin-top:-4px}
-.btn-a,.btn-b{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;color:#fff;font-size:.62rem;font-weight:700;text-shadow:none}
+.btn-a,.btn-b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;color:#fff;font-size:.7rem;font-weight:700;text-shadow:none}
 .btn-a{background:#3FA226}.btn-b{background:#D23B2C}
 @media (max-width:760px){
   nav.tabs button{font-size:1.4rem}
-  .hub{grid-template-columns:1fr 1fr;grid-template-rows:none;grid-auto-rows:7.4rem;aspect-ratio:auto;grid-template-areas:"h h" "h h" "a b" "c d" "e f" "g i"}
+  .hub{grid-template-columns:1fr 1fr;grid-template-rows:none;grid-auto-rows:7.4rem;aspect-ratio:auto;grid-template-areas:"h h" "h h" "a b" "c d" "e f" "g i" "o o"}
   .ht .ico{width:30%;max-width:46px;top:40%}
   .ht.hero .ico{max-width:84px}
 }
@@ -131,10 +139,10 @@ tr.cut td{border-bottom:2px solid var(--green)}
 .bar>i{display:block;height:100%;background:var(--green)}
 .result{background:var(--hl);border-left:4px solid var(--green);padding:10px 14px;font-size:.9rem}
 .tm{display:inline-flex;align-items:center;gap:8px;min-width:0}
-.tm .mono{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;background:var(--green);color:#fff;font-weight:700;font-size:.64rem;letter-spacing:.02em}
+.tm .mono{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;background:var(--green);color:#fff;font-weight:700;font-size:.7rem;letter-spacing:.02em}
 .tm .nm{white-space:nowrap}
-.more-cols{align-self:flex-start;background:none;border:1px solid var(--line);padding:5px 12px;font-size:.8rem;font-weight:600;color:var(--green-d);cursor:pointer;display:none}
-@media (max-width:700px){table.compact:not(.all) .x{display:none}.more-cols{display:inline-block}table .tm .nm{max-width:8.6rem;overflow:hidden;text-overflow:ellipsis}td,th{padding-left:7px;padding-right:7px}}
+.more-cols{align-self:flex-start;background:none;border:1px solid var(--line);padding:5px 14px;min-height:44px;font-size:.8rem;font-weight:600;color:var(--green-d);cursor:pointer;display:none}
+@media (max-width:700px){table.compact:not(.all) .x{display:none}.more-cols{display:inline-block}table .tm .nm{max-width:7.4rem;overflow:hidden;text-overflow:ellipsis}table .tm .mono{display:none}td,th{padding-left:6px;padding-right:6px}.rk{font-size:1.1rem;width:auto}table.compact th{white-space:normal;vertical-align:bottom}}
 .wkgrid{display:grid;gap:4px;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr))}
 .wkgrid .panel{padding:12px 14px;gap:4px;box-shadow:none;background:var(--soft)}
 .game{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:6px 0;font-size:.86rem}
@@ -151,6 +159,26 @@ svg text{font-family:var(--ui)}
 .stack>i{display:block;height:100%}
 .tip{position:fixed;pointer-events:none;background:#1C1C1C;color:#F4F4F4;font-size:.78rem;padding:5px 8px;z-index:20;max-width:260px;display:none}
 .more{align-self:flex-start;background:none;border:0;color:var(--green-d);font-weight:600;cursor:pointer;padding:0;font-size:.86rem}
+.pwlist{display:grid;gap:4px;grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr))}
+.pwb{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:10px;align-items:start;background:var(--soft);padding:12px 14px}
+.pwb p{margin:4px 0 0;font-size:.88rem;line-height:1.45;color:var(--ink)}
+.pwb .rk{font-size:1.6rem;line-height:1;color:var(--green-d)}
+.pwn{min-width:0}.pwn .tm{max-width:100%}.pwn .tm .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.seg{display:inline-flex;border:1px solid var(--line)}
+.seg label{display:inline-flex;align-items:center;gap:6px;padding:0 12px;min-height:40px;font-size:.82rem;font-weight:600;cursor:pointer}
+.seg input{accent-color:var(--green)}
+.bkgrid{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr))}
+.bk{background:var(--soft);padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.bkh,.bkr{display:grid;grid-template-columns:minmax(0,1fr) 2.6rem 3.6rem 3.4rem 3.2rem;gap:6px;align-items:center}
+.bkh{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bkr{font-size:.9rem}.bkr .tm{min-width:0}.bkr .tm .nm{overflow:hidden;text-overflow:ellipsis}
+.bk .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bk .ml{font-weight:700}.bk .fav{color:var(--green-d)}
+.bk .wp{color:var(--muted);font-size:.8rem}
+.bkf{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);border-top:1px solid var(--line);padding-top:6px}
+.bk.pre .bkh,.bk.pre .bkr{grid-template-columns:minmax(0,1fr) 3.6rem 3.4rem 3.2rem}.bk.pre .bkh>:nth-child(2),.bk.pre .bkr>.sc{display:none}
+@media (max-width:520px){.bk .tm .mono{display:none}}
+@media (max-width:400px){.bk.pre .bkh,.bk.pre .bkr{grid-template-columns:minmax(0,1fr) 3.3rem 3.1rem 2.9rem}.bkh,.bkr{grid-template-columns:minmax(0,1fr) 2.3rem 3.3rem 3.1rem 2.9rem;gap:4px}.bkr{font-size:.84rem}}
 .nw{white-space:nowrap}
 #luckHeat td:first-child,#luckHeat th:first-child{position:sticky;left:0;z-index:1;background:var(--panel)}
 #luckHeat tbody tr:nth-child(even) td:first-child{background:var(--stripe)}
@@ -167,11 +195,11 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
 
 <header class="band"><div class="inner">
   <div class="brand">
-    <div><h1 id="title">MHS League</h1><div class="sub" id="sub">Loading…</div></div>
+    <div class="brandl"><button class="backbtn" id="backBtn" type="button" hidden><span class="btn-b">B</span> back</button><div><h1 id="title">MHS League</h1><div class="sub" id="sub">Loading…</div></div></div>
     <div class="stamp" id="stamp"></div>
   </div>
 </div></header>
-<div class="navbar"><div class="inner">
+<div class="navbar" hidden><div class="inner">
   <nav class="tabs" role="tablist" id="tabs" aria-label="Sections">
     <button role="tab" data-tab="overview" aria-selected="true">Home</button>
     <button role="tab" data-tab="power">Power ranks</button>
@@ -181,6 +209,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
     <button role="tab" data-tab="scoring">Scoring profile</button>
     <button role="tab" data-tab="players">Players</button>
     <button role="tab" data-tab="injuries">Injuries</button>
+    <button role="tab" data-tab="odds">Odds</button>
     <button role="tab" data-tab="standings">Standings</button>
   </nav>
 </div></div>
@@ -189,8 +218,8 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
 
   <section data-panel="overview">
     <div class="hub" id="hub" aria-label="Sections"></div>
-    <div class="hint"><span class="btn-a">A</span> select <span style="width:10px"></span><span class="btn-b">B</span> back</div>
-    <div class="panel" id="sec-grid"><h3>Week by week</h3>
+    <div class="hint"><span class="btn-a">A</span> select <span style="width:10px"></span><span class="btn-b">B</span> back (Esc)</div>
+    <div class="panel" id="sec-grid">
       
       
       <div class="tw" id="luckHeat"></div></div>
@@ -198,25 +227,16 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
     <details class="panel drawer" id="sec-week"><summary><h3 id="wkTitle">Week</h3><span class="sum">highs, lows, blowouts and the closest game</span><i class="chev"></i></summary><div class="dbody"><div class="ph"><span class="note">week</span><select id="wkSel" aria-label="Week"></select></div>
       <div class="tiles" id="wkTiles"></div></div></details>
     <div hidden><table id="homeStand"></table></div>
-    <details class="panel drawer" id="sec-whatif"><summary><h3>Records every way</h3><span class="sum">vs median, vs average, EDWA, all-play, schedule swap</span><i class="chev"></i></summary><div class="dbody">
-      <p class="lead">Each team's real record next to what it would be against the weekly median, against the weekly average, with a median game added, and using EDWA. Sorted by the with-median record.</p>
-      <details class="how"><summary>How it's calculated</summary><p><b>Vs median</b> counts a win for every week a team scored above that week's league median (the middle of all 10 scores) and a loss below it. <b>Vs average</b> does the same against that week's league average (mean) score. <b>EDWA replay</b> replays the games already played using each team's current EDWA instead of its actual score, so the team with the higher EDWA wins each game. <b>EDWA final</b> is the real record plus the remaining games each team would win on EDWA. <b>With median game</b> adds that to the real record, as if every week also had a game against the median. <b>All-play</b> is the record from playing all 9 other teams every week, and <b>all-play pace</b> scales that to one game a week. <b>Median vs actual</b> is median wins minus real wins: positive means the real record is worse than the scoring deserved.</p></details>
-      <div class="tw"><table id="wiTable"></table></div>
-      <h4>Schedule swap</h4>
-      <p class="note">Each row is a team's real scores played against another team's schedule (columns, by owner). The outlined cell is the real record. When a schedule has a team playing itself, it plays that schedule's owner instead.</p>
-      <div class="tw" id="wiSwap"></div>
-      <h4>Week by week vs the median and average</h4>
-      <p class="note">Each cell reads: vs median · vs average · actual. Green beat both the median and the average; red fell below both.</p>
-      <div class="tw" id="wiWeeks"></div></div></details>
   </section>
   <section data-panel="power" class="hidden">
     <div class="panel" id="sec-power"><h3>Power ranks</h3>
       <details class="how"><summary>How it's calculated</summary><p>Power score = 65% EDWA + 35% season average, in points per week. EDWA is an exponential-decay weighted average that counts the latest week fully and each earlier week at 0.8 times the week after it. All-play columns are shown for reference.</p></details>
-      <div class="tw"><table id="power"></table></div></div>
+      <div class="tw"><table id="power"></table></div>
+      <div class="pwlist" id="powerBlurbs"></div></div>
   </section>
   <section data-panel="playoffs" class="hidden">
     <div class="panel" id="sec-odds"><h3>Playoff odds</h3>
-      <details class="how"><summary>How it's calculated</summary><p>From 10,000 simulations of the rest of the season against the real schedule. Each team's expected weekly score is its season average pulled part of the way toward the league average, which matters most early in the season. Top 6 make the playoffs and the top 2 get a bye. Status counts wins only: clinched means not enough teams can reach the team's current win total to push it out, and eliminated means six teams already have more wins than it can reach. "Likely in at" is the worst final record that still makes the playoffs in at least 80% of simulations. Biggest game is the remaining game that changes the team's odds most between a win and a loss; swings are in percentage points of playoff odds.</p></details>
+      <details class="how"><summary>How it's calculated</summary><p>From 10,000 simulations of the rest of the season against the real schedule. This week's expected score comes from ESPN's projections for each team's actual starters, adjusted by how far projections have run high or low this season. Later weeks use each team's best healthy lineup (players' average when they play, skipping byes and IR) blended with its season average pulled toward the league average. The spread is set from how far real scores have missed the model, tested on Weeks 2–10. Top 6 make the playoffs and the top 2 get a bye. Status counts wins only: clinched means not enough teams can reach the team's current win total to push it out, and eliminated means six teams already have more wins than it can reach. "Likely in at" is the worst final record that still makes the playoffs in at least 80% of simulations. Biggest game is the remaining game that changes the team's odds most between a win and a loss; swings are in percentage points of playoff odds.</p></details>
       <div class="tw"><table id="odds"></table></div></div>
     <details class="panel drawer" id="sec-seeds"><summary><h3>Where each team finishes</h3><span class="sum">chance of finishing at each seed</span><i class="chev"></i></summary><div class="dbody">
       <p class="lead">The chance of finishing at each seed. Darker cells are more likely.</p>
@@ -264,7 +284,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
   <section data-panel="players" class="hidden">
     <div class="panel" id="sec-team"><div class="ph"><h3 id="plTitle">Team detail</h3><select id="plTeam" aria-label="Team"></select></div>
       <h4>Point share by player</h4>
-      <p class="note">Points each player scored while starting, as a share of the team's total. Vs projection compares them with ESPN's projections for the same weeks.</p>
+      <p class="note">Points each player scored while starting, as a share of his team's total. Pick "All players" to rank everyone in the league by that share. Vs projection compares them with ESPN's projections for the same weeks.</p>
       <div class="tw"><table id="plShare"></table></div>
       <h4>Lineup and next man up</h4>
       <p class="note">The full-strength lineup, who steps in if a starter is out, and the weekly points lost.</p>
@@ -288,7 +308,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
   <section data-panel="injuries" class="hidden">
     <div class="panel" id="sec-inj"><h3>Injury impact</h3>
       <p class="lead">Teams ranked from most to least hurt by absences, weighted by how good the missing players are, not just how many games they missed.</p>
-      <details class="how"><summary>How it's calculated</summary><p>Each week, the page builds the best lineup a team could have fielded from everyone on its roster (players on bye left out), valuing each player at his points per game this season. It then builds the best lineup from only the players who actually played that week. The gap is the points of lineup strength lost to injuries and other absences, so losing a star costs far more than losing a backup who wouldn't have started. <b>Season pts lost</b> adds up every week. <b>Weeks hit</b> counts weeks with a gap of 5 or more. <b>Losses it cost</b> counts losses where the gap was bigger than the losing margin. <b>Biggest absence</b> is the lineup-worthy player whose missed games added up to the most points per game times weeks out; a strong bench can still cover for him, which is why the season total can be small. <b>Lost now / wk</b> is the same gap for the coming week, using ESPN's current injury designations (out, IR, suspended).</p></details>
+      <details class="how"><summary>How it's calculated</summary><p>Each week, the page builds the best lineup a team could have fielded from everyone on its roster (players on bye left out), valuing each player by blending his draft slot with what he has produced this season. Draft value is what that pick has been worth in this league this year: pick 10 is valued at the 10th-best points per game among drafted players, and undrafted pickups at the level of the last pick. The more games a player has played, the more his own points per game count: weight = games ÷ (games + 3), so after 3 games it is half and half, and a player hurt in week 1 is valued mostly on where he was drafted. It then builds the best lineup from only the players who actually played that week. The gap is the points of lineup strength lost to injuries and other absences, so losing a star costs far more than losing a backup who wouldn't have started. <b>Season pts lost</b> adds up every week. <b>Weeks hit</b> counts weeks with a gap of 5 or more. <b>Losses it cost</b> counts losses where the gap was bigger than the losing margin. <b>Biggest absence</b> is the lineup-worthy player whose missed games added up to the most points per game times weeks out; a strong bench can still cover for him, which is why the season total can be small. <b>Lost now / wk</b> is the same gap for the coming week, using ESPN's current injury designations (out, IR, suspended).</p></details>
       <div class="tw"><table id="injTable"></table></div></div>
     <details class="panel drawer" id="sec-injteam"><summary><h3 id="injTitle">Injury log</h3><span class="sum">week-by-week log and current report</span><i class="chev"></i></summary><div class="dbody"><div class="ph"><select id="injTeam" aria-label="Team"></select></div>
       <div class="result" id="injSum"></div>
@@ -297,6 +317,22 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
       <div class="tw"><table id="injWeeks"></table></div>
       <h4>Current injury report</h4>
       <div class="tw"><table id="injNow"></table></div></div></details>
+  </section>
+
+  <section data-panel="odds" class="hidden">
+    <div class="panel" id="sec-book"><div class="ph"><h3 id="bkTitle">This week's lines</h3>
+      <div class="seg" role="radiogroup" aria-label="Pricing"><label><input type="radio" name="bkVig" value="fair" checked> Fair odds</label><label><input type="radio" name="bkVig" value="vig"> With 4.5% edge</label></div></div>
+      <p class="note" id="bkStatus"></p>
+      <details class="how"><summary>How it's calculated</summary><p><b>Moneyline:</b> each team's win chance from the same lineup-based expected scores and calibrated spread as the playoff odds, turned into American odds (−150 means bet 150 to win 100; +130 means bet 100 to win 130).<br><b>Spread:</b> the gap between the two teams' expected scores, rounded to the half point.<br><b>Over/under:</b> the two expected scores added together.<br><b>Live:</b> once games start, each team's expected score is its points so far plus the model's projection for the starters who haven't played yet; players whose games have started count as finished.<br><b>Edge:</b> "With 4.5% edge" raises each side's implied chance by 4.5% the way a sportsbook does, and prices spreads and totals at −110; fair odds have no edge.</p></details>
+      <div class="bkgrid" id="bkGames"></div></div>
+    <details class="panel drawer" id="sec-fut"><summary><h3>Futures</h3><span class="sum">title, playoffs, bye and last place</span><i class="chev"></i></summary><div class="dbody">
+      <p class="note">Converted from the same 10,000-season simulation as the playoff odds. "Lock" means it happens in at least 99.5% of simulations; "Off board" means under 0.5%.</p>
+      <div class="tw"><table id="bkFut"></table></div></div></details>
+    <details class="panel drawer" id="sec-props"><summary><h3>Props</h3><span class="sum">high and low score, closest game, blowout, team totals</span><i class="chev"></i></summary><div class="dbody">
+      <p class="note">From 20,000 simulations of this week using each team's expected score and spread (live once games start).</p>
+      <div class="grid"><div style="min-width:0"><h4>Week's high score</h4><div class="tw"><table id="bkHi"></table></div></div><div style="min-width:0"><h4>Week's low score</h4><div class="tw"><table id="bkLo"></table></div></div></div>
+      <div class="grid"><div style="min-width:0"><h4>Closest game</h4><div class="tw"><table id="bkClose"></table></div></div><div style="min-width:0"><h4>Biggest blowout</h4><div class="tw"><table id="bkBlow"></table></div></div></div>
+      <h4>Team totals</h4><div class="tw"><table id="bkTT"></table></div></div></details>
   </section>
 
   <section data-panel="standings" class="hidden">
@@ -388,7 +424,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
     const rem = games.filter(g => !played(g) && g.w <= regWeeks);
     const remWeeks = [...new Set(rem.map(g => g.w))].sort((a, b) => a - b);
     const ctx = { data, teams, T, games, done, rem, weeks, remWeeks, lastWeek, wk, lgMean, sd, regWeeks, poTeams, byes, opts };
-    ctx.winProb = (a, b) => 0.5 * (1 + erf((T[a].mu - T[b].mu) / (sd * Math.SQRT2)));
+    ctx.winProb = (a, b) => 0.5 * (1 + erf((T[a].mu - T[b].mu) / (2 * sd))); // both scores vary by sd, so their difference varies by sd*sqrt(2): P = Phi(d/(sd*sqrt2)) = 0.5(1+erf(d/(2sd)))
     // remaining strength of schedule = average opponent strength (mu)
     for (const t of teams) { const o = rem.filter(g => g.a === t || g.h === t).map(g => g.a === t ? g.h : g.a); T[t].sos = o.length ? mean(o.map(x => T[x].mu)) : null; T[t].remGames = o.length; }
     return ctx;
@@ -401,7 +437,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
     for (let i = 0; i < N; i++) {
       const W = {}, P = {}; for (const t of teams) { W[t] = T[t].actual; P[t] = T[t].pf; }
       for (const w of remWeeks) {
-        const sc = {}; for (const t of teams) { sc[t] = T[t].mu + sd * gauss(r); }
+        const sc = {}; for (const t of teams) { sc[t] = ctx.wm ? ctx.wm(t, w) + ctx.ws(t, w) * gauss(r) : T[t].mu + sd * gauss(r); }
         for (const g of rem.filter(g => g.w === w)) { P[g.a] += sc[g.a]; P[g.h] += sc[g.h]; W[sc[g.a] > sc[g.h] ? g.a : g.h]++; }
       }
       const order = teams.slice().sort((a, b) => (W[b] - W[a]) || (P[b] - P[a]));
@@ -442,13 +478,14 @@ let FOCUS=null;
 const INI=t=>{const o=O(t);return o?o.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase():String(t);};
 const TB=(t,n)=>h("span",{class:"tm",title:O(t)?N(t)+" · "+O(t):N(t)},h("span",{class:"mono",text:INI(t)}),h("span",{class:"nm",text:n?short(N(t),n):N(t)}));
 
-function compute(){ctx=LG.build(DATA);sim=LG.simulate(ctx,10000);path=pathSim(10000);computePlayers();}
+function compute(){ctx=LG.build(DATA);try{installModel();}catch(e){ctx.wm=null;ctx.winProbW=(a,b)=>ctx.winProb(a,b);}sim=LG.simulate(ctx,10000);path=pathSim(10000);computePlayers();}
 function render(){
   $("#title").textContent=DATA.leagueName||"League Hub";
   $("#sub").textContent=`${DATA.season} · ${(DATA.settings&&DATA.settings.scoring)||""} · ${ctx.teams.length} teams · results through Week ${ctx.lastWeek} of ${ctx.regWeeks}`;
   renderFocus();renderHome();renderStandings();renderPower();renderProfile();renderOdds();renderPath();renderPlayers();renderInjuries();renderWhatIf();renderLuck();renderWeeks();renderSchedule();renderNames();
   renderHub();
   compactTables();
+  renderBook();
 }
 const T=t=>ctx.T[t];
 const byRecord=()=>ctx.teams.slice().sort((a,b)=>(T(b).actual-T(a).actual)||(T(b).pf-T(a).pf));
@@ -482,6 +519,21 @@ function renderPower(){
     {h:"Power",n:1,f:t=>f1(pw[t])},{h:"",f:t=>h("div",{class:"bar"},h("i",{style:`width:${Math.round(20+80*(mx>mn?(pw[t]-mn)/(mx-mn):1))}%`}))},
     {h:"EDWA (65%)",n:1,f:t=>f1(edwaOver(t,ws))},{h:"Season avg (35%)",n:1,f:t=>f1(avgOver(t,ws))},{h:"Last 3 avg",n:1,f:t=>f1(T(t).recentPpg)},
     {h:"Season all-play",n:1,f:t=>pct(T(t).apPct)},{h:"Last 3 all-play",n:1,f:t=>pct(T(t).recentAp)}],rows);
+  // friendly-rivalry write-ups
+  const el=$("#powerBlurbs");if(!el)return;el.textContent="";const sr={};byRecord().forEach((t,i)=>sr[t]=i+1);const n=rows.length;
+  const pick=(t,arr)=>arr[t%arr.length],sp=d=>d===1?"spot":"spots",rec=t=>`${T(t).w}-${T(t).l}${T(t).ti?"-"+T(t).ti:""}`;
+  rows.forEach(t=>{const r=rk[t],e=edwaOver(t,ws),a=avgOver(t,ws),d=e-a,parts=[];
+    parts.push(r===1?pick(t,["Wears the crown.","The team everyone else is chasing.","Sitting on the throne."]):r<=3?pick(t,[`Knocking on the door at #${r}.`,`Right in the mix at #${r}.`,`Breathing down necks at #${r}.`]):r<=7?pick(t,[`Stuck in the middle at #${r}.`,`Mid-pack at #${r}, for now.`,`Hanging around at #${r}.`]):r<n?pick(t,[`Down at #${r} and looking up at most of the league.`,`#${r}, which is not where anyone plans to be.`]):pick(t,["Holding down the basement.","Last in the power ranks. Somebody has to be."]));
+    if(prk[t]){const mv=prk[t]-r;parts.push(mv>0?`Up ${mv} ${sp(mv)} from last week.`:mv<0?`Slid ${-mv} ${sp(-mv)} from last week.`:"Same spot as last week.");}
+    parts.push(d>=8?`Red hot: recent form (EDWA ${f1(e)}) is ${f1(d)} points above their season average.`:d>=3?`Trending up, with EDWA ${f1(e)} against a ${f1(a)} season average.`:d<=-8?`Ice cold lately: EDWA ${f1(e)} is ${f1(-d)} below their ${f1(a)} season average.`:d<=-3?`Cooling off, EDWA ${f1(e)} vs a ${f1(a)} season average.`:`Steady as they come, EDWA ${f1(e)} right around their ${f1(a)} average.`);
+    const gap=sr[t]-r,L=T(t).luck;
+    if(gap>=3)parts.push(`That ${rec(t)} record undersells them. The scoring says #${r}, the standings say #${sr[t]}.`);
+    else if(gap<=-3)parts.push(`That ${rec(t)} record is flattering: #${sr[t]} in the standings but only #${r} on scoring.`);
+    else if(L>=1)parts.push(`Luck has been on their side (${sg(L,1)} wins vs what the scores earned).`);
+    else if(L<=-1)parts.push(`The schedule has been cruel (${sg(L,1)} wins vs what the scores earned).`);
+    const nw=ctx.remWeeks[0],ng=nw?ctx.rem.find(g=>g.w===nw&&(g.a===t||g.h===t)):null;
+    if(ng){const o=ng.a===t?ng.h:ng.a,p=ctx.winProbW(t,o,nw);parts.push(`Next: ${N(o)} in Week ${nw}, ${Math.round(p*100)}% to win${p>=0.7?". Should be a get-right game.":p<=0.3?". Good luck.":p>=0.45&&p<=0.55?". Coin flip.":"."}`);}
+    el.append(h("div",{class:"pwb"},h("span",{class:"rk",text:r}),h("div",null,h("div",{class:"pwn"},TB(t)),h("p",{text:parts.join(" ")}))));});
 }
 function renderOdds(){
   const rows=ctx.teams.slice().sort((a,b)=>(sim[b].po-sim[a].po)||(sim[b].champ-sim[a].champ));
@@ -514,18 +566,18 @@ function renderLuck(){
   table($("#luckTable"),[{h:"Team",f:t=>TB(t)},{h:"Actual W",n:1,f:t=>T(t).actual},{h:"All-play exp",n:1,f:t=>f2(T(t).allplay)},{h:"Median exp",n:1,f:t=>f1(T(t).median)},{h:"Average exp",n:1,f:t=>f1(T(t).average)},
     {h:"Expected",n:1,f:t=>f2(T(t).expected)},{h:"vs all-play",n:1,f:t=>sg(T(t).actual-T(t).allplay),cls:t=>lc(T(t).actual-T(t).allplay)},{h:"vs median",n:1,f:t=>sg(T(t).actual-T(t).median),cls:t=>lc(T(t).actual-T(t).median)},
     {h:"vs average",n:1,f:t=>sg(T(t).actual-T(t).average),cls:t=>lc(T(t).actual-T(t).average)},{h:"Luck index",n:1,f:t=>h("b",{text:sg(T(t).luck,2)}),cls:t=>lc(T(t).luck)},{h:"PA / game",n:1,f:t=>f1(T(t).papg)}],rows);
-  const hm=$("#luckHeat");hm.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team"}));ctx.weeks.forEach(w=>hr.append(h("th",{class:"n",text:"Wk "+w})));const WI=whatIf();hr.append(h("th",{class:"n",text:"Avg"}),h("th",{class:"n",text:"EDWA"}),h("th",{class:"n",text:"Record"}),h("th",{class:"n",text:"Vs median"}),h("th",{class:"n",text:"Vs average"}),h("th",{class:"n",text:"Luck"}));tb.append(h("thead",null,hr));
-  const body=h("tbody");rows.forEach(t=>{const tr=h("tr",null,h("td",null,TB(t)));ctx.weeks.forEach(w=>{const x=T(t).byWeek[w];if(!x){tr.append(h("td"));return;}
+  const hm=$("#luckHeat");hm.textContent="";const tb=h("table");const hr=h("tr",null,h("th",{text:"Team"}));ctx.weeks.forEach(w=>hr.append(h("th",{class:"n",text:"Wk "+w})));const WI=whatIf();hr.append(h("th",{class:"n",text:"Avg"}),h("th",{class:"n",text:"EDWA"}),h("th",{class:"n",text:"Record"}),h("th",{class:"n",text:"Vs median"}),h("th",{class:"n",text:"Vs average"}),h("th",{class:"n",text:"Actual + median"}),h("th",{class:"n",text:"All-play"}),h("th",{class:"n",text:"Luck"}));tb.append(h("thead",null,hr));
+  const body=h("tbody");byRecord().forEach(t=>{const tr=h("tr",null,h("td",null,TB(t)));ctx.weeks.forEach(w=>{const x=T(t).byWeek[w];if(!x){tr.append(h("td"));return;}
       const lucky=x.won===1&&x.s<x.med,unlucky=x.won===0&&x.s>x.med;
       tr.append(h("td",{class:"n",title:`Week ${w}: ${f2(x.s)} vs ${N(x.opp)} ${f2(x.os)} · beat ${x.beat} of ${ctx.teams.length-1}`,style:`background:${heat(x.ap)};${lucky?"box-shadow:inset 0 0 0 2px var(--good)":unlucky?"box-shadow:inset 0 0 0 2px var(--bad)":""}`},
         h("div",{style:"font-weight:600",text:(x.won===1?"W ":x.won===0?"L ":"T ")+f1(x.s)}),h("div",{style:"font-size:.72rem;opacity:.8",text:`beat ${x.beat}/${ctx.teams.length-1}`})));});
     const Q=WI[t],sep="border-left:1px solid var(--line)";
     tr.append(h("td",{class:"n",style:"font-weight:600;"+sep,text:f1(T(t).ppg)}),h("td",{class:"n",style:"font-weight:600",text:f1(Q.edwa)}),
-      h("td",{class:"n",style:sep,text:rec(Q.aw,Q.al,Q.at)}),h("td",{class:"n",text:rec(Q.mw,Q.ml,Q.mt)}),h("td",{class:"n",text:rec(Q.vw,Q.vl,Q.vt)}),
+      h("td",{class:"n",style:sep,text:rec(Q.aw,Q.al,Q.at)}),h("td",{class:"n",text:rec(Q.mw,Q.ml,Q.mt)}),h("td",{class:"n",text:rec(Q.vw,Q.vl,Q.vt)}),h("td",{class:"n",style:"font-weight:700",text:rec(Q.aw+Q.mw,Q.al+Q.ml,Q.at+Q.mt)}),h("td",{class:"n",text:rec(Q.apW,Q.apL,0)}),
       h("td",{class:"n "+lc(T(t).luck),style:sep,text:sg(T(t).luck,2)}));body.append(tr);});
-  {const avgTr=h("tr",{style:"border-top:2px solid var(--ink)"},h("td",{style:"font-weight:600",text:"League average"}));ctx.weeks.forEach(w=>avgTr.append(h("td",{class:"n",style:"font-weight:600",text:f1(ctx.wk[w].avg)})));avgTr.append(h("td",{class:"n",style:"font-weight:600;border-left:1px solid var(--line)",text:f1(ctx.lgMean)}),h("td"),h("td"),h("td"),h("td"),h("td"));body.append(avgTr);
-   const medTr=h("tr",null,h("td",{class:"mut",text:"League median"}));ctx.weeks.forEach(w=>medTr.append(h("td",{class:"n mut",text:f1(ctx.wk[w].med)})));medTr.append(h("td"),h("td"),h("td"),h("td"),h("td"),h("td"));body.append(medTr);}
-  tb.append(body);tb.querySelectorAll("tr").forEach(tr=>{const c=[...tr.children],tail=c.slice(-6);let at=c[0];tail.forEach(x=>{at.after(x);at=x;});});hm.append(tb);
+  {const avgTr=h("tr",{style:"border-top:2px solid var(--ink)"},h("td",{style:"font-weight:600",text:"League average"}));ctx.weeks.forEach(w=>avgTr.append(h("td",{class:"n",style:"font-weight:600",text:f1(ctx.wk[w].avg)})));avgTr.append(h("td",{class:"n",style:"font-weight:600;border-left:1px solid var(--line)",text:f1(ctx.lgMean)}),h("td",{class:"n",style:"font-weight:600",text:(()=>{const v=ctx.weeks.map(w=>ctx.wk[w].avg),n=v.length;let a=0,d=0;v.forEach((x,i)=>{const k=Math.pow(DECAY,n-1-i);a+=k*x;d+=k;});return n?f1(a/d):"";})()}),h("td"),h("td"),h("td"),h("td"),h("td"),h("td"));body.append(avgTr);
+   const ser=v=>{const n=v.length;let a=0,d=0;v.forEach((x,i)=>{const k=Math.pow(DECAY,n-1-i);a+=k*x;d+=k;});return n?a/d:0;},meds=ctx.weeks.map(w=>ctx.wk[w].med);const medTr=h("tr",null,h("td",null,h("div",{style:"font-weight:600",text:"League median"}),h("div",{style:"font-size:.72rem;color:var(--muted)",text:"midpoint of 5th & 6th"})));ctx.weeks.forEach(w=>{const v=Object.values(ctx.wk[w].sc).sort((a,b)=>a-b),n=v.length,lo=v[Math.floor((n-1)/2)],hi=v[Math.ceil((n-1)/2)];medTr.append(h("td",{class:"n",title:`Middle two scores: ${f2(hi)} and ${f2(lo)}`},h("div",{style:"font-weight:600",text:f1(ctx.wk[w].med)}),n%2===0?h("div",{style:"font-size:.72rem;color:var(--muted)",text:`${f1(hi)} / ${f1(lo)}`}):null));});medTr.append(h("td",{class:"n",style:"font-weight:600;border-left:1px solid var(--line)",text:f1(meds.reduce((x,y)=>x+y,0)/(meds.length||1))}),h("td",{class:"n",style:"font-weight:600",text:f1(ser(meds))}),h("td"),h("td"),h("td"),h("td"),h("td"),h("td"));body.append(medTr);}
+  tb.append(body);tb.querySelectorAll("tr").forEach(tr=>{const c=[...tr.children],tail=c.slice(-8);let at=c[0];tail.forEach(x=>{at.after(x);at=x;});});hm.append(tb);
   const sel=$("#luckTeam");if(luckTeam==null)luckTeam=rows[0];sel.textContent="";ctx.teams.forEach(t=>sel.append(h("option",{value:t,selected:t===luckTeam},N(t))));
   const R=T(luckTeam),ws=ctx.weeks.map(w=>Object.assign({w},R.byWeek[w])).filter(x=>x.s!=null);
   table($("#luckWeeks"),[{h:"Week",f:x=>x.w},{h:"Score",n:1,f:x=>f2(x.s)},{h:"Opponent",f:x=>`${N(x.opp)} ${f2(x.os)}`},{h:"Result",f:x=>x.won===1?"W":x.won===0?"L":"T"},
@@ -558,10 +610,10 @@ function renderSchedule(){
   const rows=ctx.teams.slice().sort((a,b)=>(T(b).sos||0)-(T(a).sos||0));
   table($("#sos"),[{h:"Team",f:t=>TB(t)},{h:"Games left",n:1,f:t=>T(t).remGames},{h:"Avg opponent",n:1,f:t=>T(t).sos!=null?f1(T(t).sos):"—"},
     {h:"Difficulty",f:t=>{if(T(t).sos==null)return "";const d=T(t).sos-ctx.lgMean;return h("span",{class:"chip "+(d>1.5?"bad":d<-1.5?"good":""),text:d>1.5?"Hard":d<-1.5?"Easy":"Average"});}},
-    {h:"Expected wins left",n:1,f:t=>f1(ctx.rem.filter(g=>g.a===t||g.h===t).reduce((s,g)=>s+ctx.winProb(t,g.a===t?g.h:g.a),0))}],rows);
+    {h:"Expected wins left",n:1,f:t=>f1(ctx.rem.filter(g=>g.a===t||g.h===t).reduce((s,g)=>s+ctx.winProbW(t,g.a===t?g.h:g.a,g.w),0))}],rows);
   const el=$("#sched");el.textContent="";
   ctx.remWeeks.forEach(w=>{const box=h("div",{class:"panel",style:"padding:10px 12px;gap:4px"},h("h3",{text:`Week ${w}`}));
-    ctx.rem.filter(g=>g.w===w).forEach(g=>{const p=ctx.winProb(g.a,g.h);
+    ctx.rem.filter(g=>g.w===w).forEach(g=>{const p=ctx.winProbW(g.a,g.h,g.w);
       box.append(h("div",{class:"game"},h("span",{class:p>=0.5?"w":"",text:N(g.a)}),h("span",{class:"sc",text:Math.round(p*100)+"%"}),h("span",{class:p<0.5?"w":"",text:"@ "+N(g.h)}),h("span",{class:"sc",text:Math.round((1-p)*100)+"%"})));});
     el.append(box);});
 }
@@ -577,7 +629,7 @@ function pathSim(N){
   const wkIdx=remWeeks.map(w=>rem.map((g,j)=>g.w===w?j:-1).filter(j=>j>=0));
   for(let i=0;i<N;i++){
     const W={},P={},K={};for(const t of teams){W[t]=T(t).actual;P[t]=T(t).pf;K[t]=0;}
-    for(const idx of wkIdx){const sc={};for(const t of teams)sc[t]=T(t).mu+sd*pGauss(r);
+    for(const idx of wkIdx){const ww=rem[idx[0]].w,sc={};for(const t of teams)sc[t]=ctx.wm?ctx.wm(t,ww)+ctx.ws(t,ww)*pGauss(r):T(t).mu+sd*pGauss(r);
       for(const j of idx){const g=rem[j];P[g.a]+=sc[g.a];P[g.h]+=sc[g.h];const a=sc[g.a]>sc[g.h];winA[j]=a;const wt=a?g.a:g.h;W[wt]++;K[wt]++;}}
     const order=teams.slice().sort((a,b)=>(W[b]-W[a])||(P[b]-P[a]));
     const po=new Set(order.slice(0,poTeams)),by=new Set(order.slice(0,byes));
@@ -598,7 +650,7 @@ function pathStatus(t){
 function finRec(t,k){const R=T(t);return `${R.w+k}-${R.l+R.remGames-k}${R.ti?"-"+R.ti:""}`;}
 function likelyIn(t){const b=path.byW[t];for(let k=0;k<b.length;k++){if(b[k].n>=40&&b[k].po/b[k].n>=0.8)return k;}return null;}
 function ownGames(t){return path.G.filter(x=>x.g.a===t||x.g.h===t).map(x=>{const home=x.g.h===t,opp=home?x.g.a:x.g.h,win=cond(home?x.h[t]:x.a[t]),loss=cond(home?x.a[t]:x.h[t]);
-  return{w:x.g.w,opp,home,p:home?1-ctx.winProb(x.g.a,x.g.h):ctx.winProb(x.g.a,x.g.h),win,loss,swing:win!=null&&loss!=null?win-loss:0};});}
+  return{w:x.g.w,opp,home,p:home?1-ctx.winProbW(x.g.a,x.g.h,x.g.w):ctx.winProbW(x.g.a,x.g.h,x.g.w),win,loss,swing:win!=null&&loss!=null?win-loss:0};});}
 function rootFor(t){return path.G.filter(x=>x.g.a!==t&&x.g.h!==t).map(x=>{const pa=cond(x.a[t]),ph=cond(x.h[t]);if(pa==null||ph==null)return null;
   const fav=pa>=ph?x.g.a:x.g.h,other=fav===x.g.a?x.g.h:x.g.a;return{w:x.g.w,fav,other,pf:Math.max(pa,ph),po:Math.min(pa,ph),swing:Math.abs(pa-ph)};}).filter(Boolean).sort((a,b)=>b.swing-a.swing);}
 let pathTeam=null;
@@ -642,7 +694,7 @@ function profile(t){const R=T(t),ws=ctx.weeks.filter(w=>R.byWeek[w]),sc=ws.map(w
   return{n,avg:R.ppg,med:n?quart(so,0.5):0,q1:n?quart(so,0.25):0,q3:n?quart(so,0.75):0,min:so[0]||0,max:so[n-1]||0,edwa,sd:R.sd,sdfm:R.sd?(edwa-R.ppg)/R.sd:0};}
 function rankHeat(vals,v){const n=vals.length;if(n<2)return "";const below=vals.filter(x=>x<v).length,eq=vals.filter(x=>x===v).length-1;return heat((below+eq/2)/(n-1));}
 const tip=(()=>{const d=document.createElement("div");d.className="tip";document.body.append(d);return d;})();
-function bindTip(el,text){el.addEventListener("mousemove",e=>{tip.textContent=text;tip.style.display="block";tip.style.left=Math.min(e.clientX+12,window.innerWidth-270)+"px";tip.style.top=(e.clientY+12)+"px";});el.addEventListener("mouseleave",()=>tip.style.display="none");}
+function bindTip(el,text){el.addEventListener("mousemove",e=>{tip.textContent=text;tip.style.display="block";tip.style.left=Math.min(e.clientX+12,window.innerWidth-270)+"px";tip.style.top=(e.clientY+12)+"px";});el.addEventListener("mouseleave",()=>{if(!(window.matchMedia&&window.matchMedia("(hover: none)").matches))tip.style.display="none";});}
 function renderProfile(){
   const P={};ctx.teams.forEach(t=>P[t]=profile(t));const rows=ctx.teams.slice().sort((a,b)=>P[b].edwa-P[a].edwa);
   const last3=ctx.weeks.slice(-3),col=k=>ctx.teams.map(t=>P[t][k]);
@@ -728,7 +780,15 @@ function renderPlayers(){
   else table(bt,[{h:"Team",f:t=>TB(t)},{h:"Full",n:1,f:t=>f1(PL.full[t].pts)}].concat(PL.remW.map(w=>({h:"Wk "+w,n:1,f:t=>{const b=PL.bye[t][w],d=b.pts-PL.full[t].pts;
       const td=h("span",{text:f1(b.pts)+(d<-0.05?` (${f1(d)})`:"")});if(b.missing.length)td.title="On bye: "+b.missing.map(pName).join(", ");return td;}}))),ctx.teams.slice().sort((a,b)=>PL.full[b].pts-PL.full[a].pts));
   if(PL.remW.length)bt.querySelectorAll("tbody tr").forEach((tr,i)=>{const t=ctx.teams.slice().sort((a,b)=>PL.full[b].pts-PL.full[a].pts)[i];PL.remW.forEach((w,j)=>{const d=PL.bye[t][w].pts-PL.full[t].pts;if(d<-0.05)tr.children[j+2].style.background=heat(Math.max(0,0.5+d/40));});});
-  const sel=$("#plTeam");if(plTeam==null)plTeam=rows[0];sel.textContent="";rows.forEach(t=>sel.append(h("option",{value:t,selected:t===plTeam},N(t))));
+  const sel=$("#plTeam");if(plTeam==null)plTeam=rows[0];sel.textContent="";sel.append(h("option",{value:"all",selected:plTeam==="all"},"All players"));rows.forEach(t=>sel.append(h("option",{value:t,selected:t===plTeam},N(t))));
+  if(plTeam==="all"){$("#plTitle").textContent="All players";
+    const all=[];ctx.teams.forEach(t=>{const ST=S[t],inj=injOf(t);Object.values(ST.pl).forEach(x=>all.push(Object.assign({t,share:x.pts/(ST.total||1),on:!!inj[x.p]},x)));});
+    all.sort((a,b)=>b.share-a.share||b.pts-a.pts);const mx=all.length?all[0].share:1;
+    table($("#plShare"),[{h:"#",f:(x,i)=>i+1},{h:"Player",f:x=>`${pName(x.p)}${x.on?"":" (no longer on roster)"}`},{h:"Pos",f:x=>pPos(x.p)},{h:"Team",f:x=>TB(x.t,20)},
+      {h:"Starts",n:1,f:x=>x.starts},{h:"Points",n:1,f:x=>f2(x.pts)},{h:"Share",n:1,f:x=>pct(x.share)},{h:"",f:x=>h("div",{class:"bar"},h("i",{style:`width:${Math.round(x.share/(mx||1)*100)}%;background:${PCOL[pPos(x.p)]||"var(--accent)"}`}))},
+      {h:"Per start",n:1,f:x=>f1(x.pts/x.starts)},{h:"Vs projection",n:1,f:x=>x.pg?sg(x.projPts-x.proj,1):"—",cls:x=>x.pg?(x.projPts-x.proj>=0?"pos":"neg"):""}],all);
+    const pd=$("#plDepth");pd.textContent="";pd.append(h("tbody",null,h("tr",null,h("td",{class:"mut",text:"Pick a team in the menu above to see its lineup and next man up."}))));$("#plOut").textContent="";
+  }else{
   const t=plTeam,ST=S[t];$("#plTitle").textContent=`${N(t)}: players`;
   const inj=injOf(t);
   const pls=Object.values(ST.pl).sort((a,b)=>b.pts-a.pts);
@@ -740,11 +800,12 @@ function renderPlayers(){
     {h:"If out, next up",f:c=>c.next!=null?`${pName(c.next)} (${f1(ppg(c.next))})`:"No healthy backup"},{h:"Weekly loss",n:1,f:c=>"−"+f1(c.loss),cls:c=>c.loss>=8?"neg":""}],PL.cost[t]);
   const bench=healthy(t).filter(p=>!PL.full[t].set.has(p)).sort((a,b)=>ppg(b)-ppg(a)),out=PD.roster[t].filter(([p,sl,s])=>sl===21||OUTST.has(s)).map(r=>r[0]);
   $("#plOut").textContent=`Bench: ${bench.map(p=>`${pName(p)} ${pPos(p)} ${f1(ppg(p))} (VORP ${sg(ppg(p)-(PL.repl[pPos(p)]||0),1)})`).join(" · ")||"none"}.`+(out.length?` Unavailable: ${out.map(p=>`${pName(p)} (${inj[p][0]===21?"IR slot"+(INJ[inj[p][1]]&&inj[p][1]!=="INJURY_RESERVE"?", "+INJ[inj[p][1]]:""):INJ[inj[p][1]]})`).join(", ")}.`:"");
+  }
   const pj=Object.values(PL.proj).filter(x=>x.g>=2).map(x=>Object.assign(x,{d:x.act-x.proj,team:+Object.entries(x.by).sort((a,b)=>b[1]-a[1])[0][0]}));
   const pc=[{h:"Player",f:x=>`${pName(x.p)} · ${pPos(x.p)}`},{h:"Team",f:x=>short(N(x.team),20)},{h:"Starts",n:1,f:x=>x.g},{h:"Actual",n:1,f:x=>f1(x.act)},{h:"Projected",n:1,f:x=>f1(x.proj)},{h:"Diff",n:1,f:x=>sg(x.d,1),cls:x=>x.d>=0?"pos":"neg"},{h:"Per start",n:1,f:x=>sg(x.d/x.g,1)}];
   table($("#projUp"),pc,pj.slice().sort((a,b)=>b.d-a.d).slice(0,10));table($("#projDown"),pc,pj.slice().sort((a,b)=>a.d-b.d).slice(0,10));
 }
-$("#plTeam").addEventListener("change",e=>{plTeam=+e.target.value;renderPlayers();});
+$("#plTeam").addEventListener("change",e=>{plTeam=e.target.value==="all"?"all":+e.target.value;renderPlayers();});
 
 // ---------- what-if records ----------
 const rec=(w,l,t)=>`${w}-${l}${t?"-"+t:""}`;
@@ -759,7 +820,7 @@ function whatIf(){
   teams.forEach(t=>teams.forEach(s=>{let w_=0,l_=0,ti=0;weeks.forEach(w=>{const bs=T(s).byWeek[w],bt=T(t).byWeek[w];if(!bs||!bt)return;
       let o=bs.opp;if(o===t)o=s;const os=T(o).byWeek[w].s;if(bt.s>os)w_++;else if(bt.s<os)l_++;else ti++;});R[t].sw[s]=[w_,l_,ti];}));
   return R;}
-function renderWhatIf(){
+function renderWhatIf(){if(!$("#wiTable"))return;
   const R=whatIf(),teams=ctx.teams,n=ctx.weeks.length;
   const W=(w,t)=>w+0.5*t,combW=t=>W(R[t].aw+R[t].mw,R[t].at+R[t].mt),rows=teams.slice().sort((a,b)=>combW(b)-combW(a)||T(b).pf-T(a).pf);
   const vals=k=>teams.map(t=>k(t));
@@ -811,14 +872,20 @@ function playerValues(){const agg={},pj={};
   Object.keys(PD.lineups).map(Number).filter(w=>w<=ctx.lastWeek).forEach(w=>{for(const rows of Object.values(PD.lineups[w]))for(const[p,sl,pts,proj,pl]of rows){
     if(pl){const a=agg[p]||(agg[p]={pts:0,g:0,wk:{}});if(!a.wk[w]){a.wk[w]=1;a.pts+=pts;a.g++;}}
     if(proj>0){const q=pj[p]||(pj[p]={s:0,n:0,wk:{}});if(!q.wk[w]){q.wk[w]=1;q.s+=proj;q.n++;}}}});
-  const V=p=>{const a=agg[p];if(a&&a.g>=2)return a.pts/a.g;const s=PD.season[p];if(s&&s[1]>=2)return s[0]/s[1];if(a&&a.g)return a.pts/a.g;const q=pj[p];return q&&q.n?q.s/q.n:0;};
-  return{V,gp:p=>agg[p]?agg[p].g:0};}
+  const V0=p=>{const a=agg[p];if(a&&a.g>=2)return a.pts/a.g;const s=PD.season[p];if(s&&s[1]>=2)return s[0]/s[1];if(a&&a.g)return a.pts/a.g;const q=pj[p];return q&&q.n?q.s/q.n:0;};
+  const GP=p=>{const s=PD.season[p];return Math.max(agg[p]?agg[p].g:0,s?s[1]:0);};
+  const PPG=p=>{const s=PD.season[p];if(s&&s[1]>0)return s[0]/s[1];const a=agg[p];return a&&a.g?a.pts/a.g:0;};
+  const DR=live&&live.draft?live.draft:null;let dv=null;
+  if(DR){const exp=Object.keys(DR).filter(p=>GP(p)>=2).map(p=>PPG(p)).sort((a,b)=>b-a);const n=Object.keys(DR).length;
+    dv=p=>{const k=DR[p];if(!exp.length)return 0;return k?exp[Math.min(k,exp.length)-1]:exp[Math.min(n,exp.length)-1];};}
+  const V=p=>{if(!dv)return V0(p);const g=GP(p),w=g/(g+3);return g?w*PPG(p)+(1-w)*dv(p):dv(p);};
+  return{V,gp:GP,pick:p=>DR?DR[p]||null:null,draftV:dv,hasDraft:!!dv};}
 function bestV(ps,V){const by={};ps.forEach(p=>{(by[pPos(p)]=by[pPos(p)]||[]).push(p);});for(const k in by)by[k].sort((a,b)=>V(b)-V(a));
   let tot=0;const L=[];for(const[k,n]of SLOTS){if(k==="FLEX")continue;(by[k]||[]).splice(0,n).forEach(p=>{tot+=V(p);L.push(p);});}
   const fx=["RB","WR","TE"].flatMap(k=>by[k]||[]).sort((a,b)=>V(b)-V(a))[0];if(fx!=null){tot+=V(fx);L.push(fx);}return{pts:tot,set:new Set(L)};}
 let INJ_D=null;
 function computeInjuries(){
-  if(!PD||!PD.lineups)return null;const{V,gp}=playerValues(),byeOf=p=>PD.byes[PD.players[p]?PD.players[p][2]:""];
+  if(!PD||!PD.lineups)return null;const PV=playerValues(),{V,gp}=PV,byeOf=p=>PD.byes[PD.players[p]?PD.players[p][2]:""];
   const R={};ctx.teams.forEach(t=>R[t]={t,cost:0,weeks:[],hit:0,flips:0,missed:{},cur:0,curList:[]});
   ctx.weeks.forEach(w=>{const rowsW=PD.lineups[w];if(!rowsW)return;ctx.teams.forEach(t=>{const rows=rowsW[t];if(!rows)return;
     const avail=rows.filter(r=>byeOf(r[0])!==w),all=avail.map(r=>r[0]),played=avail.filter(r=>r[4]).map(r=>r[0]);
@@ -832,7 +899,7 @@ function computeInjuries(){
     const full=bestV(all,V);R[t].cur=Math.max(0,full.pts-bestV(ok,V).pts);
     R[t].curList=(PD.roster[t]||[]).filter(([p,sl,inj])=>sl===21||(inj&&inj!=="ACTIVE"&&inj!=="NORMAL")).map(([p,sl,inj])=>({p,sl,inj,v:V(p),starter:full.set.has(p),gone:sl===21||OUTS.has(inj)})).sort((a,b)=>b.v-a.v);
     R[t].perWk=ctx.weeks.length?R[t].cost/ctx.weeks.length:0;});
-  INJ_D={R,V,gp};return INJ_D;}
+  INJ_D={R,V,gp,pick:PV.pick,hasDraft:PV.hasDraft};return INJ_D;}
 let injTeam=null;
 function renderInjuries(){const tbl=$("#injTable");if(!tbl)return;const D=computeInjuries();if(!D){tbl.textContent="Player data isn't loaded yet.";return;}
   const R=D.R,V=D.V,rows=ctx.teams.slice().sort((a,b)=>R[b].cost-R[a].cost||R[b].cur-R[a].cur),mx=Math.max(1,...rows.map(t=>R[t].cost));
@@ -853,7 +920,7 @@ function renderInjuries(){const tbl=$("#injTable");if(!tbl)return;const D=comput
     h("div",null,X.cur>0.05?`Right now: ${f1(X.cur)} points per week below full strength.`:"Right now: at full strength."));
   table($("#injWeeks"),[{h:"Week",f:x=>x.w},{h:"Result",f:x=>x.won==null?"":`${x.won===1?"W":x.won===0?"L":"T"} ${f1(x.s)}–${f1(x.os)}`},{h:"Opponent",f:x=>x.opp?N(x.opp):""},
     {h:"Pts lost",n:1,f:x=>x.cost>0.05?"−"+f1(x.cost):"–",cls:x=>x.cost>=8?"neg":""},
-    {h:"Key players out",f:x=>x.out.length?x.out.map(p=>`${pName(p)} (${f1(V(p))})`).join(", "):"–"},
+    {h:"Key players out",f:x=>x.out.length?x.out.map(p=>`${pName(p)} (${f1(V(p))}${D.hasDraft?(D.pick(p)?` · pick ${D.pick(p)}`:" · undrafted"):""})`).join(", "):"–"},
     {h:"",f:x=>x.flip?h("span",{class:"chip bad",text:"Cost the game"}):""}],X.weeks);
   table($("#injNow"),[{h:"Player",f:x=>`${pName(x.p)} · ${pPos(x.p)}`},{h:"Status",f:x=>h("span",{class:"chip"+(x.gone?" bad":""),text:ST[x.inj]||(x.sl===21?"IR slot":x.inj)})},{h:"Pts / game",n:1,f:x=>f1(x.v)},{h:"Starter when healthy",f:x=>x.starter?"Yes":"No"}],X.curList);
   if(!X.curList.length){$("#injNow").textContent="";$("#injNow").append(h("tbody",null,h("tr",null,h("td",{class:"mut",text:"No injured players on the roster."}))));}
@@ -862,7 +929,7 @@ $("#injTeam").addEventListener("change",e=>{injTeam=+e.target.value;renderInjuri
 
 
 // ---------- dashboard hub ----------
-const ICO={bars:'<path d="M4 20V11h3v9zm6.5 0V4h3v16zM17 20v-6h3v6z"/>',up:'<path d="M12 3l7 8h-4.5v9h-5v-9H5z"/>',sum:'<path d="M5 4h14v3H9.5l5 5-5 5H19v3H5v-2.5L11 12 5 6.5z"/>',star:'<path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/>',cal:'<path d="M4 6h16v14H4zm2 4v8h12v-8zM7 3h2v4H7zm8 0h2v4h-2z"/>',cross:'<path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5z"/>',user:'<path d="M12 12a4.5 4.5 0 110-9 4.5 4.5 0 010 9zm-8 9c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',list:'<path d="M4 5h3v3H4zm5 0h11v3H9zM4 10.5h3v3H4zm5 0h11v3H9zM4 16h3v3H4zm5 0h11v3H9z"/>',clock:'<path d="M12 2a10 10 0 110 20 10 10 0 010-20zm0 3a7 7 0 100 14 7 7 0 000-14zm-1 2h2v5l3.5 2-1 1.7L11 13z"/>',pin:'<path d="M14 2l8 8-2.5 1-3.5 3.5.5 4.5-2 2-4-4-5 5-1.5-1.5 5-5-4-4 2-2 4.5.5L13 4.5z"/>',grid:'<path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>'};
+const ICO={odds:'<path d="M18.4 4.2l1.4 1.4L5.6 19.8l-1.4-1.4zM7 4a3 3 0 110 6 3 3 0 010-6zm10 10a3 3 0 110 6 3 3 0 010-6z"/>',bars:'<path d="M4 20V11h3v9zm6.5 0V4h3v16zM17 20v-6h3v6z"/>',up:'<path d="M12 3l7 8h-4.5v9h-5v-9H5z"/>',sum:'<path d="M5 4h14v3H9.5l5 5-5 5H19v3H5v-2.5L11 12 5 6.5z"/>',star:'<path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/>',cal:'<path d="M4 6h16v14H4zm2 4v8h12v-8zM7 3h2v4H7zm8 0h2v4h-2z"/>',cross:'<path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5z"/>',user:'<path d="M12 12a4.5 4.5 0 110-9 4.5 4.5 0 010 9zm-8 9c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',list:'<path d="M4 5h3v3H4zm5 0h11v3H9zM4 10.5h3v3H4zm5 0h11v3H9zM4 16h3v3H4zm5 0h11v3H9z"/>',clock:'<path d="M12 2a10 10 0 110 20 10 10 0 010-20zm0 3a7 7 0 100 14 7 7 0 000-14zm-1 2h2v5l3.5 2-1 1.7L11 13z"/>',pin:'<path d="M14 2l8 8-2.5 1-3.5 3.5.5 4.5-2 2-4-4-5 5-1.5-1.5 5-5-4-4 2-2 4.5.5L13 4.5z"/>',grid:'<path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>'};
 const ico=n=>{const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 24 24");s.setAttribute("class","ico");s.setAttribute("aria-hidden","true");s.innerHTML=ICO[n];return s;};
 function renderHub(){const el=$("#hub");if(!el)return;el.textContent="";
   const tile=(area,cls,go,to,icon,title,det)=>{const b=h("button",{class:"ht "+cls,type:"button",style:`grid-area:${area}`,"aria-label":`${title}: ${det}`},cls.includes("hero")?h("span",{class:"bg"}):null,ico(icon),h("span",{class:"cap"},h("span",{class:"t",text:title}),h("span",{class:"d",text:det})));
@@ -875,14 +942,15 @@ function renderHub(){const el=$("#hub");if(!el)return;el.textContent="";
   tile("d","k","scoring",null,"pin","Scoring profile","Averages and form");
   tile("i","w","injuries",null,"cross","Injuries","Strength lost");
   tile("f","k","players",null,"user","Players","Who drives the points");
-  tile("g","k","overview","sec-whatif","grid","Records every way","Median, average, EDWA");
+  tile("g","k","overview","sec-week","clock","Week results","Highs, lows and blowouts");
+  tile("o","g","odds",null,"odds","Odds","Lines, futures and props");
 }
 
 // ---------- phone-friendly tables ----------
-const KEEP={stand:[["#","Team","Record","PF","Playoffs"],"Record"],power:[["Rank","Team","Record","Power"],"Power"],odds:[["Team","Record","Playoffs","Title"],"Playoffs"],
+const KEEP={bkFut:[["Team","Title","Make playoffs"],"Title"],stand:[["Team","Record","Playoffs"],"Record"],power:[["Rank","Team","Record","Power"],"Power"],odds:[["Team","Record","Playoffs","Title"],"Playoffs"],
  sos:[["Team","Games left","Avg opponent","Difficulty"],"Avg opponent"],luckTable:[["Team","Actual W","Expected","Luck index"],"Luck index"],prof:[["Team","Avg","Median","EDWA"],"EDWA"],
- injTable:[["#","Team","Season pts lost","Lost now / wk"],"Season pts lost"],wiTable:[["#","Team","Actual","Vs median","Vs average"],"With median game"],
- depthTable:[["Team","Full strength","Avg loss per injury"],"Full strength"],shareTable:[["Team","Starting pts","Mix"],"Starting pts"],plShare:[["Player","Points","Share"],"Share"],
+ injTable:[["Team","Season pts lost","Lost now / wk"],"Season pts lost"],
+ depthTable:[["Team","Full strength","Avg loss per injury"],"Full strength"],shareTable:[["Team","Mix"],"Mix"],plShare:[["Player","Team","Share"],"Share"],
  pathGames:[["Week","Opponent","Win chance","Playoffs if win","If loss"],"Playoffs if win"],pathRoot:[["Week","Root for","Over","Swing"],"Swing"],injWeeks:[["Week","Result","Pts lost"],"Pts lost"],
  plDepth:[["Slot","Player","Pts / game","If out, next up"],"Pts / game"],projUp:[["Player","Starts","Diff"],"Diff"],projDown:[["Player","Starts","Diff"],"Diff"],luckWeeks:[["Week","Score","Result","All-play"],"Score"]};
 function compactTables(){for(const id in KEEP){const t=document.getElementById(id);if(!t||!t.tHead)continue;const [keep,key]=KEEP[id];
@@ -892,7 +960,119 @@ function compactTables(){for(const id in KEEP){const t=document.getElementById(i
   [...t.rows].forEach(r=>[...r.cells].forEach((c,i)=>{c.classList.toggle("x",!kidx.has(i));c.classList.toggle("key",i===keyI);}));
   let b=t.closest(".tw")&&t.closest(".tw").nextElementSibling;if(!(b&&b.classList.contains("more-cols"))){b=h("button",{class:"more-cols",type:"button"},"Show more columns");b.addEventListener("click",()=>{const on=t.classList.toggle("all");b.textContent=on?"Show fewer columns":"Show more columns";});(t.closest(".tw")||t).after(b);}
   else b.textContent=t.classList.contains("all")?"Show fewer columns":"Show more columns";}}
-const _stick=()=>{const nb=document.querySelector(".navbar");if(nb)nb.classList.toggle("stuck",window.scrollY>40);};window.addEventListener("scroll",_stick,{passive:true});
+const _stick=()=>{const nb=document.querySelector(".band");if(nb)nb.classList.toggle("stuck",window.scrollY>20);};
+document.addEventListener("click",e=>{if(e.target.closest("#backBtn")||e.target.closest("#title"))show("overview");});window.addEventListener("scroll",_stick,{passive:true});
+
+// ---------- touch: show hover details on tap ----------
+(function(){let hideT=null;const touch=()=>window.matchMedia&&window.matchMedia("(hover: none)").matches;
+ document.addEventListener("click",e=>{if(!touch())return;const el=e.target.closest("td[title],span[title],g,.tm[title]");if(!el||el.closest("button"))return;
+  let txt=el.getAttribute&&el.getAttribute("title");if(!txt&&el.tagName.toLowerCase()==="g"){const ev=new MouseEvent("mousemove",{clientX:e.clientX,clientY:e.clientY,bubbles:true});el.dispatchEvent(ev);clearTimeout(hideT);hideT=setTimeout(()=>{tip.style.display="none";},3000);return;}
+  if(!txt)return;tip.textContent=txt;tip.style.display="block";tip.style.left=Math.max(8,Math.min(e.clientX-60,window.innerWidth-270))+"px";tip.style.top=(e.clientY+14)+"px";clearTimeout(hideT);hideT=setTimeout(()=>{tip.style.display="none";},3000);},true);
+ window.addEventListener("scroll",()=>{if(touch())tip.style.display="none";},{passive:true});})();
+// ---------- projection model (backtested; see "How it's calculated") ----------
+const MODEL_ALPHAS=[0,0.25,0.5,0.75,1],MODEL_KS=[1,0.9,0.8,0.7],FUT_ALPHA=0.5;
+let MODEL=null;
+function buildModel(){
+  const isSt=r=>r[1]!==20&&r[1]!==21,done=ctx.weeks.slice(),scoreOf={};
+  DATA.games.forEach(g=>{if(g.as==null)return;(scoreOf[g.w]=scoreOf[g.w]||{})[g.a]=g.as;scoreOf[g.w][g.h]=g.hs;});
+  const gamesOf=w=>DATA.games.filter(g=>g.w===w&&g.as!=null);
+  const memo={};const M=(k,f)=>k in memo?memo[k]:(memo[k]=f());
+  const muBefore=w=>M("mu"+w,()=>{const sc={};ctx.teams.forEach(t=>sc[t]=[]);DATA.games.forEach(g=>{if(g.as!=null&&g.w<w){sc[g.a].push(g.as);sc[g.h].push(g.hs);}});
+    const all=Object.values(sc).flat(),lg=all.length?all.reduce((a,b)=>a+b,0)/all.length:0,mu={};
+    ctx.teams.forEach(t=>{const v=sc[t];mu[t]=v.length?lg+(v.length/(v.length+3))*(v.reduce((a,b)=>a+b,0)/v.length-lg):lg;});
+    let ss=0,df=0;ctx.teams.forEach(t=>{const v=sc[t];if(v.length>1){const m=v.reduce((a,b)=>a+b,0)/v.length;v.forEach(x=>ss+=(x-m)**2);df+=v.length-1;}});
+    return{mu,lg,sd:df>0?Math.sqrt(ss/df):30};});
+  const ratioBefore=w=>M("R"+w,()=>{let a=0,p=0;for(let v=1;v<w;v++){const L=PD.lineups[v];if(!L)continue;for(const t in L)L[t].forEach(r=>{if(isSt(r)){a+=r[2];p+=(r[3]||0);}});}return p?a/p:1;});
+  const projSum=(v,t)=>{const L=PD.lineups[v]&&PD.lineups[v][t];return L?L.filter(isSt).reduce((s,r)=>s+(r[3]||0),0):0;};
+  const E3=(v,a,t)=>a*ratioBefore(v)*projSum(v,t)+(1-a)*muBefore(v).mu[t];
+  const priorWeeks=w=>done.filter(v=>v>=2&&v<w);
+  const pickAlpha=w=>M("a"+w,()=>{const pr=priorWeeks(w);if(pr.length<3)return 0.5;let best=null,bv=1e9;
+    MODEL_ALPHAS.forEach(a=>{let e=0,n=0;pr.forEach(v=>gamesOf(v).forEach(g=>{e+=Math.abs(E3(v,a,g.a)-g.as)+Math.abs(E3(v,a,g.h)-g.hs);n+=2;}));const m=e/n;if(m<bv-1e-12){bv=m;best=a;}});return best;});
+  const residSd=(w,a)=>{let s=0,n=0;priorWeeks(w).forEach(v=>gamesOf(v).forEach(g=>{s+=(g.as-E3(v,a,g.a))**2+(g.hs-E3(v,a,g.h))**2;n+=2;}));return n>=10?Math.sqrt(s/n):null;};
+  const pred3=v=>M("p"+v,()=>{const a=pickAlpha(v);return{a,sd:residSd(v,a)||muBefore(v).sd};});
+  const Phi=z=>0.5*(1+nerf(z/Math.SQRT2));
+  const pickK=w=>{if(w<5)return 1;let best=1,bv=1e9;MODEL_KS.forEach(k=>{let L=0,n=0;priorWeeks(w).forEach(v=>{const P=pred3(v);gamesOf(v).forEach(g=>{const p=Phi((E3(v,P.a,g.a)-E3(v,P.a,g.h))/(P.sd*k*Math.SQRT2));L+=-Math.log(Math.max(1e-6,g.as>g.hs?p:1-p));n++;});});const m=L/n;if(m<bv-1e-12){bv=m;best=k;}});return best;};
+  const W=(ctx.lastWeek||0)+1,base=muBefore(W),a=pickAlpha(W),R=ratioBefore(W),P=pred3(W),k=pickK(W);
+  // player values for future-week lineups: average points in games actually played
+  const pv={};Object.keys(PD.lineups).map(Number).filter(v=>v<W).forEach(v=>{for(const t in PD.lineups[v])PD.lineups[v][t].forEach(r=>{if(r[4]){const o=pv[r[0]]||(pv[r[0]]={s:0,n:0,wk:{}});if(!o.wk[v]){o.wk[v]=1;o.s+=r[2];o.n++;}}});});
+  const val=p=>pv[p]?pv[p].s/pv[p].n:null;
+  const OUTW=new Set(["INJURY_RESERVE","SUSPENSION"]);
+  const futLineup=(t,w)=>{const ro=(PD.roster&&PD.roster[t])||[];const by={};ro.forEach(([p,sl,inj])=>{if(sl===21||OUTW.has(inj))return;if(PD.byes[PD.players[p]?PD.players[p][2]:""]===w)return;const v=val(p);if(v==null)return;(by[pPos(p)]=by[pPos(p)]||[]).push(v);});
+    for(const x in by)by[x].sort((a,b)=>b-a);let tot=0;[["QB",1],["RB",2],["WR",3],["TE",1],["D/ST",1],["K",1]].forEach(([x,n])=>{tot+=(by[x]||[]).slice(0,n).reduce((s,v)=>s+v,0);by[x]=(by[x]||[]).slice(n);});
+    const fx=["RB","WR","TE"].flatMap(x=>by[x]||[]).sort((a,b)=>b-a)[0];return tot+(fx||0);};
+  MODEL={week:W,alpha:a,R,sd:P.sd,k,sdCur:P.sd*k,sdFut:base.sd,mu:base.mu,lg:base.lg,futLineup,val,projSum};
+  return MODEL;}
+// expected score and spread for team t in week w (current week uses set lineups + live scoring)
+function curState(t){const m=MODEL,rows=live.curRows&&live.curRows[t];
+  if(!rows||!m||live.cur!==m.week)return null;
+  const st=rows.filter(r=>r[1]!==20&&r[1]!==21);let pts=0,pjAll=0,pjLeft=0,left=0;
+  st.forEach(([p,sl,a,pj,pl])=>{pjAll+=(pj||0);if(pl)pts+=a;else{pjLeft+=(pj||0);left++;}});
+  const frac=pjAll>0?pjLeft/pjAll:(st.length?left/st.length:1);
+  const E=pts+m.alpha*m.R*pjLeft+(1-m.alpha)*m.mu[t]*frac;
+  return{E,V:m.sdCur*m.sdCur*frac,pts,left,st:st.length,frac,pre:pjAll*m.alpha*m.R+(1-m.alpha)*m.mu[t]};}
+function weekMean(t,w){const m=MODEL;if(!m)return T(t).mu;if(w===m.week){const c=curState(t);if(c)return c.E;}
+  return FUT_ALPHA*m.futLineup(t,w)+(1-FUT_ALPHA)*m.mu[t];}
+function weekSd(t,w){const m=MODEL;if(!m)return ctx.sd;if(w===m.week){const c=curState(t);if(c)return Math.sqrt(c.V);}return m.sdFut;}
+function installModel(){buildModel();const WM={},WS={};
+  const wm=(t,w)=>{const c=WM[w]||(WM[w]={});return t in c?c[t]:(c[t]=weekMean(t,w));},ws=(t,w)=>{const c=WS[w]||(WS[w]={});return t in c?c[t]:(c[t]=weekSd(t,w));};
+  ctx.wm=wm;ctx.ws=ws;
+  ctx.winProbW=(a,b,w)=>{const s=Math.sqrt(ws(a,w)**2+ws(b,w)**2);return s>0?0.5*(1+nerf((wm(a,w)-wm(b,w))/(s*Math.SQRT2))):(wm(a,w)>wm(b,w)?1:0);};}
+// ---------- odds (sportsbook) ----------
+let VIG=false;
+const nerf=x=>{const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));};
+const Phi=z=>0.5*(1+nerf(z/Math.SQRT2));
+function amer(p){if(!(p>0&&p<1))return null;const v=p>=0.5?-100*p/(1-p):100*(1-p)/p;return Math.round(v);}
+const amerP=o=>o<0?(-o)/(-o+100):100/(o+100);
+const fmtO=o=>o==null?"—":(o>0?"+"+o:"−"+Math.abs(o));
+function priced(p){if(p>=0.995||p<=0.005)return null;const q=VIG?Math.min(0.995,p*1.045):p;return amer(q);}
+const half=x=>Math.round(x*2)/2;
+// live-adjusted expectation for one team this week
+function teamState(t){const c=curState(t);if(c)return c;const w=MODEL?MODEL.week:null;return{E:w?weekMean(t,w):T(t).mu,V:(w?weekSd(t,w):ctx.sd)**2,pts:0,left:null,st:null,frac:1};}
+function bookGames(){
+  let gs=[];if(live.curGames&&live.curGames.length&&live.cur<=ctx.regWeeks)gs=live.curGames.map(g=>({a:g.a,h:g.h,winner:g.winner,w:live.cur}));
+  else{const w=ctx.remWeeks[0];if(w)gs=ctx.rem.filter(g=>g.w===w).map(g=>({a:g.a,h:g.h,winner:"UNDECIDED",w}));}
+  return gs.map(g=>{const A=teamState(g.a),H=teamState(g.h),sdd=Math.sqrt(A.V+H.V);
+    const fin=g.winner&&g.winner!=="UNDECIDED";const pA=fin?(g.winner==="AWAY"?1:0):(sdd>0?Phi((A.E-H.E)/sdd):(A.E>H.E?1:0));
+    return Object.assign(g,{A,H,pA,pH:1-pA,spread:half(H.E-A.E),total:half(A.E+H.E),fin,started:(A.frac<1||H.frac<1)});});}
+function propSim(gs,N){const ts=[...new Set(gs.flatMap(g=>[g.a,g.h]))],S={};ts.forEach(t=>S[t]=gs.find(g=>g.a===t)?gs.find(g=>g.a===t).A:gs.find(g=>g.h===t).H);
+  const hi={},lo={},cl={},bl={};ts.forEach(t=>{hi[t]=0;lo[t]=0;});gs.forEach((g,i)=>{cl[i]=0;bl[i]=0;});
+  let seed=12345;const r=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+  const gz=()=>{let u=0;while(u===0)u=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*r());};
+  for(let k=0;k<N;k++){const sc={};ts.forEach(t=>sc[t]=S[t].E+Math.sqrt(S[t].V)*gz());
+    let mx=ts[0],mn=ts[0];ts.forEach(t=>{if(sc[t]>sc[mx])mx=t;if(sc[t]<sc[mn])mn=t;});hi[mx]++;lo[mn]++;
+    let ci=0,bi=0,cv=1e9,bv=-1;gs.forEach((g,i)=>{const d=Math.abs(sc[g.a]-sc[g.h]);if(d<cv){cv=d;ci=i;}if(d>bv){bv=d;bi=i;}});cl[ci]++;bl[bi]++;}
+  const n=x=>x/N;return{ts,S,hi:Object.fromEntries(ts.map(t=>[t,n(hi[t])])),lo:Object.fromEntries(ts.map(t=>[t,n(lo[t])])),cl:gs.map((g,i)=>n(cl[i])),bl:gs.map((g,i)=>n(bl[i]))};}
+let BOOK=null;
+function renderBook(){const el=$("#bkGames");if(!el||!ctx)return;el.textContent="";
+  const gs=bookGames();BOOK={gs};
+  const wk=gs.length?gs[0].w:null;$("#bkTitle").textContent=wk?`Week ${wk} lines`:"No games left";
+  const any=gs.some(g=>g.started);$("#bkStatus").textContent=gs.length?(any?"Live: lines move with scores and starters left to play.":"Pregame lines from the same model as the playoff odds."):"";
+  const juice=VIG?"−110":"+100";
+  gs.forEach(g=>{const card=h("div",{class:"bk"+(g.started?"":" pre")});
+    const row=(t,S,p,isHome)=>h("div",{class:"bkr"},TB(t,22),h("span",{class:"n sc",text:S.left!=null&&g.started?f1(S.pts):""}),
+      h("span",{class:"n ml"+(p>=0.5?" fav":""),text:g.fin?(p===1?"WON":"LOST"):fmtO(priced(p))}),
+      h("span",{class:"n sp",text:g.fin?"":`${isHome?(g.spread>0?"−":g.spread<0?"+":""):(g.spread>0?"+":g.spread<0?"−":"")}${Math.abs(g.spread)===0?"PK":Math.abs(g.spread).toFixed(1)}`}),
+      h("span",{class:"n wp",text:g.fin?"":pct(p)}));
+    card.append(h("div",{class:"bkh"},h("span",{text:"Team"}),h("span",{class:"n",text:g.started?"Pts":""}),h("span",{class:"n",text:"Money"}),h("span",{class:"n",text:"Spread"}),h("span",{class:"n",text:"Win %"})),
+      row(g.a,g.A,g.pA,false),row(g.h,g.H,g.pH,true),
+      h("div",{class:"bkf"},h("span",{text:g.fin?"Final":`O/U ${g.total.toFixed(1)} (${juice} each side) · spread ${juice}`}),h("span",{text:g.fin?"":g.started?`Left: ${g.A.left} – ${g.H.left} starters`:"Not started"})));
+    el.append(card);});
+  // futures
+  const fr=ctx.teams.slice().sort((a,b)=>sim[b].champ-sim[a].champ||sim[b].po-sim[a].po);
+  const fo=p=>{const o=priced(p);return o==null?(p>=0.995?"Lock":"Off board"):fmtO(o);};
+  table($("#bkFut"),[{h:"Team",f:t=>TB(t,22)},{h:"Title",n:1,f:t=>fo(sim[t].champ)},{h:"Make playoffs",n:1,f:t=>fo(sim[t].po)},{h:"Bye",n:1,f:t=>fo(sim[t].bye)},{h:"Last place",n:1,f:t=>fo(sim[t].last)},{h:"Title %",n:1,f:t=>pct(sim[t].champ)}],fr);
+  // props
+  if(!gs.length||gs.every(g=>g.fin)){["#bkHi","#bkLo","#bkClose","#bkBlow","#bkTT"].forEach(id=>{const x=$(id);if(x)x.textContent="";});return;}
+  const P=propSim(gs.filter(g=>!g.fin).length?gs:gs,20000);BOOK.props=P;
+  const byP=o=>Object.keys(o).map(Number).sort((a,b)=>o[b]-o[a]);
+  table($("#bkHi"),[{h:"Team",f:t=>TB(t,22)},{h:"Odds",n:1,f:t=>fo(P.hi[t])},{h:"Chance",n:1,f:t=>pct(P.hi[t])}],byP(P.hi));
+  table($("#bkLo"),[{h:"Team",f:t=>TB(t,22)},{h:"Odds",n:1,f:t=>fo(P.lo[t])},{h:"Chance",n:1,f:t=>pct(P.lo[t])}],byP(P.lo));
+  const gi=gs.map((g,i)=>i),mt=i=>`${short(N(gs[i].a),16)} vs ${short(N(gs[i].h),16)}`;
+  table($("#bkClose"),[{h:"Matchup",f:mt},{h:"Odds",n:1,f:i=>fo(P.cl[i])},{h:"Chance",n:1,f:i=>pct(P.cl[i])}],gi.slice().sort((a,b)=>P.cl[b]-P.cl[a]));
+  table($("#bkBlow"),[{h:"Matchup",f:mt},{h:"Odds",n:1,f:i=>fo(P.bl[i])},{h:"Chance",n:1,f:i=>pct(P.bl[i])}],gi.slice().sort((a,b)=>P.bl[b]-P.bl[a]));
+  table($("#bkTT"),[{h:"Team",f:t=>TB(t,22)},{h:"Total",n:1,f:t=>half(P.S[t].E).toFixed(1)},{h:"Over",n:1,f:()=>juice},{h:"Under",n:1,f:()=>juice}],P.ts.slice().sort((a,b)=>P.S[b].E-P.S[a].E));
+}
+document.addEventListener("change",e=>{if(e.target&&e.target.name==="bkVig"){VIG=e.target.value==="vig";renderBook();}});
 // ---------- live ESPN data ----------
 const ESPN_BASE=`https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${DATA.season}/segments/0/leagues/${DATA.leagueId}`;
 const POLL_MS=60000,HEAVY_MS=10*60000;
@@ -938,6 +1118,9 @@ async function refresh(force){
     const [box,tc,tp,pend]=await Promise.all([espn(`view=mBoxscore&scoringPeriodId=${spCur}`,{schedule:{filterMatchupPeriodIds:{value:[cur]}}}),
       espn(`view=mTransactions2&scoringPeriodId=${spCur}`).catch(()=>({transactions:[]})),cur>1?espn(`view=mTransactions2&scoringPeriodId=${spOf(cur-1)}`).catch(()=>({transactions:[]})):{transactions:[]},
       espn("view=mPendingTransactions").catch(()=>({pendingTransactions:[]}))]);
+    if(!live.draft){const key=`mhs:${DATA.leagueId}:${DATA.season}:draft:v1`;let dr=lsGet(key);
+      if(!dr){try{const dj=await espn("view=mDraftDetail");const pk=(dj.draftDetail&&dj.draftDetail.picks)||[];if(pk.length){dr={};pk.forEach(x=>{if(x.playerId)dr[x.playerId]=x.overallPickNumber;});lsSet(key,dr);}}catch(e){}}
+      if(dr)live.draft=dr;}
     const players={},curRows={},curGames=[];
     box.schedule.filter(m=>m.matchupPeriodId===cur).forEach(m=>{["away","home"].forEach(s=>curRows[m[s].teamId]=lineupRows(m[s],spCur,players));curGames.push({a:m.away.teamId,h:m.home.teamId,winner:m.winner,as:m.away.totalPoints,hs:m.home.totalPoints});});
     // rostered teams with no matchup this period (playoff byes) still need rosters: use previous lineups if absent
@@ -955,13 +1138,14 @@ async function refresh(force){
     if(txIds.size){try{const more=await playerInfo([...txIds],spCur);for(const p in more)live.names[p]=[more[p].name,more[p].pos,more[p].pro];}catch(e){}}
     const nd=Object.assign({},DATA,{teams,games,lastWeek,updatedAt:new Date().toISOString(),settings:Object.assign({},DATA.settings,{regWeeks:regW,playoffTeams:SS.playoffTeamCount||DATA.settings.playoffTeams})});
     const npd={asOfWeek:lastWeek,players:Object.assign({},PD?PD.players:{},players),season,lineups,roster,byes:PD?PD.byes:{},proAbbr:PD?PD.proAbbr:{}};
-    const sig=hashStr(JSON.stringify([games,teams,roster,season,lastWeek]));
+    const sig=hashStr(JSON.stringify([games,teams,roster,season,lastWeek,!!live.draft]));
+    live.curRows=curRows;live.curGames=curGames;live.curSp=spCur;live.regW=regW;live.cur=cur;
     if(String(sig)!==live.sig){DATA=nd;PD=npd;live.sig=String(sig);compute();render();}
     else{DATA.updatedAt=nd.updatedAt;}
     live.curRows=curRows;live.curGames=curGames;live.curSp=spCur;live.regW=regW;
     live.state="live";live.checked=new Date();live.err=null;
   }catch(e){live.err=(e&&e.message)||"Couldn't reach ESPN";live.state=live.checked?"stale":"snapshot";}
-  finally{live.busy=false;renderStamp();renderLive();renderActivity();}
+  finally{live.busy=false;renderStamp();renderLive();renderActivity();try{renderBook();compactTables();}catch(e){}}
 }
 function renderStamp(){const el=$("#stamp");el.textContent="";
   const dot=c=>h("span",{style:`display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:6px;vertical-align:1px`});
@@ -1009,7 +1193,7 @@ function renderActivity(){renderHomeAct();const el=$("#actList");if(!el)return;e
   const lab={trade:"Trade",add:"Add",drop:"Drop",lineup:"Lineup"},cls={trade:"good",add:"",drop:"bad",lineup:""};
   table(el,[{h:"When",f:e=>new Date(e.t).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),cls:()=>"mut nw"},{h:"Type",f:e=>h("span",{class:"chip "+cls[e.kind],text:lab[e.kind]})},{h:"Move",f:e=>e.text},{h:"Detail",f:e=>e.note||"",cls:()=>"mut"}],ev.slice(0,80));}
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="actLineup"){showLineup=e.target.checked;renderActivity();}if(e.target&&e.target.tagName==="SELECT")setTimeout(compactTables,0);});
-const BUILD="2026-11-18dash";
+const BUILD="2026-11-18model2";
 async function checkBuild(){try{if(!/github\.io$/.test(location.hostname))return;const r=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"});if(!r.ok)return;const m=(await r.text()).match(/const BUILD="([^"]+)"/);if(m&&m[1]!==BUILD)location.reload();}catch(e){}}
 setInterval(()=>{if(document.visibilityState==="visible")checkBuild();},300000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkBuild();});
 let pollT=null;function schedulePoll(){clearTimeout(pollT);pollT=setTimeout(async()=>{if(document.visibilityState==="visible")await refresh();schedulePoll();},POLL_MS);}
@@ -1026,11 +1210,11 @@ function renderNames(){
 }
 
 // ---------- tabs ----------
-const OLD={weeks:["overview","sec-week"],teams:"power",profile:"scoring",whatif:["overview","sec-whatif"],path:["playoffs","sec-path"],schedule:"sos",activity:"overview",how:"overview",about:"overview"};
+const OLD={weeks:["overview","sec-week"],teams:"power",profile:"scoring",whatif:["overview","sec-grid"],path:["playoffs","sec-path"],schedule:"sos",activity:"overview",how:"overview",about:"overview"};
 function show(tab,to){document.querySelectorAll("[data-panel]").forEach(s=>s.classList.toggle("hidden",s.dataset.panel!==tab));document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
   if(tab==="luck"||tab==="overview")renderLuck();if(tab==="scoring")renderProfile();
   if(to){const el=document.getElementById(to);if(el){if(el.tagName==="DETAILS")el.open=true;requestAnimationFrame(()=>el.scrollIntoView({behavior:"smooth",block:"start"}));}}else window.scrollTo({top:0});
-  updatePeeks(tab);compactTables();
+  updatePeeks(tab);compactTables();{const bb=$("#backBtn");if(bb)bb.hidden=(tab==="overview");}
   try{history.replaceState(null,"","#"+tab);}catch(_){}}
 const TABS=()=>[...document.querySelectorAll("#tabs button")].map(b=>[b.dataset.tab,b.textContent]);
 function updatePeeks(tab){const L=TABS(),i=L.findIndex(x=>x[0]===tab),p=L[(i-1+L.length)%L.length],n=L[(i+1)%L.length],P=$("#peekPrev"),Nx=$("#peekNext");if(!P)return;P.textContent=p[1];P.dataset.go=p[0];P.setAttribute("aria-label","Go to "+p[1]);Nx.textContent=n[1];Nx.dataset.go=n[0];Nx.setAttribute("aria-label","Go to "+n[1]);}
