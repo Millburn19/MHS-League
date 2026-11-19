@@ -256,7 +256,7 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
   <section data-panel="sos" class="hidden">
     <div class="panel" id="sec-sos"><h3>SOS ROS</h3>
       <p class="lead">Strength of schedule for the rest of the season, and win chances for every game left.</p>
-      <details class="how"><summary>How it's calculated</summary><p>Win chances use the same expected scores as the playoff odds. Strength of schedule is the average expected score of a team's remaining opponents.</p></details>
+      <details class="how"><summary>How it's calculated</summary><p>Win chances use the same expected scores as the playoff odds. Strength of schedule is the average expected score of a team's remaining opponents in the weeks they play. Difficulty compares that with the average expected score of every team in the same weeks: more than 1.5 points above is Hard, more than 1.5 below is Easy.</p></details>
       <div class="tw"><table id="sos"></table></div>
       <div class="wkgrid" id="sched"></div></div>
   </section>
@@ -445,11 +445,11 @@ footer{display:flex;gap:16px;justify-content:flex-start;align-items:center;flex-
       out[order[order.length - 1]].last++;
       const S = order.slice(0, poTeams); S.forEach(t => out[t].po++); S.slice(0, byes).forEach(t => out[t].bye++);
       if (poTeams === 6 && byes === 2) {
-        const g = t => T[t].mu + sd * gauss(r);
-        const q1 = g(S[2]) > g(S[5]) ? S[2] : S[5], q2 = g(S[3]) > g(S[4]) ? S[3] : S[4];
+        const g = (t, k) => { const w = ctx.regWeeks + k; return ctx.wm ? ctx.wm(t, w) + ctx.ws(t, w) * gauss(r) : T[t].mu + sd * gauss(r); };
+        const q1 = g(S[2], 1) > g(S[5], 1) ? S[2] : S[5], q2 = g(S[3], 1) > g(S[4], 1) ? S[3] : S[4];
         const [lo, hi] = [q1, q2].sort((a, b) => S.indexOf(a) - S.indexOf(b));
-        const f1 = g(S[0]) > g(hi) ? S[0] : hi, f2 = g(S[1]) > g(lo) ? S[1] : lo;
-        out[f1].final++; out[f2].final++; out[g(f1) > g(f2) ? f1 : f2].champ++;
+        const f1 = g(S[0], 2) > g(hi, 2) ? S[0] : hi, f2 = g(S[1], 2) > g(lo, 2) ? S[1] : lo;
+        out[f1].final++; out[f2].final++; out[g(f1, 3) > g(f2, 3) ? f1 : f2].champ++;
       }
     }
     for (const t of teams) { const o = out[t]; ["po", "bye", "final", "champ", "last"].forEach(k => o[k] /= N); o.wins /= N; o.seed = o.seed.map(x => x / N); }
@@ -609,7 +609,7 @@ $("#wkSel").addEventListener("change",e=>{wkSel=+e.target.value;renderWeeks();})
 function renderSchedule(){
   const rows=ctx.teams.slice().sort((a,b)=>(T(b).sos||0)-(T(a).sos||0));
   table($("#sos"),[{h:"Team",f:t=>TB(t)},{h:"Games left",n:1,f:t=>T(t).remGames},{h:"Avg opponent",n:1,f:t=>T(t).sos!=null?f1(T(t).sos):"—"},
-    {h:"Difficulty",f:t=>{if(T(t).sos==null)return "";const d=T(t).sos-ctx.lgMean;return h("span",{class:"chip "+(d>1.5?"bad":d<-1.5?"good":""),text:d>1.5?"Hard":d<-1.5?"Easy":"Average"});}},
+    {h:"Difficulty",f:t=>{if(T(t).sos==null)return "";const d=T(t).sos-(ctx.sosBase!=null?ctx.sosBase:ctx.lgMean);return h("span",{class:"chip "+(d>1.5?"bad":d<-1.5?"good":""),text:d>1.5?"Hard":d<-1.5?"Easy":"Average"});}},
     {h:"Expected wins left",n:1,f:t=>f1(ctx.rem.filter(g=>g.a===t||g.h===t).reduce((s,g)=>s+ctx.winProbW(t,g.a===t?g.h:g.a,g.w),0))}],rows);
   const el=$("#sched");el.textContent="";
   ctx.remWeeks.forEach(w=>{const box=h("div",{class:"panel",style:"padding:10px 12px;gap:4px"},h("h3",{text:`Week ${w}`}));
@@ -750,7 +750,7 @@ function computePlayers(){
   Object.keys(PD.lineups).map(Number).filter(w=>w<=ctx.lastWeek).forEach(w=>{for(const[t,rows]of Object.entries(PD.lineups[w])){const S=share[t];if(!S)continue;
     for(const[p,slot,pts,pj]of rows){if(slot===20||slot===21)continue;const pos=pPos(p);S.total+=pts;S.pos[pos]=(S.pos[pos]||0)+pts;
       const x=S.pl[p]||(S.pl[p]={p,starts:0,pts:0,proj:0,projPts:0,pg:0});x.starts++;x.pts+=pts;if(pj!=null){x.proj+=pj;x.projPts+=pts;x.pg++;}
-      if(pj!=null){const y=proj[p]||(proj[p]={p,g:0,act:0,proj:0,by:{}});y.g++;y.act+=pts;y.proj+=pj;y.by[t]=(y.by[t]||0)+1;}}}});
+      if(pj!=null){const y=proj[p+":"+t]||(proj[p+":"+t]={p,g:0,act:0,proj:0,by:{}});y.g++;y.act+=pts;y.proj+=pj;y.by[t]=(y.by[t]||0)+1;}}}});
   const full={},cost={},depth={};
   ctx.teams.forEach(t=>{const hs=healthy(t),B=best(hs);full[t]=B;cost[t]=B.L.map(([slot,p])=>{const B2=best(hs.filter(x=>x!==p)),inn=[...B2.set].filter(x=>!B.set.has(x));return{slot,p,loss:B.pts-B2.pts,next:inn[0]};});});
   const cnt={},pool={};ctx.teams.forEach(t=>{full[t].L.forEach(([,p])=>cnt[pPos(p)]=(cnt[pPos(p)]||0)+1);healthy(t).forEach(p=>(pool[pPos(p)]=pool[pPos(p)]||[]).push(ppg(p)));});
@@ -901,6 +901,8 @@ function computeInjuries(){
     R[t].perWk=ctx.weeks.length?R[t].cost/ctx.weeks.length:0;});
   INJ_D={R,V,gp,pick:PV.pick,hasDraft:PV.hasDraft};return INJ_D;}
 let injTeam=null;
+// short name for chips: last name, keeping Jr./Sr./II/III (Kenneth Walker III -> Walker III); D/ST keeps its team name
+function surname(p){const n=pName(p);if(pPos(p)==="D/ST")return n.replace(/ D\/ST$/,"");const w=n.split(" ");return w.length>2&&/^(Jr\.?|Sr\.?|II|III|IV|V)$/.test(w[w.length-1])?w.slice(-2).join(" "):w[w.length-1];}
 function renderInjuries(){const tbl=$("#injTable");if(!tbl)return;const D=computeInjuries();if(!D){tbl.textContent="Player data isn't loaded yet.";return;}
   const R=D.R,V=D.V,rows=ctx.teams.slice().sort((a,b)=>R[b].cost-R[a].cost||R[b].cur-R[a].cur),mx=Math.max(1,...rows.map(t=>R[t].cost));
   const top=t=>Object.values(R[t].missed).sort((a,b)=>b.val-a.val)[0];
@@ -911,7 +913,7 @@ function renderInjuries(){const tbl=$("#injTable");if(!tbl)return;const D=comput
     {h:"Losses it cost",n:1,f:t=>R[t].flips||"–",cls:t=>R[t].flips?"neg":""},
     {h:"Biggest absence",f:t=>{const m=top(t);return m?`${pName(m.p)} · ${m.g} wk${m.g>1?"s":""} out (${f1(m.val/m.g)} pts/g)`:"–";},cls:()=>"nw"},
     {h:"Lost now / wk",n:1,f:t=>f1(R[t].cur),cls:t=>R[t].cur>=8?"neg":""},
-    {h:"Injured now",f:t=>{const d=h("span",{class:"nw"});R[t].curList.slice(0,4).forEach(x=>d.append(h("span",{class:"chip"+(x.gone?" bad":""),style:"margin-right:4px",title:`${pName(x.p)} · ${ST[x.inj]||"IR slot"} · ${f1(x.v)} pts/g`,text:`${pName(x.p).split(" ").slice(-1)[0]} ${ST[x.inj]||"IR"}`})));if(R[t].curList.length>4)d.append(h("span",{class:"mut",text:`+${R[t].curList.length-4}`}));return R[t].curList.length?d:"–";}}],rows);
+    {h:"Injured now",f:t=>{const d=h("span",{class:"nw"});R[t].curList.slice(0,4).forEach(x=>d.append(h("span",{class:"chip"+(x.gone?" bad":""),style:"margin-right:4px",title:`${pName(x.p)} · ${ST[x.inj]||"IR slot"} · ${f1(x.v)} pts/g`,text:`${surname(x.p)} ${ST[x.inj]||"IR"}`})));if(R[t].curList.length>4)d.append(h("span",{class:"mut",text:`+${R[t].curList.length-4}`}));return R[t].curList.length?d:"–";}}],rows);
   const sel=$("#injTeam");if(injTeam==null)injTeam=FOCUS||rows[0];sel.textContent="";rows.forEach(t=>sel.append(h("option",{value:t,selected:t===injTeam},N(t))));
   const t=injTeam,X=R[t];$("#injTitle").textContent=`${N(t)}: injury log`;
   const sm=$("#injSum");sm.textContent="";
@@ -992,7 +994,7 @@ function buildModel(){
   const pred3=v=>M("p"+v,()=>{const a=pickAlpha(v);return{a,sd:residSd(v,a)||muBefore(v).sd};});
   const Phi=z=>0.5*(1+nerf(z/Math.SQRT2));
   const pickK=w=>{if(w<5)return 1;let best=1,bv=1e9;MODEL_KS.forEach(k=>{let L=0,n=0;priorWeeks(w).forEach(v=>{const P=pred3(v);gamesOf(v).forEach(g=>{const p=Phi((E3(v,P.a,g.a)-E3(v,P.a,g.h))/(P.sd*k*Math.SQRT2));L+=-Math.log(Math.max(1e-6,g.as>g.hs?p:1-p));n++;});});const m=L/n;if(m<bv-1e-12){bv=m;best=k;}});return best;};
-  const W=(ctx.lastWeek||0)+1,base=muBefore(W),a=pickAlpha(W),R=ratioBefore(W),P=pred3(W),k=pickK(W);
+  const W=(ctx.lastWeek||0)+1,base=muBefore(W),a=base.lg>0?pickAlpha(W):1,R=ratioBefore(W),P=pred3(W),k=pickK(W);
   // player values for future-week lineups: average points in games actually played
   const pv={};Object.keys(PD.lineups).map(Number).filter(v=>v<W).forEach(v=>{for(const t in PD.lineups[v])PD.lineups[v][t].forEach(r=>{if(r[4]){const o=pv[r[0]]||(pv[r[0]]={s:0,n:0,wk:{}});if(!o.wk[v]){o.wk[v]=1;o.s+=r[2];o.n++;}}});});
   const val=p=>pv[p]?pv[p].s/pv[p].n:null;
@@ -1008,14 +1010,17 @@ function curState(t){const m=MODEL,rows=live.curRows&&live.curRows[t];
   const st=rows.filter(r=>r[1]!==20&&r[1]!==21);let pts=0,pjAll=0,pjLeft=0,left=0;
   st.forEach(([p,sl,a,pj,pl])=>{pjAll+=(pj||0);if(pl)pts+=a;else{pjLeft+=(pj||0);left++;}});
   const frac=pjAll>0?pjLeft/pjAll:(st.length?left/st.length:1);
-  const E=pts+m.alpha*m.R*pjLeft+(1-m.alpha)*m.mu[t]*frac;
-  return{E,V:m.sdCur*m.sdCur*frac,pts,left,st:st.length,frac,pre:pjAll*m.alpha*m.R+(1-m.alpha)*m.mu[t]};}
+  const al=pjAll>0?m.alpha:0,E=pts+al*m.R*pjLeft+(1-al)*m.mu[t]*frac;
+  return{E,V:m.sdCur*m.sdCur*frac,pts,left,st:st.length,frac,pre:pjAll*al*m.R+(1-al)*m.mu[t]};}
 function weekMean(t,w){const m=MODEL;if(!m)return T(t).mu;if(w===m.week){const c=curState(t);if(c)return c.E;}
-  return FUT_ALPHA*m.futLineup(t,w)+(1-FUT_ALPHA)*m.mu[t];}
+  const fl=m.futLineup(t,w);return fl>0&&m.lg>0?FUT_ALPHA*fl+(1-FUT_ALPHA)*m.mu[t]:(m.lg>0?m.mu[t]:fl);}
 function weekSd(t,w){const m=MODEL;if(!m)return ctx.sd;if(w===m.week){const c=curState(t);if(c)return Math.sqrt(c.V);}return m.sdFut;}
 function installModel(){buildModel();const WM={},WS={};
   const wm=(t,w)=>{const c=WM[w]||(WM[w]={});return t in c?c[t]:(c[t]=weekMean(t,w));},ws=(t,w)=>{const c=WS[w]||(WS[w]={});return t in c?c[t]:(c[t]=weekSd(t,w));};
   ctx.wm=wm;ctx.ws=ws;
+  // strength of schedule from the same expected scores as the win chances; baseline = every team's expected score in those weeks
+  const all=[];ctx.remWeeks.forEach(w=>ctx.teams.forEach(t=>all.push(wm(t,w))));ctx.sosBase=all.length?all.reduce((a,b)=>a+b,0)/all.length:null;
+  ctx.teams.forEach(t=>{const o=ctx.rem.filter(g=>g.a===t||g.h===t);ctx.T[t].sos=o.length?o.reduce((s,g)=>s+wm(g.a===t?g.h:g.a,g.w),0)/o.length:null;});
   ctx.winProbW=(a,b,w)=>{const s=Math.sqrt(ws(a,w)**2+ws(b,w)**2);return s>0?0.5*(1+nerf((wm(a,w)-wm(b,w))/(s*Math.SQRT2))):(wm(a,w)>wm(b,w)?1:0);};}
 // ---------- odds (sportsbook) ----------
 let VIG=false;
@@ -1027,11 +1032,11 @@ const fmtO=o=>o==null?"—":(o>0?"+"+o:"−"+Math.abs(o));
 function priced(p){if(p>=0.995||p<=0.005)return null;const q=VIG?Math.min(0.995,p*1.045):p;return amer(q);}
 const half=x=>Math.round(x*2)/2;
 // live-adjusted expectation for one team this week
-function teamState(t){const c=curState(t);if(c)return c;const w=MODEL?MODEL.week:null;return{E:w?weekMean(t,w):T(t).mu,V:(w?weekSd(t,w):ctx.sd)**2,pts:0,left:null,st:null,frac:1};}
+function teamState(t,wk){const c=curState(t);if(c)return c;const w=wk||(MODEL?MODEL.week:null);return{E:w?weekMean(t,w):T(t).mu,V:(w?weekSd(t,w):ctx.sd)**2,pts:0,left:null,st:null,frac:1};}
 function bookGames(){
   let gs=[];if(live.curGames&&live.curGames.length&&live.cur<=ctx.regWeeks)gs=live.curGames.map(g=>({a:g.a,h:g.h,winner:g.winner,w:live.cur}));
   else{const w=ctx.remWeeks[0];if(w)gs=ctx.rem.filter(g=>g.w===w).map(g=>({a:g.a,h:g.h,winner:"UNDECIDED",w}));}
-  return gs.map(g=>{const A=teamState(g.a),H=teamState(g.h),sdd=Math.sqrt(A.V+H.V);
+  return gs.map(g=>{const A=teamState(g.a,g.w),H=teamState(g.h,g.w),sdd=Math.sqrt(A.V+H.V);
     const fin=g.winner&&g.winner!=="UNDECIDED";const pA=fin?(g.winner==="AWAY"?1:0):(sdd>0?Phi((A.E-H.E)/sdd):(A.E>H.E?1:0));
     return Object.assign(g,{A,H,pA,pH:1-pA,spread:half(H.E-A.E),total:half(A.E+H.E),fin,started:(A.frac<1||H.frac<1)});});}
 function propSim(gs,N){const ts=[...new Set(gs.flatMap(g=>[g.a,g.h]))],S={};ts.forEach(t=>S[t]=gs.find(g=>g.a===t)?gs.find(g=>g.a===t).A:gs.find(g=>g.h===t).H);
@@ -1090,11 +1095,11 @@ const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const r2=x=>Math.round(x*100)/100;
 function statOf(p,sp,src,split){return(p.stats||[]).find(s=>s.seasonId===DATA.season&&s.scoringPeriodId===sp&&s.statSourceId===src&&s.statSplitTypeId===split)||null;}
 function lineupRows(side,sp,players){return side.rosterForCurrentScoringPeriod.entries.map(e=>{const p=e.playerPoolEntry.player;players[p.id]=[p.fullName,p.defaultPositionId,p.proTeamId];const a=statOf(p,sp,0,1),pr=statOf(p,sp,1,1);
-  return[p.id,e.lineupSlotId,a?r2(a.appliedTotal):0,pr?r2(pr.appliedTotal):null,a&&a.stats&&Object.keys(a.stats).length?1:0];});}
+  return[p.id,e.lineupSlotId,a?r2(a.appliedTotal):0,pr?Math.round(pr.appliedTotal*1e4)/1e4:null,a&&a.stats&&Object.keys(a.stats).length?1:0];});}
 const startersSum=rows=>rows.reduce((s,r)=>s+(r[1]!==20&&r[1]!==21?r[2]:0),0);
 async function weekLineups(w,sp,sched){
   const tot={};sched.filter(m=>m.matchupPeriodId===w).forEach(m=>{tot[m.away.teamId]=m.away.totalPoints;tot[m.home.teamId]=m.home.totalPoints;});
-  const key=`mhs:${DATA.leagueId}:${DATA.season}:wk${w}:v2`,c=lsGet(key),ok=x=>x&&Object.keys(tot).every(t=>x.rows[t]&&Math.abs(startersSum(x.rows[t])-tot[t])<0.05);
+  const key=`mhs:${DATA.leagueId}:${DATA.season}:wk${w}:v3`,c=lsGet(key),ok=x=>x&&Object.keys(tot).every(t=>x.rows[t]&&Math.abs(startersSum(x.rows[t])-tot[t])<0.05);
   if(ok(c))return c;
   const d=await espn(`view=mBoxscore&scoringPeriodId=${sp}`,{schedule:{filterMatchupPeriodIds:{value:[w]}}}),out={rows:{},players:{}};
   d.schedule.filter(m=>m.matchupPeriodId===w).forEach(m=>["away","home"].forEach(s=>{out.rows[m[s].teamId]=lineupRows(m[s],sp,out.players);}));
@@ -1126,7 +1131,7 @@ async function refresh(force){
       espn(`view=mTransactions2&scoringPeriodId=${spCur}`).catch(()=>({transactions:[]})),cur>1?espn(`view=mTransactions2&scoringPeriodId=${spOf(cur-1)}`).catch(()=>({transactions:[]})):{transactions:[]},
       espn("view=mPendingTransactions").catch(()=>({pendingTransactions:[]}))]);
     if(!live.draft){const key=`mhs:${DATA.leagueId}:${DATA.season}:draft:v2`;let dr=lsGet(key);
-      if(!dr){try{const dj=await espn("view=mDraftDetail");const pk=(dj.draftDetail&&dj.draftDetail.picks)||[];if(pk.length){dr=keeperAdjust(pk,await prevDraft());lsSet(key,dr);}}catch(e){}}
+      if(!dr){try{const dj=await espn("view=mDraftDetail");const pk=(dj.draftDetail&&dj.draftDetail.picks)||[];if(pk.length){const prev=await prevDraft();dr=keeperAdjust(pk,prev);if(prev||!pk.some(x=>x.keeper))lsSet(key,dr);}}catch(e){}}
       if(dr)live.draft=dr;}
     const players={},curRows={},curGames=[];
     box.schedule.filter(m=>m.matchupPeriodId===cur).forEach(m=>{["away","home"].forEach(s=>curRows[m[s].teamId]=lineupRows(m[s],spCur,players));curGames.push({a:m.away.teamId,h:m.home.teamId,winner:m.winner,as:m.away.totalPoints,hs:m.home.totalPoints});});
@@ -1134,7 +1139,7 @@ async function refresh(force){
     const weeks=[];for(let w=1;w<=lastWeek;w++)weeks.push(w);
     const wl=await pool(weeks,3,w=>weekLineups(w,spOf(w),S));
     const lineups={};wl.forEach((x,i)=>{lineups[weeks[i]]=x.rows;Object.assign(players,x.players,players);});
-    const ids=[...new Set(Object.values(curRows).flat().map(r=>r[0]))].sort((a,b)=>a-b),idsKey=ids.join(",");
+    const ids=[...new Set([...Object.values(curRows).flat().map(r=>r[0]),...Object.values(lineups).flatMap(x=>Object.values(x).flat().map(r=>r[0])),...Object.keys(live.draft||{}).map(Number)])].filter(p=>p>0||p<0).sort((a,b)=>a-b),idsKey=ids.join(",");
     if(force||!live.info||idsKey!==live.idsKey||Date.now()-live.lastHeavy>HEAVY_MS){live.info=await playerInfo(ids,spCur);live.idsKey=idsKey;live.lastHeavy=Date.now();}
     const info=live.info,season={},roster={};
     ids.forEach(p=>{const x=info[p];if(x){season[p]=x.season;players[p]=[x.name,x.pos,x.pro];}});
@@ -1200,7 +1205,7 @@ function renderActivity(){renderHomeAct();const el=$("#actList");if(!el)return;e
   const lab={trade:"Trade",add:"Add",drop:"Drop",lineup:"Lineup"},cls={trade:"good",add:"",drop:"bad",lineup:""};
   table(el,[{h:"When",f:e=>new Date(e.t).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),cls:()=>"mut nw"},{h:"Type",f:e=>h("span",{class:"chip "+cls[e.kind],text:lab[e.kind]})},{h:"Move",f:e=>e.text},{h:"Detail",f:e=>e.note||"",cls:()=>"mut"}],ev.slice(0,80));}
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="actLineup"){showLineup=e.target.checked;renderActivity();}if(e.target&&e.target.tagName==="SELECT")setTimeout(compactTables,0);});
-const BUILD="2026-11-18nonav1";
+const BUILD="2026-11-18audit1";
 async function checkBuild(){try{if(!/github\.io$/.test(location.hostname))return;const r=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"});if(!r.ok)return;const m=(await r.text()).match(/const BUILD="([^"]+)"/);if(m&&m[1]!==BUILD)location.reload();}catch(e){}}
 setInterval(()=>{if(document.visibilityState==="visible")checkBuild();},300000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkBuild();});
 let pollT=null;function schedulePoll(){clearTimeout(pollT);pollT=setTimeout(async()=>{if(document.visibilityState==="visible")await refresh();schedulePoll();},POLL_MS);}
